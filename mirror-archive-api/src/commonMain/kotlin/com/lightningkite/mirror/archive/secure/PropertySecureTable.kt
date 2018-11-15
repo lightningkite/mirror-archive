@@ -1,22 +1,22 @@
-package com.lightningkite.kotlinx.server.base.security
+package com.lightningkite.mirror.archive.secure
 
-import com.lightningkite.kotlinx.persistence.*
-import com.lightningkite.kotlinx.reflection.KxField
-import com.lightningkite.kotlinx.reflection.KxVariable
+import com.lightningkite.kommon.exception.ForbiddenException
+import com.lightningkite.mirror.archive.*
+import com.lightningkite.mirror.info.ClassInfo
+import com.lightningkite.mirror.info.SerializedFieldInfo
 
-abstract class PropertySecureTable<T : Model<ID>, ID>(val underlying: DatabaseTable<T, ID>) : DatabaseTable<T, ID> {
+abstract class PropertySecureTable<T : Model<ID>, ID>(
+        val classInfo: ClassInfo<T>,
+        val underlying: DatabaseTable<T, ID>
+) : DatabaseTable<T, ID> {
     interface PropertyRules<T : Any, V> {
-        val variable: KxField<T, V>
+        val variable: SerializedFieldInfo<T, V>
         suspend fun query(untypedUser: Any?)
         suspend fun read(untypedUser: Any?, justInserted: Boolean, currentState: T): Boolean
         suspend fun write(untypedUser: Any?, currentState: T?, newState: V): V
     }
 
-    @Suppress("UNCHECKED_CAST")
-    val PropertyRules<T, *>.untyped
-        get() = this as PropertyRules<T, Any?>
-
-    abstract val propertyRules: Map<KxField<T, *>, PropertyRules<T, *>>
+    abstract val propertyRules: Map<SerializedFieldInfo<T, *>, PropertyRules<T, *>>
     abstract suspend fun wholeQuery(untypedUser: Any?)
     abstract suspend fun wholeRead(untypedUser: Any?, justInserted: Boolean, currentState: T): Boolean
     abstract suspend fun wholeWrite(untypedUser: Any?, isDelete: Boolean, currentState: T?)
@@ -26,23 +26,23 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(val underlying: DatabaseTa
     }
 
     @Suppress("UNCHECKED_CAST")
-    private suspend fun handleWholeItemUpdate(transaction: Transaction, old: T?, item: T?) {
+    private suspend fun handleWholeItemUpdate(transaction: Transaction, old: T?, item: T?): T? {
         wholeWrite(transaction.untypedUser, item == null, old)
         if (item != null) {
-            for (it in propertyRules.values) {
-                val untyped = it.untyped
-                val insecureEdit = untyped.variable.get(item)
-                val securedEdit = untyped.write(transaction.untypedUser, old, insecureEdit)
-                untyped.variable.set?.invoke(item, securedEdit)
+            val newValues = classInfo.fields.associate {
+                val suggestedValue = it.get(item)
+                val rules = propertyRules[it] as? PropertyRules<T, Any?>
+                it.name to (if(rules == null) suggestedValue else rules.write(transaction.untypedUser, old, suggestedValue))
             }
-        }
+            return classInfo.construct(newValues)
+        } else return null
     }
 
 
     override suspend fun get(transaction: Transaction, id: ID): T = underlying.get(transaction, id)
             .also { item ->
                 val allowed = readAllowed(transaction, item, false)
-                if (!allowed) throw IllegalAccessException()
+                if (!allowed) throw ForbiddenException("You are not permitted to read this item.")
             }
 
     override suspend fun getMany(transaction: Transaction, ids: Iterable<ID>): List<T> = underlying.getMany(transaction, ids)
@@ -55,7 +55,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(val underlying: DatabaseTa
             }
     ).also { item ->
         val allowed = readAllowed(transaction, item, true)
-        if (!allowed) throw IllegalAccessException()
+        if (!allowed) throw ForbiddenException("You are not permitted to read your inserted item.")
     }
 
     override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> = underlying.insertMany(
@@ -71,14 +71,14 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(val underlying: DatabaseTa
         handleWholeItemUpdate(transaction, underlying.get(transaction, model.id!!), it)
     }).also { item ->
         val allowed = readAllowed(transaction, item, true)
-        if (!allowed) throw IllegalAccessException()
+        if (!allowed) throw ForbiddenException("You are not permitted to update this model.")
     }
 
     override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
         val old = underlying.get(transaction, id)
         wholeWrite(transaction.untypedUser, false, old)
         val newModifications = modifications.map { typedMod ->
-            val untypedRules = propertyRules[typedMod.field]?.untyped ?: return@map typedMod
+            val untypedRules = propertyRules[typedMod.field] as? PropertyRules<T, Any?> ?: return@map typedMod
             @Suppress("UNCHECKED_CAST") val untypedMod = typedMod as ModificationOnItem<T, Any?>
             val originalSet = untypedMod.invokeOnSub(untypedRules.variable.get(old))
             val newSet = untypedRules.write(
@@ -91,7 +91,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(val underlying: DatabaseTa
                     untypedMod.value = newSet
                     typedMod
                 } else {
-                    ModificationOnItem.Set(untypedRules.variable as KxVariable<T, Any?>, newSet)
+                    ModificationOnItem.Set(untypedRules.variable as SerializedFieldInfo<T, Any?>, newSet)
                 }
             } else typedMod
         }

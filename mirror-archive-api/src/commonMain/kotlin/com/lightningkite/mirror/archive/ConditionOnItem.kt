@@ -1,5 +1,6 @@
 package com.lightningkite.mirror.archive
 
+import com.lightningkite.kommon.collection.treeWalkDepthSequence
 import com.lightningkite.mirror.info.SerializedFieldInfo
 
 
@@ -8,7 +9,7 @@ sealed class ConditionOnItem<in T : Any> {
     abstract operator fun invoke(item: T): Boolean
     open fun iterable(): Iterable<ConditionOnItem<T>>? = null
     fun recursing(): Sequence<ConditionOnItem<T>> {
-        return sequenceOf(this).recursiveFlatMap { it.iterable()?.asSequence() ?: emptySequence() }
+        return sequenceOf(this).treeWalkDepthSequence { it.iterable()?.asSequence() ?: emptySequence() }
     }
 
     

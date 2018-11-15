@@ -1,7 +1,5 @@
 package com.lightningkite.kotlinx.db.postgres
 
-import com.lightningkite.kotlinx.persistence.ConditionOnItem
-
 fun <T: Any> ConditionOnItem<T>.sql(serializer: PostgresSerializer): String = when(this){
     is ConditionOnItem.Never -> "FALSE"
     is ConditionOnItem.Always -> "TRUE"

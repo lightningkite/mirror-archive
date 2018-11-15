@@ -1,12 +1,7 @@
-package com.lightningkite.kotlinx.server.base.security
+package com.lightningkite.mirror.archive.secure
 
-import com.lightningkite.kotlinx.persistence.ModificationOnItem
-import com.lightningkite.kotlinx.persistence.invoke
-import com.lightningkite.kotlinx.reflection.KxClass
-import com.lightningkite.kotlinx.reflection.KxVariable
-import com.lightningkite.kotlinx.reflection.untyped
-import com.lightningkite.kotlinx.server.invoke
-import java.util.*
+import com.lightningkite.mirror.archive.ModificationOnItem
+import com.lightningkite.mirror.archive.invoke
 
 sealed class SecurityAction<T> {
 

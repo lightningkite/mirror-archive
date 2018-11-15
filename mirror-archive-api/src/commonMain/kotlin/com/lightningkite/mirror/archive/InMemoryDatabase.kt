@@ -1,43 +1,41 @@
 package com.lightningkite.mirror.archive
 
-import com.lightningkite.kotlinx.reflection.IntReflection
-import com.lightningkite.kotlinx.reflection.KxClass
-import com.lightningkite.kotlinx.reflection.LongReflection
-import com.lightningkite.kotlinx.reflection.StringReflection
-import com.lightningkite.kotlinx.serialization.copy
+import com.lightningkite.mirror.info.ClassInfo
+import com.lightningkite.mirror.serialization.copy
+import com.lightningkite.mirror.serialization.toAttributeHashMap
 
 object InMemoryDatabase : Database {
 
-    override fun <T : Model<ID>, ID> table(type: KxClass<T>, name: String): DatabaseTable<T, ID> {
-        val idType = type.variables["id"]!!.type
-        @Suppress("UNCHECKED_CAST") val generateId: () -> ID = when (idType.base) {
-            IntReflection -> {
+    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): DatabaseTable<T, ID> {
+        val idType = type.fields.find { it.name == "id" }!!.type
+        @Suppress("UNCHECKED_CAST") val generateId: () -> ID = when (idType.kClass) {
+            Int::class -> {
                 var nextId = 0
                 { nextId++ as ID }
             }
-            LongReflection -> {
+            Long::class -> {
                 var nextId = 0L
                 { nextId++ as ID }
             }
-            StringReflection -> {
+            String::class -> {
                 var nextId = 0L
                 { (nextId++).toString() as ID }
             }
             else -> throw IllegalArgumentException()
         }
-        return Table(generateId, {it.copy(type)})
+        return Table(type, generateId)
     }
 
-    class Table<T : Model<ID>, ID>(val generateId: () -> ID, val copy: (T)->T) : DatabaseTable<T, ID> {
+    class Table<T : Model<ID>, ID>(val classInfo: ClassInfo<T>, val generateId: () -> ID) : DatabaseTable<T, ID> {
 
         val source = HashMap<ID, T>()
 //        val listenersById = ConcurrentHashMap<ID, MutableCollection<(ChangeEvent<T, ID>) -> Unit>>()
 //        val listenersByFilter = ConcurrentHashMap<ConditionOnItem<T>, MutableCollection<(ChangeEvent<T, ID>) -> Unit>>()
 
-        override suspend fun get(transaction: Transaction, id: ID): T = source[id]!!.let(copy)
+        override suspend fun get(transaction: Transaction, id: ID): T = source[id]!!.copy(classInfo)
 
         override suspend fun insert(transaction: Transaction, model: T): T {
-            val toInsert = model.let(copy)
+            val toInsert = model.copy(classInfo)
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
             if (toInsert.id == null) {
                 toInsert.id = generateId()
@@ -45,22 +43,22 @@ object InMemoryDatabase : Database {
             val id = toInsert.id!!
             source[id] = toInsert
 //            inform(ChangeEvent(model, ChangeEvent.Type.Insertion))
-            return toInsert.let(copy)
+            return toInsert.copy(classInfo)
         }
 
         override suspend fun update(transaction: Transaction, model: T): T {
-            val toUpdate = model.let(copy)
+            val toUpdate = model.copy(classInfo)
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
             source[model.id!!] = toUpdate
 //            inform(ChangeEvent(model, ChangeEvent.Type.Modification))
-            return toUpdate.let(copy)
+            return toUpdate.copy(classInfo)
         }
 
         override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
-            val result = source[id]!!.also { modifications.invoke(it) }
+            val result = source[id]!!.apply(classInfo, modifications)
 //            inform(ChangeEvent(result, ChangeEvent.Type.Modification))
-            return result.let(copy)
+            return result.copy(classInfo)
         }
 
         override suspend fun query(
@@ -81,14 +79,14 @@ object InMemoryDatabase : Database {
                                 ?: object : Comparable<Comparable<*>> {
                                     override fun compareTo(other: Comparable<*>): Int = if (sort.nullsFirst) -1 else 1
                                 }
-                    }.take(count).map(copy).toList().let { list -> QueryResult(list) }
+                    }.take(count).map{ it.copy(classInfo) }.toList().let { list -> QueryResult(list) }
                 } else {
                     source.values.asSequence().filter { condition.invoke(it) }.sortedByDescending {
                         sortedBy.first().field.get.invoke(it) as? Comparable<Comparable<*>>
                                 ?: object : Comparable<Comparable<*>> {
                                     override fun compareTo(other: Comparable<*>): Int = if (sort.nullsFirst) -1 else 1
                                 }
-                    }.take(count).map(copy).toList().let { list -> QueryResult(list) }
+                    }.take(count).map{ it.copy(classInfo) }.toList().let { list -> QueryResult(list) }
                 }
             } else TODO()
         }

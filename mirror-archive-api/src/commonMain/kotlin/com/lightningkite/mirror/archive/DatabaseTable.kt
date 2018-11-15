@@ -1,8 +1,5 @@
 package com.lightningkite.mirror.archive
 
-import com.lightningkite.kotlinx.observable.list.ObservableList
-import com.lightningkite.kotlinx.observable.property.ObservableProperty
-
 interface DatabaseTable<T : Model<ID>, ID> {
 
     suspend fun get(transaction: Transaction, id: ID): T
