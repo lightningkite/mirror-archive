@@ -12,7 +12,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
     interface PropertyRules<T : Any, V> {
         val variable: SerializedFieldInfo<T, V>
         suspend fun query(untypedUser: Any?)
-        suspend fun read(untypedUser: Any?, justInserted: Boolean, currentState: T): Boolean
+        suspend fun read(untypedUser: Any?, justInserted: Boolean, currentState: T): V
         suspend fun write(untypedUser: Any?, currentState: T?, newState: V): V
     }
 
@@ -21,8 +21,15 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
     abstract suspend fun wholeRead(untypedUser: Any?, justInserted: Boolean, currentState: T): Boolean
     abstract suspend fun wholeWrite(untypedUser: Any?, isDelete: Boolean, currentState: T?)
 
-    private suspend fun readAllowed(transaction: Transaction, item: T, isJustInserted: Boolean): Boolean {
-        return wholeRead(transaction.untypedUser, isJustInserted, item) && propertyRules.values.all { it.read(transaction.untypedUser, isJustInserted, item) }
+    private suspend fun handleWholeItemRead(transaction: Transaction, item: T, isJustInserted: Boolean): T? {
+        return if(!wholeRead(transaction.untypedUser, isJustInserted, item)) null
+        else {
+            val newValues = classInfo.fields.associate {
+                val rules = propertyRules[it] as? PropertyRules<T, Any?>
+                it.name to (if(rules == null) it.get(item) else rules.read(transaction.untypedUser, isJustInserted, item))
+            }
+            classInfo.construct(newValues)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -40,22 +47,20 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
 
 
     override suspend fun get(transaction: Transaction, id: ID): T = underlying.get(transaction, id)
-            .also { item ->
-                val allowed = readAllowed(transaction, item, false)
-                if (!allowed) throw ForbiddenException("You are not permitted to read this item.")
+            .let { item ->
+                handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
             }
 
     override suspend fun getMany(transaction: Transaction, ids: Iterable<ID>): List<T> = underlying.getMany(transaction, ids)
-            .filter { readAllowed(transaction, it, false) }
+            .mapNotNull { handleWholeItemRead(transaction, it, false) }
 
     override suspend fun insert(transaction: Transaction, model: T): T = underlying.insert(
             transaction,
             model.also {
                 handleWholeItemUpdate(transaction, null, model)
             }
-    ).also { item ->
-        val allowed = readAllowed(transaction, item, true)
-        if (!allowed) throw ForbiddenException("You are not permitted to read your inserted item.")
+    ).let { item ->
+        handleWholeItemRead(transaction, item, true) ?: throw ForbiddenException("You are not permitted to read this item.")
     }
 
     override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> = underlying.insertMany(
@@ -65,13 +70,12 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
                     handleWholeItemUpdate(transaction, null, it)
                 }
             }
-    ).filter { readAllowed(transaction, it, true) }
+    ).mapNotNull { handleWholeItemRead(transaction, it, true) }
 
     override suspend fun update(transaction: Transaction, model: T): T = underlying.update(transaction, model.also {
         handleWholeItemUpdate(transaction, underlying.get(transaction, model.id!!), it)
-    }).also { item ->
-        val allowed = readAllowed(transaction, item, true)
-        if (!allowed) throw ForbiddenException("You are not permitted to update this model.")
+    }).let { item ->
+        handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
     }
 
     override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
@@ -95,7 +99,9 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
                 }
             } else typedMod
         }
-        return underlying.modify(transaction, id, newModifications).also { readAllowed(transaction, it, false) }
+        return underlying.modify(transaction, id, newModifications).let { item ->
+            handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
+        }
     }
 
     override suspend fun query(
@@ -123,8 +129,8 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
                 continuationToken = continuationToken,
                 count = count
         ).also {
-            it.results = it.results.filter {
-                readAllowed(transaction, it, false)
+            it.results = it.results.mapNotNull {
+                handleWholeItemRead(transaction, it, false)
             }
         }
     }
