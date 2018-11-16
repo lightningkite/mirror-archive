@@ -1,4 +1,4 @@
-package com.lightningkite.kotlinx.persistence
+package com.lightningkite.mirror.archive.nitrite
 
 import org.dizitart.no2.FindOptions
 import org.dizitart.no2.NitriteCollection

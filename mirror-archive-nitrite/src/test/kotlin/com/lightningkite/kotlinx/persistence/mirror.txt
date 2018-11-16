@@ -1,0 +1,4 @@
+com.lightningkite.kotlinx.persistence
+configureMirror
+
+com.lightningkite.kotlinx.persistence.Post

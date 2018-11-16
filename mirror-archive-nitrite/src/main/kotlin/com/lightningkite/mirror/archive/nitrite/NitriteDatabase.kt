@@ -1,30 +1,31 @@
-package com.lightningkite.kotlinx.persistence
+package com.lightningkite.mirror.archive.nitrite
 
-import com.lightningkite.kotlinx.observable.list.ObservableList
-import com.lightningkite.kotlinx.observable.property.ObservableProperty
-import com.lightningkite.kotlinx.reflection.*
+import com.lightningkite.mirror.archive.*
+import com.lightningkite.mirror.info.ClassInfo
+import com.lightningkite.mirror.info.Type
+import com.lightningkite.mirror.info.type
 import org.dizitart.no2.*
 import org.dizitart.no2.filters.Filters
 import java.lang.IllegalArgumentException
 
 class NitriteDatabase(val nitrite: Nitrite) : Database {
-    override fun <T : Model<ID>, ID> table(type: KxClass<T>, name: String): DatabaseTable<T, ID> {
+    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): DatabaseTable<T, ID> {
         val collection =  nitrite.getCollection(name)
         @Suppress("UNCHECKED_CAST")
         return Table(
                 type = type,
                 nitrite =collection,
-                generateId = when(type.variables["id"]!!.type.base){
-                    IntReflection -> NitriteKeyGenerators.int(collection)
-                    LongReflection -> NitriteKeyGenerators.long(collection)
-                    StringReflection -> NitriteKeyGenerators.string(collection)
+                generateId = when(type.fields.find { it.name == "id" }!!.type.kClass){
+                    Int::class -> NitriteKeyGenerators.int(collection)
+                    Long::class -> NitriteKeyGenerators.long(collection)
+                    String::class -> NitriteKeyGenerators.string(collection)
                     else -> throw IllegalArgumentException()
                 } as ()->ID
         )
     }
 
     class Table<T : Model<ID>, ID>(
-            val type: KxClass<T>,
+            val type: ClassInfo<T>,
             val nitrite: NitriteCollection,
             val generateId:()->ID
     ) : DatabaseTable<T, ID> {
@@ -36,25 +37,31 @@ class NitriteDatabase(val nitrite: Nitrite) : Database {
         }
 
         override suspend fun get(transaction: Transaction, id: ID): T {
-            return NitriteDocumentSerializer.read(type.kxType, nitrite.find(Filters.eq("_id", id)).first()) as T
+            return NitriteDocumentSerializer.decode(nitrite.find(Filters.eq("_id", id)).first(), type.kClass.type)
         }
 
         override suspend fun insert(transaction: Transaction, model: T): T {
             if(model.id == null) model.id = generateId()
-            nitrite.insert(NitriteDocumentSerializer.write(type.kxType, model, Unit) as Document)
+            NitriteDocumentSerializer.encode({
+                nitrite.insert(it as Document)
+            }, model, type.kClass.type)
             return model
         }
 
         override suspend fun update(transaction: Transaction, model: T): T {
-            nitrite.update(Filters.eq("_id", model.id), NitriteDocumentSerializer.write(type.kxType, model, Unit) as Document)
+            NitriteDocumentSerializer.encode({
+                nitrite.update(Filters.eq("_id", model.id), it as Document)
+            }, model, type.kClass.type)
             return model
         }
 
         override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
             val raw = nitrite.find(Filters.eq("_id", id)).first()
-            val model = NitriteDocumentSerializer.read(type.kxType, raw) as T
-            modifications.invoke(model)
-            nitrite.update(Filters.eq("_id", model.id), NitriteDocumentSerializer.write(type.kxType, model, Unit) as Document)
+            val model = NitriteDocumentSerializer.decode(raw, type.kClass.type)
+            val changed = model.apply(type, modifications)
+            NitriteDocumentSerializer.encode({
+                nitrite.update(Filters.eq("_id", model.id), it as Document)
+            }, changed, type.kClass.type)
             return model
         }
 
@@ -64,13 +71,13 @@ class NitriteDatabase(val nitrite: Nitrite) : Database {
             is ConditionOnItem.And<T> -> Filters.and(*this.conditions.mapNotNull { it.toNitrite() }.toTypedArray())
             is ConditionOnItem.Or<T> -> Filters.or(*this.conditions.mapNotNull { it.toNitrite() }.toTypedArray())
             is ConditionOnItem.Not<T> -> Filters.not(condition.toNitrite())
-            is ConditionOnItem.Equal<T, *> -> Filters.eq(this.field.name, NitriteDocumentSerializer.write(this.field.type, this.value, Unit))
-            is ConditionOnItem.EqualToOne<T, *> -> Filters.`in`(this.field.name, *values.map { NitriteDocumentSerializer.write(this.field.type, it, Unit) }.toTypedArray())
-            is ConditionOnItem.NotEqual<T, *> -> Filters.not(Filters.eq(this.field.name, NitriteDocumentSerializer.write(this.field.type, this.value, Unit)))
-            is ConditionOnItem.LessThan<T, *> -> Filters.lt(this.field.name, NitriteDocumentSerializer.write(this.field.type, this.value, Unit))
-            is ConditionOnItem.GreaterThan<T, *> -> Filters.gt(this.field.name, NitriteDocumentSerializer.write(this.field.type, this.value, Unit))
-            is ConditionOnItem.LessThanOrEqual<T, *> -> Filters.lte(this.field.name, NitriteDocumentSerializer.write(this.field.type, this.value, Unit))
-            is ConditionOnItem.GreaterThanOrEqual<T, *> -> Filters.gte(this.field.name, NitriteDocumentSerializer.write(this.field.type, this.value, Unit))
+            is ConditionOnItem.Equal<T, *> -> Filters.eq(this.field.name, NitriteDocumentSerializer.encode<Any?>(this.value, this.field.type as Type<Any?>))
+            is ConditionOnItem.EqualToOne<T, *> -> Filters.`in`(this.field.name, *values.map { NitriteDocumentSerializer.encode<Any?>(it, this.field.type as Type<Any?>) }.toTypedArray())
+            is ConditionOnItem.NotEqual<T, *> -> Filters.not(Filters.eq(this.field.name, NitriteDocumentSerializer.encode<Any?>(this.value, this.field.type as Type<Any?>)))
+            is ConditionOnItem.LessThan<T, *> -> Filters.lt(this.field.name, NitriteDocumentSerializer.encode<Any?>(this.value, this.field.type as Type<Any?>))
+            is ConditionOnItem.GreaterThan<T, *> -> Filters.gt(this.field.name, NitriteDocumentSerializer.encode<Any?>(this.value, this.field.type as Type<Any?>))
+            is ConditionOnItem.LessThanOrEqual<T, *> -> Filters.lte(this.field.name, NitriteDocumentSerializer.encode<Any?>(this.value, this.field.type as Type<Any?>))
+            is ConditionOnItem.GreaterThanOrEqual<T, *> -> Filters.gte(this.field.name, NitriteDocumentSerializer.encode<Any?>(this.value, this.field.type as Type<Any?>))
             is ConditionOnItem.TextSearch<T, *> -> Filters.text(this.field.name, this.query)
             is ConditionOnItem.RegexTextSearch<T, *> -> Filters.regex(this.field.name, this.query.pattern)
         }
@@ -86,7 +93,7 @@ class NitriteDatabase(val nitrite: Nitrite) : Database {
                     .asSequence()
                     .take(count)
                     .map {
-                        NitriteDocumentSerializer.read(type.kxType, it) as T
+                        NitriteDocumentSerializer.decode(it, type.kClass.type)
                     }
                     .toList()
                     .let { QueryResult(it) }
@@ -99,7 +106,7 @@ class NitriteDatabase(val nitrite: Nitrite) : Database {
         override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> {
             for(model in models){
                 if(model.id == null) model.id = generateId()
-                nitrite.insert(NitriteDocumentSerializer.write(type.kxType, model, Unit) as Document)
+                nitrite.insert(NitriteDocumentSerializer.encode(model, type.kClass.type) as Document)
             }
             return models
         }

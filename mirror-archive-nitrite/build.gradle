@@ -6,9 +6,11 @@ buildscript {
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap" }
         maven { url "http://dl.bintray.com/kotlin/kotlin-dev" }
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath "com.lightningkite:mirror-plugin:0.0.2"
     }
 }
 
@@ -16,11 +18,13 @@ group 'com.lightningkite'
 version '0.0.2'
 
 apply plugin: 'kotlin-platform-jvm'
+apply plugin: 'com.lightningkite.mirror'
 apply from: '../publishing.gradle'
 
 repositories {
 
     maven { url "https://dl.bintray.com/kotlin/ktor" }
+    maven { url "https://kotlin.bintray.com/kotlinx" }
     mavenCentral()
     mavenLocal()
 }
@@ -29,6 +33,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
     api "com.lightningkite:kommon-jvm:${project.version}"
+    compile project(':mirror-archive-api')
     api 'org.dizitart:nitrite:3.0.2'
 
     testApi 'junit:junit:4.12'

@@ -1,6 +1,10 @@
 package com.lightningkite.kotlinx.persistence
 
-import com.lightningkite.kotlinx.serialization.CommonSerialization
+import com.lightningkite.mirror.archive.ModificationOnItem
+import com.lightningkite.mirror.archive.Transaction
+import com.lightningkite.mirror.archive.nitrite.NitriteDatabase
+import com.lightningkite.mirror.archive.use
+import com.lightningkite.mirror.info.info
 import kotlinx.coroutines.runBlocking
 import org.dizitart.no2.Nitrite
 import org.junit.Assert.*
@@ -11,7 +15,7 @@ class NitriteDatabaseTableTest {
 
     @Test
     fun test() {
-        CommonSerialization.ExternalNames.register(PostReflection)
+        configureMirror()
 
         File("/tmp/test.db").let {
             it.parentFile.mkdirs()
@@ -21,7 +25,7 @@ class NitriteDatabaseTableTest {
                 .compressed()
                 .filePath("/tmp/test.db")
                 .openOrCreate())
-        val posts = db.table(PostReflection)
+        val posts = db.table(Post::class.info)
 
         val post1 = Post(id = 0, title = "Post Title", body = "Here is a test post's content.")
         val post2 = Post(id = 1, title = "Another Post", body = "Here is more content!")
@@ -47,7 +51,7 @@ class NitriteDatabaseTableTest {
             //Modify and get
             Transaction().use {
                 val newTitle = "Post Title Updated"
-                posts.modify(it, 0, listOf(ModificationOnItem.Set(PostReflection.Fields.title, newTitle)))
+                posts.modify(it, 0, listOf(ModificationOnItem.Set(PostClassInfo.Fields.title, newTitle)))
                 val result = posts.get(it, 0)
                 assertEquals(newTitle, result.title)
             }
