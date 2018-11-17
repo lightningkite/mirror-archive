@@ -6,7 +6,7 @@ import com.lightningkite.mirror.serialization.toAttributeHashMap
 
 object InMemoryDatabase : Database {
 
-    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): DatabaseTable<T, ID> {
+    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): Database.Table<T, ID> {
         val idType = type.fields.find { it.name == "id" }!!.type
         @Suppress("UNCHECKED_CAST") val generateId: () -> ID = when (idType.kClass) {
             Int::class -> {
@@ -26,7 +26,7 @@ object InMemoryDatabase : Database {
         return Table(type, generateId)
     }
 
-    class Table<T : Model<ID>, ID>(val classInfo: ClassInfo<T>, val generateId: () -> ID) : DatabaseTable<T, ID> {
+    class Table<T : Model<ID>, ID>(val classInfo: ClassInfo<T>, val generateId: () -> ID) : Database.Table<T, ID> {
 
         val source = HashMap<ID, T>()
 //        val listenersById = ConcurrentHashMap<ID, MutableCollection<(ChangeEvent<T, ID>) -> Unit>>()

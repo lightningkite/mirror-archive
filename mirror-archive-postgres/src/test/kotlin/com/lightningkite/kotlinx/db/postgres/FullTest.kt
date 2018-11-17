@@ -1,10 +1,9 @@
 package com.lightningkite.kotlinx.db.postgres
 
-import com.lightningkite.kotlin.crossplatform.kotlinxDbPostgresTestReflections
-import com.lightningkite.kotlinx.persistence.ModificationOnItem
-import com.lightningkite.kotlinx.persistence.Transaction
-import com.lightningkite.kotlinx.persistence.use
-import com.lightningkite.kotlinx.serialization.CommonSerialization
+import com.lightningkite.mirror.archive.ModificationOnItem
+import com.lightningkite.mirror.archive.Transaction
+import com.lightningkite.mirror.archive.postgres.*
+import com.lightningkite.mirror.archive.use
 import io.reactiverse.pgclient.PgClient
 import io.reactiverse.pgclient.PgConnectOptions
 import io.reactiverse.pgclient.PgPool
@@ -24,9 +23,7 @@ class FullTest {
     lateinit var pool: PgPool
 
     init{
-        kotlinxDbPostgresTestReflections.forEach {
-            CommonSerialization.ExternalNames.register(it)
-        }
+        configureMirror()
     }
 
     @BeforeTest
@@ -72,7 +69,7 @@ class FullTest {
             val db = PostgresDatabase(pool)
 
             //Set up the table
-            val table = db.table(PostReflection)
+            val table = db.table(PostClassInfo)
             Transaction(null, false, false).use {
                 val insertResult = table.insert(it, Post(
                         userId = 0,
@@ -109,7 +106,7 @@ class FullTest {
                 println("Update result: $updateResult")
 
                 val modifyResult = table.modify(it, insertResult.id!!, listOf(
-                        ModificationOnItem.Set(PostReflection.Fields.title, "Test Post")
+                        ModificationOnItem.Set(PostClassInfo.Fields.title, "Test Post")
                 ))
                 println("Modify result: $modifyResult")
 

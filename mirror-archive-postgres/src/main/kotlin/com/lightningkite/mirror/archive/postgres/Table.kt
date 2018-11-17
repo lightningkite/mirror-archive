@@ -1,6 +1,6 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
-import com.lightningkite.kotlinx.collection.contentEquals
+import com.lightningkite.kommon.collection.contentEquals
 import java.lang.IllegalStateException
 
 data class Table(
@@ -94,7 +94,9 @@ data class Table(
             }
         }
 
-        changes += "ALTER TABLE $schemaName.$name ${alterTableChanges.joinToString(", ")}"
+        if(alterTableChanges.isNotEmpty()) {
+            changes += "ALTER TABLE $schemaName.$name ${alterTableChanges.joinToString(", ")}"
+        }
 
         run {
             val myIndexes = indexes.associate { it.name to it }

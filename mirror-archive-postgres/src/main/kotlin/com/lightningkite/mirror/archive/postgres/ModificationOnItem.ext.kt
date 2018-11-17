@@ -1,6 +1,6 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
-import com.lightningkite.kotlinx.persistence.ModificationOnItem
+import com.lightningkite.mirror.archive.ModificationOnItem
 
 fun <T: Any> ModificationOnItem<T, *>.sql(serializer: PostgresSerializer) = when(this) {
     is ModificationOnItem.Set<*, *> -> "${field.name} = ${value.sqlLiteral(serializer)}"

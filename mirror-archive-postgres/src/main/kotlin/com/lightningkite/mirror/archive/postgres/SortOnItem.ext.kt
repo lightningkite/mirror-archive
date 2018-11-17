@@ -1,6 +1,7 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
-import com.lightningkite.kotlinx.persistence.SortOnItem
+import com.lightningkite.mirror.archive.SortOnItem
+
 
 fun <T: Any> SortOnItem<T, *>.sql(): String{
     val nulls = if(nullsFirst) "NULLS FIRST" else "NULLS LAST"

@@ -1,10 +1,8 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
+import com.lightningkite.kommunicate.ConnectionException
+import com.lightningkite.kommunicate.HttpClient
 import okhttp3.*
-import com.lightningkite.kotlinx.httpclient.ConnectionException
-import com.lightningkite.kotlinx.httpclient.HttpClient
-import com.lightningkite.kotlinx.httpclient.HttpClient.toKotlin
-import com.lightningkite.kotlinx.httpclient.HttpClient.toOk
 import io.reactiverse.pgclient.PgClient
 import io.reactiverse.pgclient.PgConnectOptions
 import io.reactiverse.pgclient.PgPool
@@ -70,12 +68,11 @@ object EmbeddedPG {
                 .url(url)
                 .get()
                 .build()
+
         HttpClient.okClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
-                HttpClient.resultThread.invoke {
-                    callback.resumeWithException(ConnectionException(e.message ?: "", e))
-                }
+                callback.resumeWithException(ConnectionException(e.message ?: "", e))
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -110,9 +107,7 @@ object EmbeddedPG {
                     zipIs.closeEntry()
                     zipIs.close()
                 }
-                HttpClient.resultThread.invoke {
-                    callback.resume(Unit)
-                }
+                callback.resume(Unit)
             }
 
         })

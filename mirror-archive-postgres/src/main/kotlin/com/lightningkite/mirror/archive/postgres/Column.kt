@@ -1,4 +1,4 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
 data class Column(
         var name: String,

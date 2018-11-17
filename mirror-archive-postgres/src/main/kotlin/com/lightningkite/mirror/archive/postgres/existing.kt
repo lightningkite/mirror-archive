@@ -1,4 +1,4 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
 import io.reactiverse.pgclient.PgClient
 

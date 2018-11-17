@@ -18,16 +18,19 @@ open class NitriteDocumentSerializer :
     companion object : NitriteDocumentSerializer()
 
     override val arbitraryDecoders: MutableList<Decoder.Generator<Any?>> = ArrayList()
-    override val decoders: MutableMap<Type<*>, Any?.() -> Any?> = HashMap()
-    override val kClassDecoders: MutableMap<KClass<*>, (Type<*>) -> (Any?.() -> Any?)?> = HashMap()
+    override val decoders: MutableMap<Type<*>, TypeDecoder<Any?, Any?>> = HashMap()
+    override val kClassDecoders: MutableMap<KClass<*>, (Type<*>) -> TypeDecoder<Any?, Any?>?> = HashMap()
     override val arbitraryEncoders: MutableList<Encoder.Generator<(Any?) -> Unit>> = ArrayList()
-    override val encoders: MutableMap<Type<*>, ((Any?) -> Unit).(value: Any?) -> Unit> = HashMap()
-    override val kClassEncoders: MutableMap<KClass<*>, (Type<*>) -> (((Any?) -> Unit).(value: Any?) -> Unit)?> = HashMap()
+    override val encoders: MutableMap<Type<*>, TypeEncoder<(Any?) -> Unit, Any?>> = HashMap()
+    override val kClassEncoders: MutableMap<KClass<*>, (Type<*>) -> TypeEncoder<(Any?) -> Unit, Any?>?> = HashMap()
 
     fun <T> encode(value: T, type: Type<T>): Any? = getResult(rawEncoder(type), value)
 
 
     init {
+        useCommonEncoders()
+        useCommonDecoders()
+
         addDecoder(Unit::class.type) { Unit }
         addEncoder(Unit::class.type) { invoke(null) }
 
@@ -105,6 +108,7 @@ open class NitriteDocumentSerializer :
 
     inner class ReflectiveEncoderGenerator : Encoder.Generator<(Any?) -> Unit> {
         override val priority: Float get() = 0f
+        override val description: String = "reflective"
 
         override fun generateEncoder(type: Type<*>): (((Any?) -> Unit).(value: Any?) -> Unit)? {
 
@@ -124,6 +128,7 @@ open class NitriteDocumentSerializer :
 
     inner class ReflectiveDecoderGenerator : Decoder.Generator<Any?> {
         override val priority: Float get() = 0f
+        override val description: String = "reflective"
 
         override fun generateDecoder(type: Type<*>): (Any?.() -> Any?)? {
             if (type.nullable) return null
@@ -144,6 +149,7 @@ open class NitriteDocumentSerializer :
 
     inner class PolymorphicEncoderGenerator : Encoder.Generator<(Any?) -> Unit> {
         override val priority: Float get() = .1f
+        override val description: String = "polymorphic"
 
         override fun generateEncoder(type: Type<*>): (((Any?) -> Unit).(value: Any?) -> Unit)? {
             if (!type.kClass.serializePolymorphic) return null
@@ -163,6 +169,7 @@ open class NitriteDocumentSerializer :
 
     inner class PolymorphicDecoderGenerator : Decoder.Generator<Any?> {
         override val priority: Float get() = .1f
+        override val description: String = "polymorphic"
 
         override fun generateDecoder(type: Type<*>): (Any?.() -> Any?)? {
             if (!type.kClass.serializePolymorphic) return null
@@ -176,6 +183,7 @@ open class NitriteDocumentSerializer :
 
     inner class NullableEncoderGenerator : Encoder.Generator<(Any?) -> Unit> {
         override val priority: Float get() = 1f
+        override val description: String = "null"
 
         override fun generateEncoder(type: Type<*>): (((Any?) -> Unit).(value: Any?) -> Unit)? {
             if (!type.nullable) return null
@@ -192,6 +200,7 @@ open class NitriteDocumentSerializer :
 
     inner class NullableDecoderGenerator : Decoder.Generator<Any?> {
         override val priority: Float get() = 1f
+        override val description: String = "null"
 
         override fun generateDecoder(type: Type<*>): (Any?.() -> Any?)? {
             if (!type.nullable) return null

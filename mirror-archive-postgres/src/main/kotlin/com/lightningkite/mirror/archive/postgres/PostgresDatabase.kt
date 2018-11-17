@@ -1,8 +1,8 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
-import com.lightningkite.kotlinx.persistence.*
-import com.lightningkite.kotlinx.reflection.KxClass
-import com.lightningkite.kotlinx.reflection.KxField
+import com.lightningkite.mirror.archive.*
+import com.lightningkite.mirror.info.ClassInfo
+import com.lightningkite.mirror.info.SerializedFieldInfo
 import io.reactiverse.pgclient.PgPool
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -12,11 +12,11 @@ import java.util.zip.GZIPOutputStream
 import kotlin.NoSuchElementException
 
 class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = PostgresSerializer()) : Database {
-    override fun <T : Model<ID>, ID> table(type: KxClass<T>, name: String): DatabaseTable<T, ID> {
+    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): DatabaseTable<T, ID> {
         return Table(type, serializer.schema, name, pool, serializer)
     }
 
-    class Table<T : Model<ID>, ID>(val type: KxClass<T>, val schemaName: String, val tableName: String, val pool: PgPool, val serializer: PostgresSerializer) : DatabaseTable<T, ID> {
+    class Table<T : Model<ID>, ID>(val type: ClassInfo<T>, val schemaName: String, val tableName: String, val pool: PgPool, val serializer: PostgresSerializer) : DatabaseTable<T, ID> {
 
         val table = serializer.table(type)
         val columnStrings = table.columns.map { it.name }.joinToString(", ")
@@ -40,7 +40,7 @@ class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = Po
         override suspend fun get(transaction: Transaction, id: ID): T {
             startup()
             transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id = ${id.sqlLiteral(serializer)}").forEach {
-                return serializer.readRow(type.kclass, it)
+                return serializer.readRow(type.kClass, it)
             }
             throw IndexOutOfBoundsException("ID $id could not be found in the database.")
         }
@@ -48,30 +48,30 @@ class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = Po
         override suspend fun getMany(transaction: Transaction, ids: Iterable<ID>): List<T> {
             startup()
             return transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id IN (${ids.joinToString { it.sqlLiteral(serializer) }})").map {
-                serializer.readRow(type.kclass, it)
+                serializer.readRow(type.kClass, it)
             }
         }
 
         override suspend fun insert(transaction: Transaction, model: T): T {
             startup()
-            val row = serializer.writeRow(type.kclass, model)
+            val row = serializer.writeRow(type.kClass, model)
             transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES ($row) RETURNING $columnStrings").forEach {
-                return serializer.readRow(type.kclass, it)
+                return serializer.readRow(type.kClass, it)
             }
             throw IndexOutOfBoundsException("ID ${model.id} could not be found in the database.")
         }
 
         override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> {
             startup()
-            val rows = models.joinToString { serializer.writeRow(type.kclass, it) }
+            val rows = models.joinToString { serializer.writeRow(type.kClass, it) }
             return transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES $rows RETURNING $columnStrings").map {
-                serializer.readRow(type.kclass, it)
+                serializer.readRow(type.kClass, it)
             }
         }
 
         override suspend fun update(transaction: Transaction, model: T): T {
             startup()
-            val row = serializer.writeRow(type.kclass, model)
+            val row = serializer.writeRow(type.kClass, model)
             transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES ($row) ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id")
             return model
         }
@@ -80,7 +80,7 @@ class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = Po
             startup()
             val modificationsString = modifications.joinToString { it.sql(serializer) }
             transaction.pg(pool).suspendQuery("UPDATE $tableName SET $modificationsString WHERE id = ${id.sqlLiteral(serializer)} RETURNING $columnStrings").forEach {
-                return serializer.readRow(type.kclass, it)
+                return serializer.readRow(type.kClass, it)
             }
             throw IndexOutOfBoundsException("ID $id could not be found in the database.")
         }
@@ -94,7 +94,7 @@ class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = Po
         ): QueryResult<T> {
             startup()
             @Suppress("UNCHECKED_CAST") val actualSortedBy = if (sortedBy.isEmpty()) listOf(SortOnItem(
-                    type.primaryKey() as KxField<T, Comparable<Comparable<*>>>,
+                    type.primaryKey() as SerializedFieldInfo<T, Comparable<Comparable<*>>>,
                     true,
                     false
             )) else sortedBy
@@ -110,7 +110,7 @@ class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = Po
             LIMIT $count
             """.trimIndent()
             val results = transaction.pg(pool).suspendQuery(query).map {
-                serializer.readRow(type.kclass, it)
+                serializer.readRow(type.kClass, it)
             }
             val newToken = if (results.size == count) compress(after(results.last(), actualSortedBy)) else null
             return QueryResult(

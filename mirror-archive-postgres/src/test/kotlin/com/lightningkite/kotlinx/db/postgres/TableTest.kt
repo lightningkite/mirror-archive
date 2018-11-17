@@ -1,24 +1,23 @@
 package com.lightningkite.kotlinx.db.postgres
 
-import com.lightningkite.kotlin.crossplatform.kotlinxDbPostgresTestReflections
-import com.lightningkite.kotlinx.reflection.kxReflect
-import com.lightningkite.kotlinx.serialization.CommonSerialization
+import com.lightningkite.mirror.archive.postgres.Column
+import com.lightningkite.mirror.archive.postgres.Constraint
+import com.lightningkite.mirror.archive.postgres.PostgresSerializer
+import com.lightningkite.mirror.archive.postgres.Table
 import org.junit.Test
 
 
-class SqlTest {
-
-    init {
-        kotlinxDbPostgresTestReflections.forEach {
-            CommonSerialization.ExternalNames.register(it)
-        }
-    }
+class TableTest {
 
     val serializer = PostgresSerializer()
 
+    init{
+        configureMirror()
+    }
+
     @Test
     fun test() {
-        val table = serializer.table(Post::class.kxReflect)
+        val table = serializer.table(PostClassInfo)
         println(table)
         println(table.toCreateSql())
     }
@@ -43,7 +42,7 @@ class SqlTest {
                 )),
                 indexes = listOf()
         )
-        val table = serializer.table(Post::class.kxReflect)
+        val table = serializer.table(PostClassInfo)
         println(table)
         println(table.toCreateSql())
         println(table.toMigrateSql(old))

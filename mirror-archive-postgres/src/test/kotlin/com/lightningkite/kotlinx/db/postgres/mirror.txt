@@ -1,0 +1,4 @@
+com.lightningkite.kotlinx.db.postgres
+configureMirror
+
+com.lightningkite.kotlinx.db.postgres.Post

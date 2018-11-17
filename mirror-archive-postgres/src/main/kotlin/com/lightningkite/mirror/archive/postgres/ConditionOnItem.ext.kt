@@ -1,4 +1,6 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
+
+import com.lightningkite.mirror.archive.ConditionOnItem
 
 fun <T: Any> ConditionOnItem<T>.sql(serializer: PostgresSerializer): String = when(this){
     is ConditionOnItem.Never -> "FALSE"

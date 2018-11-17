@@ -1,6 +1,6 @@
-package com.lightningkite.kotlinx.db.postgres
+package com.lightningkite.mirror.archive.postgres
 
-import com.lightningkite.kotlinx.persistence.Transaction
+import com.lightningkite.mirror.archive.Transaction
 import io.reactiverse.pgclient.PgClient
 import io.reactiverse.pgclient.PgPool
 import io.reactiverse.pgclient.PgRowSet
@@ -45,7 +45,7 @@ suspend fun Transaction.pg(pool: PgPool): PgClient {
 }
 
 suspend fun PgClient.suspendQuery(sql: String) = suspendCoroutine<PgRowSet> { cont ->
-//    println("Executing... $sql")
+    println("Executing... $sql")
     this.query(sql){
         if(it.succeeded()){
             cont.resume(it.result())
