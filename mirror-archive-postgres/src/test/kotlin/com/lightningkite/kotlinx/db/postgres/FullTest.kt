@@ -4,6 +4,7 @@ import com.lightningkite.mirror.archive.ModificationOnItem
 import com.lightningkite.mirror.archive.Transaction
 import com.lightningkite.mirror.archive.postgres.*
 import com.lightningkite.mirror.archive.use
+import com.lightningkite.mirror.serialization.DefaultRegistry
 import io.reactiverse.pgclient.PgClient
 import io.reactiverse.pgclient.PgConnectOptions
 import io.reactiverse.pgclient.PgPool
@@ -21,10 +22,6 @@ class FullTest {
             storeFiles = File("./build/run/files").also { it.deleteRecursively() }
     )
     lateinit var pool: PgPool
-
-    init{
-        configureMirror()
-    }
 
     @BeforeTest
     fun before() {
@@ -66,10 +63,10 @@ class FullTest {
             }
 
             //Set up the database
-            val db = PostgresDatabase(pool)
+            val db = PostgresDatabase(pool, DefaultRegistry + TestRegistry)
 
             //Set up the table
-            val table = db.table(PostClassInfo)
+            val table = db.table(Post::class)
             Transaction(null, false, false).use {
                 val insertResult = table.insert(it, Post(
                         userId = 0,

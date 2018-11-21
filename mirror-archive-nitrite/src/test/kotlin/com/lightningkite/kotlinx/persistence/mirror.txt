@@ -1,4 +1,4 @@
 com.lightningkite.kotlinx.persistence
-configureMirror
+TestRegistry
 
 com.lightningkite.kotlinx.persistence.Post

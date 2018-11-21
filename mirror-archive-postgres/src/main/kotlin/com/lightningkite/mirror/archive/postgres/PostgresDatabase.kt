@@ -2,7 +2,8 @@ package com.lightningkite.mirror.archive.postgres
 
 import com.lightningkite.mirror.archive.*
 import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.SerializedFieldInfo
+import com.lightningkite.mirror.info.FieldInfo
+import com.lightningkite.mirror.serialization.SerializationRegistry
 import io.reactiverse.pgclient.PgPool
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -10,13 +11,20 @@ import java.util.*
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.NoSuchElementException
+import kotlin.reflect.KClass
 
-class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = PostgresSerializer()) : Database {
-    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): DatabaseTable<T, ID> {
-        return Table(type, serializer.schema, name, pool, serializer)
+class PostgresDatabase(
+        val pool: PgPool,
+        override val registry: SerializationRegistry,
+        val serializer: PostgresSerializer = PostgresSerializer(registry = registry)
+) : Database {
+    val <T: Any> KClass<T>.info get() = registry.classInfoRegistry[this]!!
+
+    override fun <T : Model<ID>, ID> table(type: KClass<T>, name: String): Database.Table<T, ID> {
+        return Table(type.info, serializer.schema, name, pool, serializer)
     }
 
-    class Table<T : Model<ID>, ID>(val type: ClassInfo<T>, val schemaName: String, val tableName: String, val pool: PgPool, val serializer: PostgresSerializer) : DatabaseTable<T, ID> {
+    class Table<T : Model<ID>, ID>(val type: ClassInfo<T>, val schemaName: String, val tableName: String, val pool: PgPool, val serializer: PostgresSerializer) : Database.Table<T, ID> {
 
         val table = serializer.table(type)
         val columnStrings = table.columns.map { it.name }.joinToString(", ")
@@ -94,7 +102,7 @@ class PostgresDatabase(val pool: PgPool, val serializer: PostgresSerializer = Po
         ): QueryResult<T> {
             startup()
             @Suppress("UNCHECKED_CAST") val actualSortedBy = if (sortedBy.isEmpty()) listOf(SortOnItem(
-                    type.primaryKey() as SerializedFieldInfo<T, Comparable<Comparable<*>>>,
+                    type.primaryKey() as FieldInfo<T, Comparable<Comparable<*>>>,
                     true,
                     false
             )) else sortedBy

@@ -4,16 +4,13 @@ import com.lightningkite.mirror.archive.postgres.Column
 import com.lightningkite.mirror.archive.postgres.Constraint
 import com.lightningkite.mirror.archive.postgres.PostgresSerializer
 import com.lightningkite.mirror.archive.postgres.Table
+import com.lightningkite.mirror.serialization.DefaultRegistry
 import org.junit.Test
 
 
 class TableTest {
 
-    val serializer = PostgresSerializer()
-
-    init{
-        configureMirror()
-    }
+    val serializer = PostgresSerializer(registry = DefaultRegistry + TestRegistry)
 
     @Test
     fun test() {

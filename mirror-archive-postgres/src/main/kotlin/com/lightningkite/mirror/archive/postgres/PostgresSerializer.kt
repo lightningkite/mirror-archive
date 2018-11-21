@@ -1,19 +1,18 @@
 package com.lightningkite.mirror.archive.postgres
 
 import com.lightningkite.mirror.info.*
-import com.lightningkite.mirror.serialization.Decoder
-import com.lightningkite.mirror.serialization.Encoder
-import com.lightningkite.mirror.serialization.TypeDecoder
-import com.lightningkite.mirror.serialization.TypeEncoder
+import com.lightningkite.mirror.serialization.*
 import io.reactiverse.pgclient.Row
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.reflect.KClass
 
-typealias ColumnGenerator = (SerializedFieldInfo<*, *>) -> List<Column>
+typealias ColumnGenerator = (FieldInfo<*, *>) -> List<Column>
 
-class PostgresSerializer(val schema: String = "public") : Decoder<PostgresSerializer.RowReader>,
+class PostgresSerializer(val schema: String = "public", override val registry: SerializationRegistry) : Decoder<PostgresSerializer.RowReader>,
         Encoder<Appendable> {
+
+    val <T: Any> KClass<T>.info get() = registry.classInfoRegistry[this]!!
 
     class RowReader(var row: Row, var columnIndex: Int = 0)
 
@@ -35,8 +34,8 @@ class PostgresSerializer(val schema: String = "public") : Decoder<PostgresSerial
 
     val makeColumnsGenerators: MutableList<Pair<Float, (KClass<*>) -> ColumnGenerator>> = ArrayList()
     val makeColumns = HashMap<KClass<*>, ColumnGenerator>()
-    val columns = HashMap<SerializedFieldInfo<*, *>, List<Column>>()
-    fun columns(variable: SerializedFieldInfo<*, *>): List<Column> {
+    val columns = HashMap<FieldInfo<*, *>, List<Column>>()
+    fun columns(variable: FieldInfo<*, *>): List<Column> {
         return columns.getOrPut(variable) {
             val type = variable.type.kClass
             makeColumns.getOrPut(type) {
@@ -46,8 +45,8 @@ class PostgresSerializer(val schema: String = "public") : Decoder<PostgresSerial
         }
     }
 
-    val constraints = HashMap<SerializedFieldInfo<*, *>, List<Constraint>>()
-    fun constraints(variable: SerializedFieldInfo<*, *>): List<Constraint> {
+    val constraints = HashMap<FieldInfo<*, *>, List<Constraint>>()
+    fun constraints(variable: FieldInfo<*, *>): List<Constraint> {
         return constraints.getOrPut(variable) {
             val constraints = ArrayList<Constraint>()
             if (variable.annotations.any { it.name.endsWith("ForceUnique") }) {
@@ -125,8 +124,8 @@ class PostgresSerializer(val schema: String = "public") : Decoder<PostgresSerial
     }
 
     init {
-        useCommonDecoders()
-        useCommonEncoders()
+        initializeEncoders()
+        initializeDecoders()
 
         makeColumns[Boolean::class] = { listOf(Column(it.name, "BOOLEAN")) }
         addEncoder(Boolean::class.type) { append(it.toString().toUpperCase()) }

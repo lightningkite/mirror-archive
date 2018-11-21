@@ -1,9 +1,6 @@
 package com.lightningkite.mirror.archive.nitrite
 
-import com.lightningkite.mirror.info.Type
-import com.lightningkite.mirror.info.info
-import com.lightningkite.mirror.info.type
-import com.lightningkite.mirror.info.untyped
+import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.*
 import com.lightningkite.mirror.serialization.json.JsonSerializer
 import com.lightningkite.mirror.string.CharIteratorReader
@@ -11,11 +8,11 @@ import org.dizitart.no2.Document
 import kotlin.reflect.KClass
 
 @Suppress("LeakingThis")
-open class NitriteDocumentSerializer :
+class NitriteDocumentSerializer(override val registry: SerializationRegistry) :
         Decoder<Any?>,
         Encoder<(Any?) -> Unit> {
 
-    companion object : NitriteDocumentSerializer()
+    val jsonSerializer = JsonSerializer(registry)
 
     override val arbitraryDecoders: MutableList<Decoder.Generator<Any?>> = ArrayList()
     override val decoders: MutableMap<Type<*>, TypeDecoder<Any?, Any?>> = HashMap()
@@ -28,8 +25,8 @@ open class NitriteDocumentSerializer :
 
 
     init {
-        useCommonEncoders()
-        useCommonDecoders()
+        initializeEncoders()
+        initializeDecoders()
 
         addDecoder(Unit::class.type) { Unit }
         addEncoder(Unit::class.type) { invoke(null) }
@@ -67,7 +64,7 @@ open class NitriteDocumentSerializer :
             val subKeyEncoder: ((Any?) -> Unit).(Any?) -> Unit = if (type.param(0).type == String::class.type) {
                 rawEncoder(String::class.type)
             } else {
-                val encoder = JsonSerializer.rawEncoder(type.param(0).type)
+                val encoder = jsonSerializer.rawEncoder(type.param(0).type)
                 0
                 { value ->
                     this.invoke(buildString { encoder(this, value) })
@@ -83,7 +80,7 @@ open class NitriteDocumentSerializer :
             val subKeyDecoder: Any?.() -> Any? = if (type.param(0).type == String::class.type) {
                 rawDecoder(String::class.type)
             } else {
-                val decoder = JsonSerializer.rawDecoder(type.param(0).type)
+                val decoder = jsonSerializer.rawDecoder(type.param(0).type)
                 0
                 {
                     decoder(CharIteratorReader((this as String).iterator()))
@@ -113,7 +110,7 @@ open class NitriteDocumentSerializer :
         override fun generateEncoder(type: Type<*>): (((Any?) -> Unit).(value: Any?) -> Unit)? {
 
             if (type.nullable) return null
-            val lazySubCoders by lazy { type.kClass.info.fields.associateWith { rawEncoder(it.type as Type<*>) } }
+            val lazySubCoders by lazy { registry.classInfoRegistry[type.kClass]!!.fields.associateWith { rawEncoder(it.type as Type<*>) } }
 
             return { value ->
                 this.invoke(lazySubCoders.entries
@@ -132,7 +129,7 @@ open class NitriteDocumentSerializer :
 
         override fun generateDecoder(type: Type<*>): (Any?.() -> Any?)? {
             if (type.nullable) return null
-            val fields = type.kClass.info.fields
+            val fields = registry.classInfoRegistry[type.kClass]!!.fields
             val subCoders by lazy { fields.associate { it.name to rawDecoder(it.type as Type<*>) } }
 
             return {
@@ -142,7 +139,7 @@ open class NitriteDocumentSerializer :
                     if (!subCoders.containsKey(key)) continue
                     map[key] = subCoders[key]!!.invoke(value)
                 }
-                type.kClass.info.construct(map)
+                registry.classInfoRegistry[type.kClass]!!.construct(map)
             }
         }
     }
@@ -152,7 +149,7 @@ open class NitriteDocumentSerializer :
         override val description: String = "polymorphic"
 
         override fun generateEncoder(type: Type<*>): (((Any?) -> Unit).(value: Any?) -> Unit)? {
-            if (!type.kClass.serializePolymorphic) return null
+            if (registry.classInfoRegistry[type.kClass]!!.canBeInstantiated) return null
             return { value ->
                 val underlyingType = when (value) {
                     is List<*> -> List::class
@@ -160,7 +157,7 @@ open class NitriteDocumentSerializer :
                     else -> value!!::class
                 }
                 this.invoke(listOf(
-                        underlyingType.externalName,
+                        registry.kClassToExternalNameRegistry[underlyingType],
                         getResult(rawEncoder(underlyingType.type), value)
                 ))
             }
@@ -172,10 +169,10 @@ open class NitriteDocumentSerializer :
         override val description: String = "polymorphic"
 
         override fun generateDecoder(type: Type<*>): (Any?.() -> Any?)? {
-            if (!type.kClass.serializePolymorphic) return null
+            if (registry.classInfoRegistry[type.kClass]!!.canBeInstantiated) return null
             return {
                 val asList = this as List<Any?>
-                val actualType = KClassesByExternalName[asList[0] as String]!!
+                val actualType = registry.externalNameToInfo[asList[0] as String]!!
                 rawDecoder(actualType.type).invoke(asList[1])
             }
         }

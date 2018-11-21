@@ -1,13 +1,16 @@
 package com.lightningkite.mirror.archive
 
 import com.lightningkite.mirror.info.ClassInfo
+import com.lightningkite.mirror.serialization.SerializationRegistry
 import com.lightningkite.mirror.serialization.copy
 import com.lightningkite.mirror.serialization.toAttributeHashMap
+import kotlin.reflect.KClass
 
-object InMemoryDatabase : Database {
+class InMemoryDatabase(override val registry: SerializationRegistry) : Database {
 
-    override fun <T : Model<ID>, ID> table(type: ClassInfo<T>, name: String): Database.Table<T, ID> {
-        val idType = type.fields.find { it.name == "id" }!!.type
+    override fun <T : Model<ID>, ID> table(type: KClass<T>, name: String): Database.Table<T, ID> {
+        val classInfo = registry.classInfoRegistry[type]!!
+        val idType = classInfo.fields.find { it.name == "id" }!!.type
         @Suppress("UNCHECKED_CAST") val generateId: () -> ID = when (idType.kClass) {
             Int::class -> {
                 var nextId = 0
@@ -23,7 +26,7 @@ object InMemoryDatabase : Database {
             }
             else -> throw IllegalArgumentException()
         }
-        return Table(type, generateId)
+        return Table(classInfo, generateId)
     }
 
     class Table<T : Model<ID>, ID>(val classInfo: ClassInfo<T>, val generateId: () -> ID) : Database.Table<T, ID> {
@@ -61,6 +64,7 @@ object InMemoryDatabase : Database {
             return result.copy(classInfo)
         }
 
+        @Suppress("UNCHECKED_CAST")
         override suspend fun query(
                 transaction: Transaction,
                 condition: ConditionOnItem<T>,

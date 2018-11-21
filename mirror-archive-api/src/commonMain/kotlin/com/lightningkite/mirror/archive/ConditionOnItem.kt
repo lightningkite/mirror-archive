@@ -1,7 +1,7 @@
 package com.lightningkite.mirror.archive
 
 import com.lightningkite.kommon.collection.treeWalkDepthSequence
-import com.lightningkite.mirror.info.SerializedFieldInfo
+import com.lightningkite.mirror.info.FieldInfo
 
 
 sealed class ConditionOnItem<in T : Any> {
@@ -14,7 +14,7 @@ sealed class ConditionOnItem<in T : Any> {
 
     
     interface OnField<T : Any, V> {
-        val field: SerializedFieldInfo<T, V>
+        val field: FieldInfo<T, V>
     }
 
     
@@ -46,47 +46,47 @@ sealed class ConditionOnItem<in T : Any> {
     }
 
     
-    data class Equal<T : Any, V>(override val field: SerializedFieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class Equal<T : Any, V>(override val field: FieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) == value
     }
 
     
-    data class EqualToOne<T : Any, V>(override val field: SerializedFieldInfo<T, V>, val values: Collection<V>) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class EqualToOne<T : Any, V>(override val field: FieldInfo<T, V>, val values: Collection<V>) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) in values
     }
 
     
-    data class NotEqual<T : Any, V>(override val field: SerializedFieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class NotEqual<T : Any, V>(override val field: FieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) != value
     }
 
     
-    data class LessThan<T : Any, V : Comparable<V>>(override val field: SerializedFieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class LessThan<T : Any, V : Comparable<V>>(override val field: FieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) < value
     }
 
     
-    data class GreaterThan<T : Any, V : Comparable<V>>(override val field: SerializedFieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class GreaterThan<T : Any, V : Comparable<V>>(override val field: FieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) > value
     }
 
     
-    data class LessThanOrEqual<T : Any, V : Comparable<V>>(override val field: SerializedFieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class LessThanOrEqual<T : Any, V : Comparable<V>>(override val field: FieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) <= value
     }
 
     
-    data class GreaterThanOrEqual<T : Any, V : Comparable<V>>(override val field: SerializedFieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class GreaterThanOrEqual<T : Any, V : Comparable<V>>(override val field: FieldInfo<T, V>, val value: V) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item) >= value
     }
 
     
-    data class TextSearch<T : Any, V : CharSequence>(override val field: SerializedFieldInfo<T, V>, val query: String) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class TextSearch<T : Any, V : CharSequence>(override val field: FieldInfo<T, V>, val query: String) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item).contains(query)
     }
 
     
-    data class RegexTextSearch<T : Any, V : CharSequence>(override val field: SerializedFieldInfo<T, V>, val query: Regex) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
+    data class RegexTextSearch<T : Any, V : CharSequence>(override val field: FieldInfo<T, V>, val query: Regex) : ConditionOnItem<T>(), ConditionOnItem.OnField<T, V> {
         override fun invoke(item: T): Boolean = field.get.invoke(item).contains(query)
     }
 }

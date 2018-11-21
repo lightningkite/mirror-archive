@@ -1,10 +1,14 @@
 package com.lightningkite.mirror.archive
 
 import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.serialization.externalName
+import com.lightningkite.mirror.serialization.SerializationRegistry
+import kotlin.reflect.KClass
 
 interface ImmutableDatabase {
-    fun <T: Model<ID>, ID> table(type: ClassInfo<T>, name: String = type.kClass.externalName): ImmutableDatabase.Table<T, ID>
+
+    val registry: SerializationRegistry
+
+    fun <T: Model<ID>, ID> table(type: KClass<T>, name: String = registry.kClassToExternalNameRegistry[type]!!): ImmutableDatabase.Table<T, ID>
 
     interface Table<T : Model<ID>, ID> {
 

@@ -1,17 +1,17 @@
 package com.lightningkite.mirror.archive
 
 import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.SerializedFieldInfo
+import com.lightningkite.mirror.info.FieldInfo
 import com.lightningkite.mirror.serialization.toAttributeHashMap
 
 sealed class ModificationOnItem<T : Any, V> {
 
-    abstract val field: SerializedFieldInfo<T, V>
+    abstract val field: FieldInfo<T, V>
     abstract operator fun invoke(item: MutableMap<String, Any?>)
     abstract fun invokeOnSub(value: V): V
 
     
-    data class Set<T : Any, V>(override var field: SerializedFieldInfo<T, V>, var value: V) : ModificationOnItem<T, V>() {
+    data class Set<T : Any, V>(override var field: FieldInfo<T, V>, var value: V) : ModificationOnItem<T, V>() {
         override fun invoke(item: MutableMap<String, Any?>)  {
             item[field.name] = value
         }
@@ -19,7 +19,7 @@ sealed class ModificationOnItem<T : Any, V> {
     }
 
     
-    data class Add<T : Any, V : Number>(override var field: SerializedFieldInfo<T, V>, var amount: V) : ModificationOnItem<T, V>() {
+    data class Add<T : Any, V : Number>(override var field: FieldInfo<T, V>, var amount: V) : ModificationOnItem<T, V>() {
         override fun invoke(item: MutableMap<String, Any?>)  {
             item[field.name] = invokeOnSub(amount)
         }
@@ -36,7 +36,7 @@ sealed class ModificationOnItem<T : Any, V> {
     }
 
     
-    data class Multiply<T : Any, V : Number>(override var field: SerializedFieldInfo<T, V>, var amount: V) : ModificationOnItem<T, V>() {
+    data class Multiply<T : Any, V : Number>(override var field: FieldInfo<T, V>, var amount: V) : ModificationOnItem<T, V>() {
         override fun invoke(item: MutableMap<String, Any?>)  {
             item[field.name] = invokeOnSub(amount)
         }
@@ -53,7 +53,7 @@ sealed class ModificationOnItem<T : Any, V> {
     }
 
 //    
-//    data class Place<T : Any, V : Collection<I>, I>(override var field: SerializedFieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
+//    data class Place<T : Any, V : Collection<I>, I>(override var field: FieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
 //        override fun invoke(item: T) {
 //            field.set.untyped(item, invokeOnSub(amount))
 //        }
@@ -70,7 +70,7 @@ sealed class ModificationOnItem<T : Any, V> {
 //    }
 //
 //    
-//    data class Remove<T : Any, V : Collection<I>, I>(override var field: SerializedFieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
+//    data class Remove<T : Any, V : Collection<I>, I>(override var field: FieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
 //        override fun invoke(item: T) {
 //            field.set.untyped(item, invokeOnSub(amount))
 //        }

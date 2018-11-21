@@ -1,4 +1,4 @@
 com.lightningkite.kotlinx.db.postgres
-configureMirror
+TestRegistry
 
 com.lightningkite.kotlinx.db.postgres.Post

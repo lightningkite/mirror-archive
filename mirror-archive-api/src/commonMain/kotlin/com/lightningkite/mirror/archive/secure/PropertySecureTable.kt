@@ -3,20 +3,20 @@ package com.lightningkite.mirror.archive.secure
 import com.lightningkite.kommon.exception.ForbiddenException
 import com.lightningkite.mirror.archive.*
 import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.SerializedFieldInfo
+import com.lightningkite.mirror.info.FieldInfo
 
 abstract class PropertySecureTable<T : Model<ID>, ID>(
         val classInfo: ClassInfo<T>,
-        val underlying: DatabaseTable<T, ID>
-) : DatabaseTable<T, ID> {
+        val underlying: Database.Table<T, ID>
+) : Database.Table<T, ID> {
     interface PropertyRules<T : Any, V> {
-        val variable: SerializedFieldInfo<T, V>
+        val variable: FieldInfo<T, V>
         suspend fun query(untypedUser: Any?)
         suspend fun read(untypedUser: Any?, justInserted: Boolean, currentState: T): V
         suspend fun write(untypedUser: Any?, currentState: T?, newState: V): V
     }
 
-    abstract val propertyRules: Map<SerializedFieldInfo<T, *>, PropertyRules<T, *>>
+    abstract val propertyRules: Map<FieldInfo<T, *>, PropertyRules<T, *>>
     abstract suspend fun wholeQuery(untypedUser: Any?)
     abstract suspend fun wholeRead(untypedUser: Any?, justInserted: Boolean, currentState: T): Boolean
     abstract suspend fun wholeWrite(untypedUser: Any?, isDelete: Boolean, currentState: T?)
@@ -95,7 +95,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
                     untypedMod.value = newSet
                     typedMod
                 } else {
-                    ModificationOnItem.Set(untypedRules.variable as SerializedFieldInfo<T, Any?>, newSet)
+                    ModificationOnItem.Set(untypedRules.variable as FieldInfo<T, Any?>, newSet)
                 }
             } else typedMod
         }

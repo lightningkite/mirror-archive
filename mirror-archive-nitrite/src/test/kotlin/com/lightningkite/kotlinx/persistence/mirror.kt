@@ -1,8 +1,10 @@
 package com.lightningkite.kotlinx.persistence
 
+import com.lightningkite.kommon.native.SharedImmutable
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 
-fun configureMirror(){
-    ClassInfo.register(com.lightningkite.kotlinx.persistence.PostClassInfo)
-}
+@SharedImmutable
+val TestRegistry = ClassInfoRegistry(
+    com.lightningkite.kotlinx.persistence.PostClassInfo
+)
