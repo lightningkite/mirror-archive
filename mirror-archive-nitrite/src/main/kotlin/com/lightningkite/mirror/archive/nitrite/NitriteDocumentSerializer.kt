@@ -25,9 +25,6 @@ class NitriteDocumentSerializer(override val registry: SerializationRegistry) :
 
 
     init {
-        initializeEncoders()
-        initializeDecoders()
-
         addDecoder(Unit::class.type) { Unit }
         addEncoder(Unit::class.type) { invoke(null) }
 
@@ -93,6 +90,9 @@ class NitriteDocumentSerializer(override val registry: SerializationRegistry) :
                 }
             }
         }
+
+        initializeEncoders()
+        initializeDecoders()
 
         addEncoder(PolymorphicEncoderGenerator())
         addDecoder(PolymorphicDecoderGenerator())

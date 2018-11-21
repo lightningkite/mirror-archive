@@ -124,9 +124,6 @@ class PostgresSerializer(val schema: String = "public", override val registry: S
     }
 
     init {
-        initializeEncoders()
-        initializeDecoders()
-
         makeColumns[Boolean::class] = { listOf(Column(it.name, "BOOLEAN")) }
         addEncoder(Boolean::class.type) { append(it.toString().toUpperCase()) }
         addDecoder(Boolean::class.type) { row.getBoolean(columnIndex++) }
@@ -162,6 +159,9 @@ class PostgresSerializer(val schema: String = "public", override val registry: S
         makeColumns[Double::class] = { listOf(Column(it.name, "DOUBLE PRECISION")) }
         addEncoder(Double::class.type) { value -> append(value.toString()) }
         addDecoder(Double::class.type) { row.getDouble(columnIndex++) }
+
+        initializeEncoders()
+        initializeDecoders()
 
 //        makeColumns[Date::class] = { listOf(Column(it.name, "DATE")) }
 //        addEncoder(Date::class.type) { value -> append("'" + java.sql.Date(value.toJava().time.time).toString() + "'") }
