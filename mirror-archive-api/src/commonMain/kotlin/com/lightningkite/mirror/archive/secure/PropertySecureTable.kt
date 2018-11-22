@@ -56,8 +56,8 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
 
     override suspend fun insert(transaction: Transaction, model: T): T = underlying.insert(
             transaction,
-            model.also {
-                handleWholeItemUpdate(transaction, null, model)
+            model.let {
+                handleWholeItemUpdate(transaction, null, model)!!
             }
     ).let { item ->
         handleWholeItemRead(transaction, item, true) ?: throw ForbiddenException("You are not permitted to read this item.")
@@ -66,14 +66,14 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
     override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> = underlying.insertMany(
             transaction,
             models.also {
-                it.forEach {
+                it.mapNotNull {
                     handleWholeItemUpdate(transaction, null, it)
                 }
             }
     ).mapNotNull { handleWholeItemRead(transaction, it, true) }
 
-    override suspend fun update(transaction: Transaction, model: T): T = underlying.update(transaction, model.also {
-        handleWholeItemUpdate(transaction, underlying.get(transaction, model.id!!), it)
+    override suspend fun update(transaction: Transaction, model: T): T = underlying.update(transaction, model.let {
+        handleWholeItemUpdate(transaction, underlying.get(transaction, model.id!!), it)!!
     }).let { item ->
         handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
     }
