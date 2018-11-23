@@ -324,3 +324,18 @@
 2018-11-21 19:14:57.419 MST [5560] LOG:  worker process: logical replication launcher (PID 17180) exited with exit code 1
 2018-11-21 19:14:57.449 MST [4676] LOG:  shutting down
 2018-11-21 19:14:57.724 MST [5560] LOG:  database system is shut down
+2018-11-23 11:27:20.662 MST [9616] FATAL:  lock file "postmaster.pid" already exists
+2018-11-23 11:27:20.662 MST [9616] HINT:  Is another postgres (PID 6116) running in data directory "C:/Users/josep/Projects/krosslin/mirror-archive/mirror-archive-postgres/./build/run/files"?
+2018-11-23 11:32:00.287 MST [17184] LOG:  listening on IPv6 address "::1", port 5432
+2018-11-23 11:32:00.287 MST [17184] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-11-23 11:32:00.344 MST [16356] LOG:  database system was shut down at 2018-11-23 11:31:59 MST
+2018-11-23 11:32:00.368 MST [17184] LOG:  database system is ready to accept connections
+2018-11-23 11:32:01.481 MST [17184] LOG:  received fast shutdown request
+2018-11-23 11:32:01.488 MST [17184] LOG:  aborting any active transactions
+2018-11-23 11:32:01.488 MST [16452] FATAL:  terminating connection due to administrator command
+2018-11-23 11:32:01.488 MST [3208] FATAL:  terminating connection due to administrator command
+2018-11-23 11:32:01.489 MST [17364] FATAL:  terminating connection due to administrator command
+2018-11-23 11:32:01.489 MST [10984] FATAL:  terminating connection due to administrator command
+2018-11-23 11:32:01.494 MST [17184] LOG:  worker process: logical replication launcher (PID 5412) exited with exit code 1
+2018-11-23 11:32:01.528 MST [16208] LOG:  shutting down
+2018-11-23 11:32:01.856 MST [17184] LOG:  database system is shut down

@@ -1,4 +1,3 @@
-com.lightningkite.kotlinx.db.postgres
-TestRegistry
+name = com.lightningkite.kotlinx.db.postgres.TestRegistry
 
 com.lightningkite.kotlinx.db.postgres.Post
