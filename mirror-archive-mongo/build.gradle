@@ -16,7 +16,6 @@ group 'com.lightningkite'
 version '0.0.2'
 
 apply plugin: 'kotlin-platform-jvm'
-apply from: '../publishing.gradle'
 
 repositories {
 
@@ -35,7 +34,7 @@ dependencies {
 
     testApi 'junit:junit:4.12'
 
-    ext.ktor_version = '0.9.3'
+    ext.ktor_version = '1.0.0'
     compile "io.ktor:ktor-server-core:$ktor_version"
 }
 
