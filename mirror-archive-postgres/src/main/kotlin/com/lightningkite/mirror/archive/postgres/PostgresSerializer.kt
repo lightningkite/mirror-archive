@@ -5,6 +5,9 @@ import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.*
 import io.reactiverse.pgclient.Row
 import java.lang.IllegalArgumentException
+import com.lightningkite.lokalize.*
+import com.lightningkite.lokalize.Date
+import java.time.ZoneOffset
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -175,28 +178,28 @@ class PostgresSerializer(val schema: String = "public", override val registry: S
         initializeEncoders()
         initializeDecoders()
 
-//        makeColumns[Date::class] = { listOf(Column(it.name, "DATE")) }
-//        addEncoder(Date::class.type) { value -> append("'" + java.sql.Date(value.toJava().time.time).toString() + "'") }
-//        addDecoder(Date::class.type) { row.getLocalDate(columnIndex++)?.toEpochDay()?.let { Date(it.toInt()) } }
-//
-//        makeColumns[Time::class] = { listOf(Column(it.name, "TIME")) }
-//        addEncoder(Time::class.type) { value -> append("'" + java.sql.Time(value.toJava().time.time).toString() + "'") }
-//        addDecoder(Time::class.type) { row.getLocalTime(columnIndex++)?.toNanoOfDay()?.div(1000000)?.let { Time(it.toInt()) } }
-//
-//        makeColumns[DateTime::class] = { listOf(Column(it.name, "TIMESTAMP")) }
-//        addEncoder(DateTime::class.type) { value -> append("'" + Timestamp(value.toJava().time.time).toString() + "'") }
-//        addDecoder(DateTime::class.type) {
-//            row.getLocalDateTime(columnIndex++)?.let {
-//                DateTime(
-//                        it.toLocalDate().toEpochDay().let { Date(it.toInt()) },
-//                        it.toLocalTime().toNanoOfDay().div(1000000).let { Time(it.toInt()) }
-//                )
-//            }
-//        }
-//
-//        makeColumns[TimeStamp::class] = { listOf(Column(it.name, "TIMESTAMP")) }
-//        addEncoder(TimeStamp::class.type) { value -> append("'" + Timestamp(value.millisecondsSinceEpoch).toString() + "'") }
-//        addDecoder(TimeStamp::class.type) { row.getLocalDateTime(columnIndex++)?.atZone(ZoneOffset.UTC)?.toInstant()?.toEpochMilli()?.let { TimeStamp(it) } }
+        makeColumns[Date::class] = { listOf(Column(it.name, "DATE")) }
+        addEncoder(Date::class.type) { value -> append("'" + java.sql.Date(value.toJava().time.time).toString() + "'") }
+        addDecoder(Date::class.type) { row.getLocalDate(columnIndex++).toEpochDay().let { Date(it.toInt()) } }
+
+        makeColumns[Time::class] = { listOf(Column(it.name, "TIME")) }
+        addEncoder(Time::class.type) { value -> append("'" + java.sql.Time(value.toJava().time.time).toString() + "'") }
+        addDecoder(Time::class.type) { row.getLocalTime(columnIndex++).toNanoOfDay().div(1000000).let { Time(it.toInt()) } }
+
+        makeColumns[DateTime::class] = { listOf(Column(it.name, "TIMESTAMP")) }
+        addEncoder(DateTime::class.type) { value -> append("'" + TimeStamp(value.toJava().time.time).toString() + "'") }
+        addDecoder(DateTime::class.type) {
+            row.getLocalDateTime(columnIndex++).let {
+                DateTime(
+                        it.toLocalDate().toEpochDay().let { Date(it.toInt()) },
+                        it.toLocalTime().toNanoOfDay().div(1000000).let { Time(it.toInt()) }
+                )
+            }
+        }
+
+        makeColumns[TimeStamp::class] = { listOf(Column(it.name, "TIMESTAMP")) }
+        addEncoder(TimeStamp::class.type) { value -> append("'" + TimeStamp(value.millisecondsSinceEpoch).toString() + "'") }
+        addDecoder(TimeStamp::class.type) { row.getLocalDateTime(columnIndex++).atZone(ZoneOffset.UTC).toInstant().toEpochMilli().let { TimeStamp(it) } }
 
 //        makeColumns[GPSCoordinate::class] = { listOf(Column(it.name, "GEOGRAPHY")) }
 //        addEncoder(GPSCoordinate::class.type) { value -> append("'SRID=4326;POINT(${value.longitude} ${value.latitude})'") }
