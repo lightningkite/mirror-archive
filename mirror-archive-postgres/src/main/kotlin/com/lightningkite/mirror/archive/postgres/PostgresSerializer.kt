@@ -169,7 +169,7 @@ class PostgresSerializer(val schema: String = "public", override val registry: S
         }
         addDecoder(Id::class.type) {
             val uuid = row.getUUID(columnIndex++)
-            Id.fromLongs(uuid.mostSignificantBits, uuid.leastSignificantBits)
+            Id(uuid.mostSignificantBits, uuid.leastSignificantBits)
         }
 
         initializeEncoders()

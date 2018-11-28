@@ -425,3 +425,16 @@
 2018-11-28 11:29:19.037 MST [9940] LOG:  worker process: logical replication launcher (PID 15608) exited with exit code 1
 2018-11-28 11:29:19.039 MST [1232] LOG:  shutting down
 2018-11-28 11:29:19.276 MST [9940] LOG:  database system is shut down
+2018-11-28 12:27:18.796 MST [10332] LOG:  listening on IPv6 address "::1", port 5432
+2018-11-28 12:27:18.796 MST [10332] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-11-28 12:27:18.847 MST [15192] LOG:  database system was shut down at 2018-11-28 12:27:17 MST
+2018-11-28 12:27:18.881 MST [10332] LOG:  database system is ready to accept connections
+2018-11-28 12:27:19.917 MST [10332] LOG:  received fast shutdown request
+2018-11-28 12:27:19.922 MST [10332] LOG:  aborting any active transactions
+2018-11-28 12:27:19.923 MST [17048] FATAL:  terminating connection due to administrator command
+2018-11-28 12:27:19.923 MST [15740] FATAL:  terminating connection due to administrator command
+2018-11-28 12:27:19.923 MST [15776] FATAL:  terminating connection due to administrator command
+2018-11-28 12:27:19.923 MST [15624] FATAL:  terminating connection due to administrator command
+2018-11-28 12:27:19.941 MST [10332] LOG:  worker process: logical replication launcher (PID 10132) exited with exit code 1
+2018-11-28 12:27:19.942 MST [16884] LOG:  shutting down
+2018-11-28 12:27:20.226 MST [10332] LOG:  database system is shut down
