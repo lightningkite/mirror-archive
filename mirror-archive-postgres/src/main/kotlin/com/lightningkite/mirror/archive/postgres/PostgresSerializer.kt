@@ -1,5 +1,6 @@
 package com.lightningkite.mirror.archive.postgres
 
+import com.lightningkite.mirror.archive.Id
 import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.*
 import io.reactiverse.pgclient.Row
@@ -12,7 +13,7 @@ typealias ColumnGenerator = (FieldInfo<*, *>) -> List<Column>
 class PostgresSerializer(val schema: String = "public", override val registry: SerializationRegistry) : Decoder<PostgresSerializer.RowReader>,
         Encoder<Appendable> {
 
-    val <T: Any> KClass<T>.info get() = registry.classInfoRegistry[this]!!
+    val <T : Any> KClass<T>.info get() = registry.classInfoRegistry[this]!!
 
     class RowReader(var row: Row, var columnIndex: Int = 0)
 
@@ -144,11 +145,11 @@ class PostgresSerializer(val schema: String = "public", override val registry: S
         addEncoder(Short::class.type) { value -> append(value.toString()) }
         addDecoder(Short::class.type) { row.getShort(columnIndex++) }
 
-        makeColumns[Int::class] = { listOf(Column(it.name, if (it.name == "id") "SERIAL" else "INT")) }
+        makeColumns[Int::class] = { listOf(Column(it.name, "INT")) }
         addEncoder(Int::class.type) { value -> append(value.toString()) }
         addDecoder(Int::class.type) { row.getInteger(columnIndex++) }
 
-        makeColumns[Long::class] = { listOf(Column(it.name, if (it.name == "id") "BIGSERIAL" else "BIGINT")) }
+        makeColumns[Long::class] = { listOf(Column(it.name, "BIGINT")) }
         addEncoder(Long::class.type) { value -> append(value.toString()) }
         addDecoder(Long::class.type) { row.getLong(columnIndex++) }
 
@@ -159,6 +160,17 @@ class PostgresSerializer(val schema: String = "public", override val registry: S
         makeColumns[Double::class] = { listOf(Column(it.name, "DOUBLE PRECISION")) }
         addEncoder(Double::class.type) { value -> append(value.toString()) }
         addDecoder(Double::class.type) { row.getDouble(columnIndex++) }
+
+        makeColumns[Id::class] = { listOf(Column(it.name, "UUID")) }
+        addEncoder(Id::class.type) { value ->
+            append('\'')
+            append(value.toUUIDString())
+            append('\'')
+        }
+        addDecoder(Id::class.type) {
+            val uuid = row.getUUID(columnIndex++)
+            Id.fromLongs(uuid.mostSignificantBits, uuid.leastSignificantBits)
+        }
 
         initializeEncoders()
         initializeDecoders()

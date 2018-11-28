@@ -7,13 +7,13 @@
 //import com.lightningkite.kotlinx.collection.ConcurrentHashMap
 //import com.lightningkite.kotlinx.lambda.invokeAll
 //
-//class CacheDatabaseTable<T : Model<ID>, ID>(val underlying: DatabaseTable<T, ID>) : DatabaseTable<T, ID> {
+//class CacheDatabaseTable<T : Model>(val underlying: DatabaseTable<T, Id>) : DatabaseTable<T, Id> {
 //
-//    val source = HashMap<ID, T>()
-//    val listenersById = ConcurrentHashMap<ID, MutableCollection<(ChangeEvent<T, ID>)->Unit>>()
-//    val listenersByFilter = ConcurrentHashMap<ConditionOnItem<T>, MutableCollection<(ChangeEvent<T, ID>)->Unit>>()
+//    val source = HashMap<Id, T>()
+//    val listenersById = ConcurrentHashMap<Id, MutableCollection<(ChangeEvent<T, Id>)->Unit>>()
+//    val listenersByFilter = ConcurrentHashMap<ConditionOnItem<T>, MutableCollection<(ChangeEvent<T, Id>)->Unit>>()
 //
-//    override fun get(transaction: Transaction, id: ID): DelayedResultFunction<T> = source[id]?.let{
+//    override fun get(transaction: Transaction, id: Id): DelayedResultFunction<T> = source[id]?.let{
 //        immediate { it }
 //    } ?: run {
 //        underlying.get(transaction, id)
@@ -31,7 +31,7 @@
 //        model
 //    }
 //
-//    override fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): DelayedResultFunction<T> = immediate {
+//    override fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): DelayedResultFunction<T> = immediate {
 //        val result = source[id]!!.also { modifications.invoke(it) }
 //        inform(ChangeEvent(result, ChangeEvent.Type.Modification))
 //        result
@@ -65,19 +65,19 @@
 //        } else TODO()
 //    }
 //
-//    override fun delete(transaction: Transaction, id: ID): DelayedResultFunction<Unit> = immediate {
+//    override fun delete(transaction: Transaction, id: Id): DelayedResultFunction<Unit> = immediate {
 //        val model = source.remove(id)!!
 //        inform(ChangeEvent(model, ChangeEvent.Type.Deletion))
 //        Unit
 //    }
 //
-//    override fun listen(id: ID): MutableCollection<(ChangeEvent<T, ID>) -> Unit>
+//    override fun listen(id: Id): MutableCollection<(ChangeEvent<T, Id>) -> Unit>
 //            = listenersById.getOrPut(id){ ArrayList() }
 //
-//    override fun listen(condition: ConditionOnItem<T>): MutableCollection<(ChangeEvent<T, ID>) -> Unit>
+//    override fun listen(condition: ConditionOnItem<T>): MutableCollection<(ChangeEvent<T, Id>) -> Unit>
 //            = listenersByFilter.getOrPut(condition){ ArrayList() }
 //
-//    fun inform(event: ChangeEvent<T, ID>){
+//    fun inform(event: ChangeEvent<T, Id>){
 //        background {
 //            listenersById[event.item.id!!]?.invokeAll(event)
 //            listenersByFilter.entries.filter { it.key.invoke(event.item) }

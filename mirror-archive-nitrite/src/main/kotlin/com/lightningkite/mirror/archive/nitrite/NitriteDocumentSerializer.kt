@@ -1,10 +1,12 @@
 package com.lightningkite.mirror.archive.nitrite
 
+import com.lightningkite.mirror.archive.Id
 import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.*
 import com.lightningkite.mirror.serialization.json.JsonSerializer
 import com.lightningkite.mirror.string.CharIteratorReader
 import org.dizitart.no2.Document
+import org.dizitart.no2.NitriteId
 import kotlin.reflect.KClass
 
 @Suppress("LeakingThis")
@@ -43,6 +45,13 @@ class NitriteDocumentSerializer(override val registry: SerializationRegistry) :
         noop(Boolean::class)
         noop(String::class)
         noop(ByteArray::class)
+
+        addEncoder(Id::class.type){
+            invoke(it.toUUIDString())
+        }
+        addDecoder(Id::class.type){
+            Id.fromUUIDString(this as String)
+        }
 
         setNotNullEncoder(List::class) { type ->
             val subEncoder = rawEncoder(type.param(0).type)
@@ -116,7 +125,7 @@ class NitriteDocumentSerializer(override val registry: SerializationRegistry) :
                 this.invoke(lazySubCoders.entries
                         .associateTo(Document()) { entry ->
                             val key = entry.key.name
-                            (if(key == "id") "_id" else key) to getResult(entry.value, entry.key.get.untyped(value!!))
+                            key to getResult(entry.value, entry.key.get.untyped(value!!))
                         }
                 )
             }
@@ -134,8 +143,7 @@ class NitriteDocumentSerializer(override val registry: SerializationRegistry) :
 
             return {
                 val map = HashMap<String, Any?>()
-                for ((rawKey, value) in (this as Document).entries) {
-                    val key = if(rawKey == "_id") "id" else rawKey
+                for ((key, value) in (this as Document).entries) {
                     if (!subCoders.containsKey(key)) continue
                     map[key] = subCoders[key]!!.invoke(value)
                 }

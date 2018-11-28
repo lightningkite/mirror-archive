@@ -20,11 +20,17 @@ class PostgresDatabase(
 ) : Database {
     val <T: Any> KClass<T>.info get() = registry.classInfoRegistry[this]!!
 
-    override fun <T : Model<ID>, ID> table(type: KClass<T>, name: String): Database.Table<T, ID> {
+    override fun <T : HasId> table(type: KClass<T>, name: String): Database.Table<T> {
         return Table(type.info, serializer.schema, name, pool, serializer)
     }
 
-    class Table<T : Model<ID>, ID>(val type: ClassInfo<T>, val schemaName: String, val tableName: String, val pool: PgPool, val serializer: PostgresSerializer) : Database.Table<T, ID> {
+    class Table<T : HasId>(
+            val type: ClassInfo<T>,
+            val schemaName: String,
+            val tableName: String,
+            val pool: PgPool,
+            val serializer: PostgresSerializer
+    ) : Database.Table<T> {
 
         val table = serializer.table(type)
         val columnStrings = table.columns.map { it.name }.joinToString(", ")
@@ -45,18 +51,19 @@ class PostgresDatabase(
             isStarted = true
         }
 
-        override suspend fun get(transaction: Transaction, id: ID): T {
+        override suspend fun get(transaction: Transaction, id: Id): T? {
             startup()
             transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id = ${id.sqlLiteral(serializer)}").forEach {
                 return serializer.readRow(type.kClass, it)
             }
-            throw IndexOutOfBoundsException("ID $id could not be found in the database.")
+            return null
         }
 
-        override suspend fun getMany(transaction: Transaction, ids: Iterable<ID>): List<T> {
+        override suspend fun getMany(transaction: Transaction, ids: Iterable<Id>): Map<Id, T> {
             startup()
-            return transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id IN (${ids.joinToString { it.sqlLiteral(serializer) }})").map {
-                serializer.readRow(type.kClass, it)
+            return transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id IN (${ids.joinToString { it.sqlLiteral(serializer) }})").associate {
+                val result = serializer.readRow(type.kClass, it)
+                result.id to result
             }
         }
 
@@ -66,7 +73,7 @@ class PostgresDatabase(
             transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES ($row) RETURNING $columnStrings").forEach {
                 return serializer.readRow(type.kClass, it)
             }
-            throw IndexOutOfBoundsException("ID ${model.id} could not be found in the database.")
+            throw IndexOutOfBoundsException("Id ${model.id} could not be found in the database.")
         }
 
         override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> {
@@ -84,13 +91,13 @@ class PostgresDatabase(
             return model
         }
 
-        override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
+        override suspend fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): T {
             startup()
             val modificationsString = modifications.joinToString { it.sql(serializer) }
             transaction.pg(pool).suspendQuery("UPDATE $tableName SET $modificationsString WHERE id = ${id.sqlLiteral(serializer)} RETURNING $columnStrings").forEach {
                 return serializer.readRow(type.kClass, it)
             }
-            throw IndexOutOfBoundsException("ID $id could not be found in the database.")
+            throw IndexOutOfBoundsException("Id $id could not be found in the database.")
         }
 
         override suspend fun query(
@@ -127,10 +134,10 @@ class PostgresDatabase(
             )
         }
 
-        override suspend fun delete(transaction: Transaction, id: ID) {
+        override suspend fun delete(transaction: Transaction, id: Id) {
             startup()
             val deletedCount = transaction.pg(pool).suspendQuery("DELETE FROM $tableName WHERE id = ${id.sqlLiteral(serializer)}").rowCount()
-            if (deletedCount == 0) throw NoSuchElementException("ID $id could not be found in the database.")
+            if (deletedCount == 0) throw NoSuchElementException("Id $id could not be found in the database.")
         }
 
         private fun after(element: T, useSorts: List<SortOnItem<T, *>>): String {

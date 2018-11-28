@@ -27,9 +27,9 @@ class NitriteDatabaseTableTest {
                 .openOrCreate(), registry)
         val posts = db.table(Post::class)
 
-        val post1 = Post(id = 0, title = "Post Title", body = "Here is a test post's content.")
-        val post2 = Post(id = 1, title = "Another Post", body = "Here is more content!")
-        val post3 = Post(id = 2, title = "A third post", body = "I'm not adding this one at first!")
+        val post1 = Post(title = "Post Title", body = "Here is a test post's content.")
+        val post2 = Post(title = "Another Post", body = "Here is more content!")
+        val post3 = Post(title = "A third post", body = "I'm not adding this one at first!")
 
         runBlocking {
 
@@ -43,17 +43,17 @@ class NitriteDatabaseTableTest {
             Transaction().use {
                 val results = posts.query(it)
                 println(results)
-                assert(results.results[0] == post1)
-                assert(results.results[1] == post2)
+                assert(post1 in results.results)
+                assert(post2 in results.results)
                 assert(results.results.size == 2)
             }
 
             //Modify and get
             Transaction().use {
                 val newTitle = "Post Title Updated"
-                posts.modify(it, 0, listOf(ModificationOnItem.Set(PostClassInfo.Fields.title, newTitle)))
-                val result = posts.get(it, 0)
-                assertEquals(newTitle, result.title)
+                posts.modify(it, post1.id, listOf(ModificationOnItem.Set(PostClassInfo.Fields.title, newTitle)))
+                val result = posts.get(it, post1.id)
+                assertEquals(newTitle, result!!.title)
             }
 
         }

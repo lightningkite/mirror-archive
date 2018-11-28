@@ -16,6 +16,7 @@ group 'com.lightningkite'
 version '0.0.2'
 
 apply plugin: 'kotlin-platform-jvm'
+apply plugin: 'maven-publish'
 
 repositories {
 

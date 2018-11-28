@@ -25,8 +25,8 @@ class TableTest {
                 schemaName = "public",
                 name = "Post",
                 columns = listOf(
+                        Column(name = "id", type = "UUID", size = null),
                         Column(name = "body", type = "TEXT", size = null),
-                        Column(name = "id", type = "BIGSERIAL", size = null),
                         Column(name = "title", type = "TEXT", size = null),
                         Column(name = "userId", type = "BIGINT", size = null)
                 ),

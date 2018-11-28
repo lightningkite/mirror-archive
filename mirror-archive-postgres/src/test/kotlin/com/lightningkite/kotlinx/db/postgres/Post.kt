@@ -1,10 +1,11 @@
 package com.lightningkite.kotlinx.db.postgres
 
-import com.lightningkite.mirror.archive.Model
+import com.lightningkite.mirror.archive.HasId
+import com.lightningkite.mirror.archive.Id
 
 data class Post(
+        override var id: Id = Id.key(),
         var userId: Long = 0,
-        override var id: Long? = null,
         var title: String = "",
         var body: String = ""
-): Model<Long>
+): HasId

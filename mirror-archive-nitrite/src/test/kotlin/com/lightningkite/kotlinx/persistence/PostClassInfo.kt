@@ -2,7 +2,8 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.kotlinx.persistence
 
-import com.lightningkite.mirror.archive.Model
+import com.lightningkite.mirror.archive.HasId
+import com.lightningkite.mirror.archive.Id
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 
@@ -12,7 +13,7 @@ object PostClassInfo: ClassInfo<Post> {
    override val kClass: KClass<Post> = Post::class
    override val modifiers: List<ClassInfo.Modifier> = listOf(ClassInfo.Modifier.Data)
 
-   override val implements: List<Type<*>> = listOf(Type<Model<Long>>(Model::class, listOf(TypeProjection(Type<Long>(Long::class, listOf(), false), TypeProjection.Variance.INVARIANT)), false))
+   override val implements: List<Type<*>> = listOf()
 
    override val packageName: String = "com.lightningkite.kotlinx.persistence"
    override val owner: KClass<*>? = null
@@ -23,26 +24,26 @@ object PostClassInfo: ClassInfo<Post> {
    override val enumValues: List<Post>? = null
 
    object Fields {
-       val userId = FieldInfo<Post, Long>(PostClassInfo, "userId", Type<Long>(Long::class, listOf(), false), false, { it.userId as Long}, listOf())
-        val id = FieldInfo<Post, Long?>(PostClassInfo, "id", Type<Long?>(Long::class, listOf(), true), false, { it.id as Long?}, listOf())
+       val id = FieldInfo<Post, Id>(PostClassInfo, "id", Type<Id>(Id::class, listOf(), false), false, { it.id as Id}, listOf())
+        val userId = FieldInfo<Post, Long>(PostClassInfo, "userId", Type<Long>(Long::class, listOf(), false), false, { it.userId as Long}, listOf())
         val title = FieldInfo<Post, String>(PostClassInfo, "title", Type<String>(String::class, listOf(), false), false, { it.title as String}, listOf())
         val body = FieldInfo<Post, String>(PostClassInfo, "body", Type<String>(String::class, listOf(), false), false, { it.body as String}, listOf())
    }
 
-   override val fields:List<FieldInfo<Post, *>> = listOf(Fields.userId, Fields.id, Fields.title, Fields.body)
+   override val fields:List<FieldInfo<Post, *>> = listOf(Fields.id, Fields.userId, Fields.title, Fields.body)
 
    override fun construct(map: Map<String, Any?>): Post {
        //Gather variables
-       val userId:Long = map["userId"] as Long
-        val id:Long? = map["id"] as Long?
+       val id:Id = map["id"] as Id
+        val userId:Long = map["userId"] as Long
         val title:String = map["title"] as String
         val body:String = map["body"] as String
            //Handle the optionals
        
        //Finally do the call
        return Post(
-           userId = userId,
-            id = id,
+           id = id,
+            userId = userId,
             title = title,
             body = body
        )

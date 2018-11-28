@@ -5,8 +5,8 @@ import com.lightningkite.mirror.archive.ConditionOnItem
 fun <T: Any> ConditionOnItem<T>.sql(serializer: PostgresSerializer): String = when(this){
     is ConditionOnItem.Never -> "FALSE"
     is ConditionOnItem.Always -> "TRUE"
-    is ConditionOnItem.And -> this.conditions.joinToString(" AND ", "(", ")"){ it.sql(serializer) }
-    is ConditionOnItem.Or -> this.conditions.joinToString(" OR ", "(", ")"){ it.sql(serializer) }
+    is ConditionOnItem.And -> this.conditions.joinToString(" AND ", "(", ")"){ it.sql<T>(serializer) }
+    is ConditionOnItem.Or -> this.conditions.joinToString(" OR ", "(", ")"){ it.sql<T>(serializer) }
     is ConditionOnItem.Not -> "NOT (${condition.sql(serializer)})"
     is ConditionOnItem.Equal<*, *> -> "${field.name} = ${value.sqlLiteral(serializer)}"
     is ConditionOnItem.EqualToOne<*, *> -> "${field.name} IN (${values.joinToString(", "){it.sqlLiteral(serializer)}}"

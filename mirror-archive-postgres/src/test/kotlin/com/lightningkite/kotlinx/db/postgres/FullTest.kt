@@ -38,30 +38,6 @@ class FullTest {
     @Test
     fun postTest(){
         runBlocking {
-
-            //Set up the old table
-            val old = Table(
-                    schemaName = "public",
-                    name = "Post",
-                    columns = listOf(
-                            Column(name = "body", type = "TEXT", size = null),
-                            Column(name = "id", type = "BIGSERIAL", size = null),
-                            Column(name = "title", type = "TEXT", size = null),
-                            Column(name = "userId", type = "BIGINT", size = null)
-                    ),
-                    constraints = listOf(Constraint(
-                            type = Constraint.Type.PrimaryKey,
-                            columns = listOf("id"),
-                            otherTable = null,
-                            otherColumns = listOf("id"),
-                            name = "id_PrimaryKey"
-                    )),
-                    indexes = listOf()
-            )
-            old.toCreateSql().forEach {
-                pool.suspendQuery(it)
-            }
-
             //Set up the database
             val db = PostgresDatabase(pool, DefaultRegistry + TestRegistry)
 
@@ -82,7 +58,7 @@ class FullTest {
                 ))
                 println("Insert2 result: $insert2Result")
 
-                val getResult = table.get(it, insertResult.id!!)
+                val getResult = table.get(it, insertResult.id)
                 println("Get result: $getResult")
                 assertEquals(insertResult, getResult)
 
@@ -102,12 +78,12 @@ class FullTest {
                 val updateResult = table.update(it, insertResult.copy(userId = 1))
                 println("Update result: $updateResult")
 
-                val modifyResult = table.modify(it, insertResult.id!!, listOf(
+                val modifyResult = table.modify(it, insertResult.id, listOf(
                         ModificationOnItem.Set(PostClassInfo.Fields.title, "Test Post")
                 ))
                 println("Modify result: $modifyResult")
 
-                table.delete(it, insertResult.id!!)
+                table.delete(it, insertResult.id)
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.lightningkite.mirror.archive
 
-import com.lightningkite.mirror.info.ClassInfo
 import com.lightningkite.mirror.serialization.SerializationRegistry
 import kotlin.reflect.KClass
 
@@ -8,13 +7,15 @@ interface ImmutableDatabase {
 
     val registry: SerializationRegistry
 
-    fun <T: Model<ID>, ID> table(type: KClass<T>, name: String = registry.kClassToExternalNameRegistry[type]!!): ImmutableDatabase.Table<T, ID>
+    fun <T: HasId> table(type: KClass<T>, name: String = registry.kClassToExternalNameRegistry[type]!!): ImmutableDatabase.Table<T>
 
-    interface Table<T : Model<ID>, ID> {
+    interface Table<T : HasId> {
 
-        suspend fun get(transaction: Transaction, id: ID): T
+        suspend fun get(transaction: Transaction, id: Id): T?
 
-        suspend fun getMany(transaction: Transaction, ids: Iterable<ID>): List<T> = ids.map { get(transaction, it) }
+        suspend fun getSure(transaction: Transaction, id: Id): T = get(transaction, id) ?: throw NoSuchElementException()
+
+        suspend fun getMany(transaction: Transaction, ids: Iterable<Id>): Map<Id, T?> = ids.associate { it to get(transaction, it) }
 
         suspend fun queryOne(
                 transaction: Transaction,

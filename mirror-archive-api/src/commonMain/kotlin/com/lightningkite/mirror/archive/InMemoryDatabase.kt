@@ -3,48 +3,27 @@ package com.lightningkite.mirror.archive
 import com.lightningkite.mirror.info.ClassInfo
 import com.lightningkite.mirror.serialization.SerializationRegistry
 import com.lightningkite.mirror.serialization.copy
-import com.lightningkite.mirror.serialization.toAttributeHashMap
 import kotlin.reflect.KClass
 
 class InMemoryDatabase(override val registry: SerializationRegistry) : Database {
 
-    override fun <T : Model<ID>, ID> table(type: KClass<T>, name: String): Database.Table<T, ID> {
+    override fun <T : HasId> table(type: KClass<T>, name: String): Database.Table<T> {
         val classInfo = registry.classInfoRegistry[type]!!
-        val idType = classInfo.fields.find { it.name == "id" }!!.type
-        @Suppress("UNCHECKED_CAST") val generateId: () -> ID = when (idType.kClass) {
-            Int::class -> {
-                var nextId = 0
-                { nextId++ as ID }
-            }
-            Long::class -> {
-                var nextId = 0L
-                { nextId++ as ID }
-            }
-            String::class -> {
-                var nextId = 0L
-                { (nextId++).toString() as ID }
-            }
-            else -> throw IllegalArgumentException()
-        }
-        return Table(classInfo, generateId)
+        return Table(classInfo)
     }
 
-    class Table<T : Model<ID>, ID>(val classInfo: ClassInfo<T>, val generateId: () -> ID) : Database.Table<T, ID> {
+    class Table<T : HasId>(val classInfo: ClassInfo<T>) : Database.Table<T> {
 
-        val source = HashMap<ID, T>()
-//        val listenersById = ConcurrentHashMap<ID, MutableCollection<(ChangeEvent<T, ID>) -> Unit>>()
-//        val listenersByFilter = ConcurrentHashMap<ConditionOnItem<T>, MutableCollection<(ChangeEvent<T, ID>) -> Unit>>()
+        val source = HashMap<Id, T>()
+//        val listenersById = ConcurrentHashMap<Id, MutableCollection<(ChangeEvent<T, Id>) -> Unit>>()
+//        val listenersByFilter = ConcurrentHashMap<ConditionOnItem<T>, MutableCollection<(ChangeEvent<T, Id>) -> Unit>>()
 
-        override suspend fun get(transaction: Transaction, id: ID): T = source[id]!!.copy(classInfo)
+        override suspend fun get(transaction: Transaction, id: Id): T = source[id]!!.copy(classInfo)
 
         override suspend fun insert(transaction: Transaction, model: T): T {
             val toInsert = model.copy(classInfo)
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
-            if (toInsert.id == null) {
-                toInsert.id = generateId()
-            }
-            val id = toInsert.id!!
-            source[id] = toInsert
+            source[toInsert.id] = toInsert
 //            inform(ChangeEvent(model, ChangeEvent.Type.Insertion))
             return toInsert.copy(classInfo)
         }
@@ -52,12 +31,12 @@ class InMemoryDatabase(override val registry: SerializationRegistry) : Database 
         override suspend fun update(transaction: Transaction, model: T): T {
             val toUpdate = model.copy(classInfo)
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
-            source[model.id!!] = toUpdate
+            source[model.id] = toUpdate
 //            inform(ChangeEvent(model, ChangeEvent.Type.Modification))
             return toUpdate.copy(classInfo)
         }
 
-        override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
+        override suspend fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): T {
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
             val result = source[id]!!.apply(classInfo, modifications)
 //            inform(ChangeEvent(result, ChangeEvent.Type.Modification))
@@ -95,13 +74,13 @@ class InMemoryDatabase(override val registry: SerializationRegistry) : Database 
             } else TODO()
         }
 
-        override suspend fun delete(transaction: Transaction, id: ID) {
+        override suspend fun delete(transaction: Transaction, id: Id) {
             if(transaction.readOnly) throw IllegalArgumentException("Transaction must be writeable")
             val model = source.remove(id)!!
 //            inform(ChangeEvent(model, ChangeEvent.Type.Deletion))
         }
 
-//        private fun inform(event: ChangeEvent<T, ID>) {
+//        private fun inform(event: ChangeEvent<T, Id>) {
 //            GlobalScope.launch {
 //                listenersById[event.item.id!!]?.invokeAll(event)
 //                listenersByFilter.entries.filter { it.key.invoke(event.item) }

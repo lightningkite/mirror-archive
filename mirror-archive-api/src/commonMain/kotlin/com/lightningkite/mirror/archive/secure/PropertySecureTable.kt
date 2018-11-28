@@ -5,10 +5,10 @@ import com.lightningkite.mirror.archive.*
 import com.lightningkite.mirror.info.ClassInfo
 import com.lightningkite.mirror.info.FieldInfo
 
-abstract class PropertySecureTable<T : Model<ID>, ID>(
+abstract class PropertySecureTable<T : HasId>(
         val classInfo: ClassInfo<T>,
-        val underlying: Database.Table<T, ID>
-) : Database.Table<T, ID> {
+        val underlying: Database.Table<T>
+) : Database.Table<T> {
     interface PropertyRules<T : Any, V> {
         val variable: FieldInfo<T, V>
         suspend fun query(untypedUser: Any?)
@@ -25,7 +25,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
         return if(!wholeRead(transaction.untypedUser, isJustInserted, item)) null
         else {
             val newValues = classInfo.fields.associate {
-                val rules = propertyRules[it] as? PropertyRules<T, Any?>
+                @Suppress("UNCHECKED_CAST") val rules = propertyRules[it] as? PropertyRules<T, Any?>
                 it.name to (if(rules == null) it.get(item) else rules.read(transaction.untypedUser, isJustInserted, item))
             }
             classInfo.construct(newValues)
@@ -46,13 +46,16 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
     }
 
 
-    override suspend fun get(transaction: Transaction, id: ID): T = underlying.get(transaction, id)
-            .let { item ->
+    override suspend fun get(transaction: Transaction, id: Id): T? = underlying.get(transaction, id)
+            ?.let { item ->
                 handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
             }
 
-    override suspend fun getMany(transaction: Transaction, ids: Iterable<ID>): List<T> = underlying.getMany(transaction, ids)
-            .mapNotNull { handleWholeItemRead(transaction, it, false) }
+    override suspend fun getMany(transaction: Transaction, ids: Iterable<Id>): Map<Id, T?> = underlying.getMany(transaction, ids)
+            .mapValues {
+                val value = it.value ?: return@mapValues null
+                handleWholeItemRead(transaction, value, false)
+            }
 
     override suspend fun insert(transaction: Transaction, model: T): T = underlying.insert(
             transaction,
@@ -73,16 +76,16 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
     ).mapNotNull { handleWholeItemRead(transaction, it, true) }
 
     override suspend fun update(transaction: Transaction, model: T): T = underlying.update(transaction, model.let {
-        handleWholeItemUpdate(transaction, underlying.get(transaction, model.id!!), it)!!
+        handleWholeItemUpdate(transaction, underlying.get(transaction, model.id), it)!!
     }).let { item ->
         handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
     }
 
-    override suspend fun modify(transaction: Transaction, id: ID, modifications: List<ModificationOnItem<T, *>>): T {
-        val old = underlying.get(transaction, id)
+    override suspend fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): T {
+        val old = underlying.getSure(transaction, id)
         wholeWrite(transaction.untypedUser, false, old)
         val newModifications = modifications.map { typedMod ->
-            val untypedRules = propertyRules[typedMod.field] as? PropertyRules<T, Any?> ?: return@map typedMod
+            @Suppress("UNCHECKED_CAST") val untypedRules = propertyRules[typedMod.field] as? PropertyRules<T, Any?> ?: return@map typedMod
             @Suppress("UNCHECKED_CAST") val untypedMod = typedMod as ModificationOnItem<T, Any?>
             val originalSet = untypedMod.invokeOnSub(untypedRules.variable.get(old))
             val newSet = untypedRules.write(
@@ -95,7 +98,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
                     untypedMod.value = newSet
                     typedMod
                 } else {
-                    ModificationOnItem.Set(untypedRules.variable as FieldInfo<T, Any?>, newSet)
+                    ModificationOnItem.Set(untypedRules.variable, newSet)
                 }
             } else typedMod
         }
@@ -135,7 +138,7 @@ abstract class PropertySecureTable<T : Model<ID>, ID>(
         }
     }
 
-    override suspend fun delete(transaction: Transaction, id: ID) {
+    override suspend fun delete(transaction: Transaction, id: Id) {
         val old = underlying.get(transaction, id)
         handleWholeItemUpdate(transaction, old, null)
         return underlying.delete(transaction, id)
