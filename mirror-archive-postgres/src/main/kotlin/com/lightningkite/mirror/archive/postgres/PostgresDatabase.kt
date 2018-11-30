@@ -25,14 +25,14 @@ class PostgresDatabase(
     }
 
     class Table<T : HasId>(
-            val type: ClassInfo<T>,
+            override val classInfo: ClassInfo<T>,
             val schemaName: String,
             val tableName: String,
             val pool: PgPool,
             val serializer: PostgresSerializer
     ) : Database.Table<T> {
 
-        val table = serializer.table(type)
+        val table = serializer.table(classInfo)
         val columnStrings = table.columns.map { it.name }.joinToString(", ")
 
         var isStarted = false
@@ -54,7 +54,7 @@ class PostgresDatabase(
         override suspend fun get(transaction: Transaction, id: Id): T? {
             startup()
             transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id = ${id.sqlLiteral(serializer)}").forEach {
-                return serializer.readRow(type.kClass, it)
+                return serializer.readRow(classInfo.kClass, it)
             }
             return null
         }
@@ -62,31 +62,31 @@ class PostgresDatabase(
         override suspend fun getMany(transaction: Transaction, ids: Iterable<Id>): Map<Id, T> {
             startup()
             return transaction.pg(pool).suspendQuery("SELECT $columnStrings FROM $tableName WHERE id IN (${ids.joinToString { it.sqlLiteral(serializer) }})").associate {
-                val result = serializer.readRow(type.kClass, it)
+                val result = serializer.readRow(classInfo.kClass, it)
                 result.id to result
             }
         }
 
         override suspend fun insert(transaction: Transaction, model: T): T {
             startup()
-            val row = serializer.writeRow(type.kClass, model)
+            val row = serializer.writeRow(classInfo.kClass, model)
             transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES ($row) RETURNING $columnStrings").forEach {
-                return serializer.readRow(type.kClass, it)
+                return serializer.readRow(classInfo.kClass, it)
             }
             throw IndexOutOfBoundsException("Id ${model.id} could not be found in the database.")
         }
 
         override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> {
             startup()
-            val rows = models.joinToString { serializer.writeRow(type.kClass, it) }
+            val rows = models.joinToString { serializer.writeRow(classInfo.kClass, it) }
             return transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES $rows RETURNING $columnStrings").map {
-                serializer.readRow(type.kClass, it)
+                serializer.readRow(classInfo.kClass, it)
             }
         }
 
         override suspend fun update(transaction: Transaction, model: T): T {
             startup()
-            val row = serializer.writeRow(type.kClass, model)
+            val row = serializer.writeRow(classInfo.kClass, model)
             transaction.pg(pool).suspendQuery("INSERT INTO $tableName ($columnStrings) VALUES ($row) ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id")
             return model
         }
@@ -95,7 +95,7 @@ class PostgresDatabase(
             startup()
             val modificationsString = modifications.joinToString { it.sql(serializer) }
             transaction.pg(pool).suspendQuery("UPDATE $tableName SET $modificationsString WHERE id = ${id.sqlLiteral(serializer)} RETURNING $columnStrings").forEach {
-                return serializer.readRow(type.kClass, it)
+                return serializer.readRow(classInfo.kClass, it)
             }
             throw IndexOutOfBoundsException("Id $id could not be found in the database.")
         }
@@ -109,7 +109,7 @@ class PostgresDatabase(
         ): QueryResult<T> {
             startup()
             @Suppress("UNCHECKED_CAST") val actualSortedBy = if (sortedBy.isEmpty()) listOf(SortOnItem(
-                    type.primaryKey() as FieldInfo<T, Comparable<Comparable<*>>>,
+                    classInfo.primaryKey() as FieldInfo<T, Comparable<Comparable<*>>>,
                     true,
                     false
             )) else sortedBy
@@ -125,7 +125,7 @@ class PostgresDatabase(
             LIMIT $count
             """.trimIndent()
             val results = transaction.pg(pool).suspendQuery(query).map {
-                serializer.readRow(type.kClass, it)
+                serializer.readRow(classInfo.kClass, it)
             }
             val newToken = if (results.size == count) compress(after(results.last(), actualSortedBy)) else null
             return QueryResult(

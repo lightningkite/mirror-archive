@@ -6,7 +6,7 @@ import com.lightningkite.mirror.info.ClassInfo
 import com.lightningkite.mirror.info.FieldInfo
 
 abstract class PropertySecureTable<T : HasId>(
-        val classInfo: ClassInfo<T>,
+        override val classInfo: ClassInfo<T>,
         val underlying: Database.Table<T>
 ) : Database.Table<T> {
     interface PropertyRules<T : Any, V> {
@@ -17,16 +17,16 @@ abstract class PropertySecureTable<T : HasId>(
     }
 
     abstract val propertyRules: Map<FieldInfo<T, *>, PropertyRules<T, *>>
-    abstract suspend fun wholeQuery(untypedUser: Any?)
+    abstract suspend fun wholeQuery(untypedUser: Any?): ConditionOnItem<T>
     abstract suspend fun wholeRead(untypedUser: Any?, justInserted: Boolean, currentState: T): Boolean
     abstract suspend fun wholeWrite(untypedUser: Any?, isDelete: Boolean, currentState: T?)
 
     private suspend fun handleWholeItemRead(transaction: Transaction, item: T, isJustInserted: Boolean): T? {
-        return if(!wholeRead(transaction.untypedUser, isJustInserted, item)) null
+        return if (!wholeRead(transaction.untypedUser, isJustInserted, item)) null
         else {
             val newValues = classInfo.fields.associate {
                 @Suppress("UNCHECKED_CAST") val rules = propertyRules[it] as? PropertyRules<T, Any?>
-                it.name to (if(rules == null) it.get(item) else rules.read(transaction.untypedUser, isJustInserted, item))
+                it.name to (if (rules == null) it.get(item) else rules.read(transaction.untypedUser, isJustInserted, item))
             }
             classInfo.construct(newValues)
         }
@@ -39,7 +39,7 @@ abstract class PropertySecureTable<T : HasId>(
             val newValues = classInfo.fields.associate {
                 val suggestedValue = it.get(item)
                 val rules = propertyRules[it] as? PropertyRules<T, Any?>
-                it.name to (if(rules == null) suggestedValue else rules.write(transaction.untypedUser, old, suggestedValue))
+                it.name to (if (rules == null) suggestedValue else rules.write(transaction.untypedUser, old, suggestedValue))
             }
             return classInfo.construct(newValues)
         } else return null
@@ -48,7 +48,8 @@ abstract class PropertySecureTable<T : HasId>(
 
     override suspend fun get(transaction: Transaction, id: Id): T? = underlying.get(transaction, id)
             ?.let { item ->
-                handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
+                handleWholeItemRead(transaction, item, false)
+                        ?: throw ForbiddenException("You are not permitted to read this item.")
             }
 
     override suspend fun getMany(transaction: Transaction, ids: Iterable<Id>): Map<Id, T?> = underlying.getMany(transaction, ids)
@@ -63,7 +64,8 @@ abstract class PropertySecureTable<T : HasId>(
                 handleWholeItemUpdate(transaction, null, model)!!
             }
     ).let { item ->
-        handleWholeItemRead(transaction, item, true) ?: throw ForbiddenException("You are not permitted to read this item.")
+        handleWholeItemRead(transaction, item, true)
+                ?: throw ForbiddenException("You are not permitted to read this item.")
     }
 
     override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> = underlying.insertMany(
@@ -78,14 +80,16 @@ abstract class PropertySecureTable<T : HasId>(
     override suspend fun update(transaction: Transaction, model: T): T = underlying.update(transaction, model.let {
         handleWholeItemUpdate(transaction, underlying.get(transaction, model.id), it)!!
     }).let { item ->
-        handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
+        handleWholeItemRead(transaction, item, false)
+                ?: throw ForbiddenException("You are not permitted to read this item.")
     }
 
     override suspend fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): T {
         val old = underlying.getSure(transaction, id)
         wholeWrite(transaction.untypedUser, false, old)
         val newModifications = modifications.map { typedMod ->
-            @Suppress("UNCHECKED_CAST") val untypedRules = propertyRules[typedMod.field] as? PropertyRules<T, Any?> ?: return@map typedMod
+            @Suppress("UNCHECKED_CAST") val untypedRules = propertyRules[typedMod.field] as? PropertyRules<T, Any?>
+                    ?: return@map typedMod
             @Suppress("UNCHECKED_CAST") val untypedMod = typedMod as ModificationOnItem<T, Any?>
             val originalSet = untypedMod.invokeOnSub(untypedRules.variable.get(old))
             val newSet = untypedRules.write(
@@ -103,7 +107,8 @@ abstract class PropertySecureTable<T : HasId>(
             } else typedMod
         }
         return underlying.modify(transaction, id, newModifications).let { item ->
-            handleWholeItemRead(transaction, item, false) ?: throw ForbiddenException("You are not permitted to read this item.")
+            handleWholeItemRead(transaction, item, false)
+                    ?: throw ForbiddenException("You are not permitted to read this item.")
         }
     }
 
@@ -114,16 +119,18 @@ abstract class PropertySecureTable<T : HasId>(
             continuationToken: String?,
             count: Int
     ): QueryResult<T> {
-        wholeQuery(transaction.untypedUser)
         return underlying.query(
                 transaction = transaction,
-                condition = condition.also {
-                    it.recursing().forEach {
-                        if (it is ConditionOnItem.OnField<*, *>) {
-                            propertyRules[it.field]?.query(transaction.untypedUser)
-                        }
-                    }
-                },
+                condition = ConditionOnItem.And(listOf(
+                        condition.also {
+                            it.recursing().forEach {
+                                if (it is ConditionOnItem.OnField<*, *>) {
+                                    propertyRules[it.field]?.query(transaction.untypedUser)
+                                }
+                            }
+                        },
+                        wholeQuery(transaction.untypedUser)
+                )),
                 sortedBy = sortedBy.also {
                     it.forEach {
                         propertyRules[it.field]?.query(transaction.untypedUser)

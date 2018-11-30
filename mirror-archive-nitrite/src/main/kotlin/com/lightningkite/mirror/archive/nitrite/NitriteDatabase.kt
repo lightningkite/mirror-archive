@@ -7,7 +7,6 @@ import com.lightningkite.mirror.info.type
 import com.lightningkite.mirror.serialization.SerializationRegistry
 import org.dizitart.no2.*
 import org.dizitart.no2.filters.Filters
-import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 
 class NitriteDatabase(
@@ -20,14 +19,14 @@ class NitriteDatabase(
         val classInfo = registry.classInfoRegistry[type]!!
         @Suppress("UNCHECKED_CAST")
         return Table(
-                type = classInfo,
+                classInfo = classInfo,
                 nitrite = collection,
                 serializer = serializer
         )
     }
 
     class Table<T : HasId>(
-            val type: ClassInfo<T>,
+            override val classInfo: ClassInfo<T>,
             val nitrite: NitriteCollection,
             val serializer: NitriteDocumentSerializer
     ) : Database.Table<T> {
@@ -39,30 +38,30 @@ class NitriteDatabase(
         }
 
         override suspend fun get(transaction: Transaction, id: Id): T? {
-            return nitrite.find(Filters.eq("id", id.toUUIDString())).firstOrNull()?.let{serializer.decode(it, type.kClass.type)}
+            return nitrite.find(Filters.eq("id", id.toUUIDString())).firstOrNull()?.let{serializer.decode(it, classInfo.kClass.type)}
         }
 
         override suspend fun insert(transaction: Transaction, model: T): T {
             serializer.encode({
                 nitrite.insert(it as Document)
-            }, model, type.kClass.type)
+            }, model, classInfo.kClass.type)
             return model
         }
 
         override suspend fun update(transaction: Transaction, model: T): T {
             serializer.encode({
                 nitrite.update(Filters.eq("id", model.id.toUUIDString()), it as Document)
-            }, model, type.kClass.type)
+            }, model, classInfo.kClass.type)
             return model
         }
 
         override suspend fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): T {
             val raw = nitrite.find(Filters.eq("id", id.toUUIDString())).first()
-            val model = serializer.decode(raw, type.kClass.type)
-            val changed = model.apply(type, modifications)
+            val model = serializer.decode(raw, classInfo.kClass.type)
+            val changed = model.apply(classInfo, modifications)
             serializer.encode({
                 nitrite.update(Filters.eq("id", model.id.toUUIDString()), it as Document)
-            }, changed, type.kClass.type)
+            }, changed, classInfo.kClass.type)
             return model
         }
 
@@ -95,7 +94,7 @@ class NitriteDatabase(
                     .asSequence()
                     .take(count)
                     .map {
-                        serializer.decode(it, type.kClass.type)
+                        serializer.decode(it, classInfo.kClass.type)
                     }
                     .toList()
                     .let { QueryResult(it) }
@@ -107,7 +106,7 @@ class NitriteDatabase(
 
         override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> {
             for (model in models) {
-                nitrite.insert(serializer.encode(model, type.kClass.type) as Document)
+                nitrite.insert(serializer.encode(model, classInfo.kClass.type) as Document)
             }
             return models
         }

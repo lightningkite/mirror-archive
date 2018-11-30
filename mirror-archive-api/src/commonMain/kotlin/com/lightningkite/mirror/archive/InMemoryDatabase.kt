@@ -12,7 +12,7 @@ class InMemoryDatabase(override val registry: SerializationRegistry) : Database 
         return Table(classInfo)
     }
 
-    class Table<T : HasId>(val classInfo: ClassInfo<T>) : Database.Table<T> {
+    class Table<T : HasId>(override val classInfo: ClassInfo<T>) : Database.Table<T> {
 
         val source = HashMap<Id, T>()
 //        val listenersById = ConcurrentHashMap<Id, MutableCollection<(ChangeEvent<T, Id>) -> Unit>>()

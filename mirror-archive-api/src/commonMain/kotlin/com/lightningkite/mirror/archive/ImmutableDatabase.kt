@@ -1,5 +1,6 @@
 package com.lightningkite.mirror.archive
 
+import com.lightningkite.mirror.info.ClassInfo
 import com.lightningkite.mirror.serialization.SerializationRegistry
 import kotlin.reflect.KClass
 
@@ -10,6 +11,8 @@ interface ImmutableDatabase {
     fun <T: HasId> table(type: KClass<T>, name: String = registry.kClassToExternalNameRegistry[type]!!): ImmutableDatabase.Table<T>
 
     interface Table<T : HasId> {
+
+        val classInfo: ClassInfo<T>
 
         suspend fun get(transaction: Transaction, id: Id): T?
 
