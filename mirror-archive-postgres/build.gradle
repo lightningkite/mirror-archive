@@ -71,12 +71,12 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
-    api "com.lightningkite:kommon-jvm:${project.version}"
+    api 'com.lightningkite:kommon-jvm:0.0.2'
     compile project(':mirror-archive-api')
     api 'io.reactiverse:reactive-pg-client:0.10.5'
     api 'com.squareup.okhttp3:okhttp:3.11.0'
-    api "com.lightningkite:kommunicate-jvm:${project.version}"
-    api "com.lightningkite:lokalize-jvm:${project.version}"
+    api 'com.lightningkite:kommunicate-jvm:0.0.2'
+    api 'com.lightningkite:lokalize-jvm:0.0.2'
 
     testApi 'junit:junit:4.12'
     testApi 'org.jetbrains.kotlin:kotlin-test-junit'
