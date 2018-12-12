@@ -79,7 +79,7 @@ class FullTest {
                 println("Update result: $updateResult")
 
                 val modifyResult = table.modify(it, insertResult.id, listOf(
-                        ModificationOnItem.Set(PostClassInfo.Fields.title, "Test Post")
+                        ModificationOnItem.Set(PostClassInfo.fieldTitle, "Test Post")
                 ))
                 println("Modify result: $modifyResult")
 

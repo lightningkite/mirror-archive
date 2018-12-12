@@ -51,7 +51,7 @@ class NitriteDatabaseTableTest {
             //Modify and get
             Transaction().use {
                 val newTitle = "Post Title Updated"
-                posts.modify(it, post1.id, listOf(ModificationOnItem.Set(PostClassInfo.Fields.title, newTitle)))
+                posts.modify(it, post1.id, listOf(ModificationOnItem.Set(PostClassInfo.fieldTitle, newTitle)))
                 val result = posts.get(it, post1.id)
                 assertEquals(newTitle, result!!.title)
             }

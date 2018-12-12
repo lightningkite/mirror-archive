@@ -23,14 +23,12 @@ object PostClassInfo: ClassInfo<Post> {
    override val annotations: List<AnnotationInfo> = listOf()
    override val enumValues: List<Post>? = null
 
-   object Fields {
-       val id = FieldInfo<Post, Id>(PostClassInfo, "id", Type<Id>(Id::class, listOf(), false), true, { it.id as Id}, listOf())
-        val userId = FieldInfo<Post, Long>(PostClassInfo, "userId", Type<Long>(Long::class, listOf(), false), true, { it.userId as Long}, listOf())
-        val title = FieldInfo<Post, String>(PostClassInfo, "title", Type<String>(String::class, listOf(), false), true, { it.title as String}, listOf())
-        val body = FieldInfo<Post, String>(PostClassInfo, "body", Type<String>(String::class, listOf(), false), true, { it.body as String}, listOf())
-   }
+   val fieldId = FieldInfo<Post, Id>(this, "id", Type<Id>(Id::class, listOf(), false), true, { it.id as Id}, listOf())
+    val fieldUserId = FieldInfo<Post, Long>(this, "userId", Type<Long>(Long::class, listOf(), false), true, { it.userId as Long}, listOf())
+    val fieldTitle = FieldInfo<Post, String>(this, "title", Type<String>(String::class, listOf(), false), true, { it.title as String}, listOf())
+    val fieldBody = FieldInfo<Post, String>(this, "body", Type<String>(String::class, listOf(), false), true, { it.body as String}, listOf())
 
-   override val fields:List<FieldInfo<Post, *>> = listOf(Fields.id, Fields.userId, Fields.title, Fields.body)
+   override val fields:List<FieldInfo<Post, *>> = listOf(fieldId, fieldUserId, fieldTitle, fieldBody)
 
    override fun construct(map: Map<String, Any?>): Post {
        //Gather variables
