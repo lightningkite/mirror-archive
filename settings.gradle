@@ -1,5 +1,6 @@
 include ':mirror-archive-api'
 include ':mirror-archive-postgres'
 include ':mirror-archive-nitrite'
+include ':mirror-archive-influxdb'
 
 //enableFeaturePreview('GRADLE_METADATA')
