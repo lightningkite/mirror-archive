@@ -1,115 +1,75 @@
 package com.lightningkite.mirror.archive.nitrite
 
 import com.lightningkite.mirror.archive.*
-import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.Type
-import com.lightningkite.mirror.info.type
+import com.lightningkite.mirror.archive.database.SuspendMap
+import com.lightningkite.mirror.archive.model.*
+import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.SerializationRegistry
 import org.dizitart.no2.*
 import org.dizitart.no2.filters.Filters
 import kotlin.reflect.KClass
 
-class NitriteDatabase(
-        val nitrite: Nitrite,
-        override val registry: SerializationRegistry,
+class NitriteTable<T: HasId>(
+        val registry: SerializationRegistry,
+        val classInfo: ClassInfo<T>,
+        val nitrite: NitriteCollection,
         val serializer: NitriteDocumentSerializer = NitriteDocumentSerializer(registry)
-) : Database {
-    override fun <T : HasId> table(type: KClass<T>, name: String): Database.Table<T> {
-        val collection = nitrite.getCollection(name)
-        val classInfo = registry.classInfoRegistry[type]!!
-        @Suppress("UNCHECKED_CAST")
-        return Table(
-                classInfo = classInfo,
-                nitrite = collection,
-                serializer = serializer
-        )
-    }
+): SuspendMap<Id, T> {
 
-    class Table<T : HasId>(
-            override val classInfo: ClassInfo<T>,
-            val nitrite: NitriteCollection,
-            val serializer: NitriteDocumentSerializer
-    ) : Database.Table<T> {
-
-        init {
-            if (!nitrite.hasIndex("id")) {
-                nitrite.createIndex("id", IndexOptions.indexOptions(IndexType.Unique))
-            }
-        }
-
-        override suspend fun get(transaction: Transaction, id: Id): T? {
-            return nitrite.find(Filters.eq("id", id.toUUIDString())).firstOrNull()?.let{serializer.decode(it, classInfo.kClass.type)}
-        }
-
-        override suspend fun insert(transaction: Transaction, model: T): T {
-            serializer.encode({
-                nitrite.insert(it as Document)
-            }, model, classInfo.kClass.type)
-            return model
-        }
-
-        override suspend fun update(transaction: Transaction, model: T): T {
-            serializer.encode({
-                nitrite.update(Filters.eq("id", model.id.toUUIDString()), it as Document)
-            }, model, classInfo.kClass.type)
-            return model
-        }
-
-        override suspend fun modify(transaction: Transaction, id: Id, modifications: List<ModificationOnItem<T, *>>): T {
-            val raw = nitrite.find(Filters.eq("id", id.toUUIDString())).first()
-            val model = serializer.decode(raw, classInfo.kClass.type)
-            val changed = model.apply(classInfo, modifications)
-            serializer.encode({
-                nitrite.update(Filters.eq("id", model.id.toUUIDString()), it as Document)
-            }, changed, classInfo.kClass.type)
-            return model
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        fun ConditionOnItem<T>.toNitrite(): Filter? = when (this) {
-            is ConditionOnItem.Always<T> -> Filters.ALL
-            is ConditionOnItem.Never<T> -> TODO()
-            is ConditionOnItem.And<T> -> Filters.and(*this.conditions.mapNotNull { it.toNitrite() }.toTypedArray())
-            is ConditionOnItem.Or<T> -> Filters.or(*this.conditions.mapNotNull { it.toNitrite() }.toTypedArray())
-            is ConditionOnItem.Not<T> -> Filters.not(condition.toNitrite())
-            is ConditionOnItem.Equal<T, *> -> Filters.eq(this.field.name, serializer.encode(this.value, this.field.type as Type<Any?>))
-            is ConditionOnItem.EqualToOne<T, *> -> Filters.`in`(this.field.name, *values.map { serializer.encode(it, this.field.type as Type<Any?>) }.toTypedArray())
-            is ConditionOnItem.NotEqual<T, *> -> Filters.not(Filters.eq(this.field.name, serializer.encode(this.value, this.field.type as Type<Any?>)))
-            is ConditionOnItem.LessThan<T, *> -> Filters.lt(this.field.name, serializer.encode(this.value, this.field.type as Type<Any?>))
-            is ConditionOnItem.GreaterThan<T, *> -> Filters.gt(this.field.name, serializer.encode(this.value, this.field.type as Type<Any?>))
-            is ConditionOnItem.LessThanOrEqual<T, *> -> Filters.lte(this.field.name, serializer.encode(this.value, this.field.type as Type<Any?>))
-            is ConditionOnItem.GreaterThanOrEqual<T, *> -> Filters.gte(this.field.name, serializer.encode(this.value, this.field.type as Type<Any?>))
-            is ConditionOnItem.TextSearch<T, *> -> Filters.text(this.field.name, this.query)
-            is ConditionOnItem.RegexTextSearch<T, *> -> Filters.regex(this.field.name, this.query.pattern)
-        }
-
-        override suspend fun query(
-                transaction: Transaction,
-                condition: ConditionOnItem<T>,
-                sortedBy: List<SortOnItem<T, *>>,
-                continuationToken: String?,
-                count: Int
-        ): QueryResult<T> {
-            return nitrite.find(condition.toNitrite())
-                    .asSequence()
-                    .take(count)
-                    .map {
-                        serializer.decode(it, classInfo.kClass.type)
-                    }
-                    .toList()
-                    .let { QueryResult(it) }
-        }
-
-        override suspend fun delete(transaction: Transaction, id: Id) {
-            nitrite.remove(Filters.eq("id", id.toUUIDString()))
-        }
-
-        override suspend fun insertMany(transaction: Transaction, models: Collection<T>): Collection<T> {
-            for (model in models) {
-                nitrite.insert(serializer.encode(model, classInfo.kClass.type) as Document)
-            }
-            return models
+    init {
+        if (!nitrite.hasIndex("id")) {
+            nitrite.createIndex("id", IndexOptions.indexOptions(IndexType.Unique))
         }
     }
 
+    val idField = classInfo.fields.find { it.name == "id" }!! as FieldInfo<T, Id>
+
+    override suspend fun getNewKey(): Id = Id.key()
+    override suspend fun get(key: Id): T? {
+        return nitrite.find(Filters.eq("id", key.toUUIDString())).firstOrNull()?.let { serializer.decode(it, classInfo.kClass.type) }
+    }
+
+    override suspend fun put(key: Id, value: T, conditionIfExists: Condition<T>, create: Boolean): Boolean {
+        var result: WriteResult? = null
+        serializer.encode({
+            val condition = Condition.Field(idField, Condition.Equal(key)) and conditionIfExists
+            result = nitrite.update(condition.toNitrite(), it as Document, UpdateOptions.updateOptions(true, true))
+        }, value, classInfo.kClass.type)
+        return result?.affectedCount?.let{ it > 0 } ?: false
+    }
+
+    override suspend fun remove(key: Id, condition: Condition<T>): Boolean {
+        return nitrite.remove(Filters.eq("id", key.toUUIDString())).affectedCount > 0
+    }
+
+    override suspend fun query(condition: Condition<T>, sortedBy: Sort<T>, after: T?, count: Int): List<T> {
+        if(sortedBy !is Sort.DontCare) throw UnsupportedOperationException()
+        if(after != null) throw UnsupportedOperationException()
+        return nitrite.find(condition.toNitrite())
+                .asSequence()
+                .take(count)
+                .map {
+                    serializer.decode(it, classInfo.kClass.type)
+                }
+                .toList()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun Condition<*>.toNitrite(field: String = "value", type: Type<*> = classInfo.type): Filter? = when (this) {
+        is Condition.Always<*> -> Filters.ALL
+        is Condition.Never<*> -> TODO()
+        is Condition.And<*> -> Filters.and(*this.conditions.mapNotNull { it.toNitrite() }.toTypedArray())
+        is Condition.Or<*> -> Filters.or(*this.conditions.mapNotNull { it.toNitrite() }.toTypedArray())
+        is Condition.Not<*> -> Filters.not(condition.toNitrite())
+        is Condition.Field<*, *> -> this.condition.toNitrite(field = this.field.name, type = this.field.type)
+        is Condition.Equal<*> -> Filters.eq(field, serializer.encode(this.value, type as Type<Any?>))
+        is Condition.EqualToOne<*> -> Filters.`in`(field, *values.map { serializer.encode(it, type as Type<Any?>) }.toTypedArray())
+        is Condition.NotEqual<*> -> Filters.not(Filters.eq(field, serializer.encode(this.value, type as Type<Any?>)))
+        is Condition.LessThan<*> -> Filters.lt(field, serializer.encode(this.value, type as Type<Any?>))
+        is Condition.GreaterThan<*> -> Filters.gt(field, serializer.encode(this.value, type as Type<Any?>))
+        is Condition.LessThanOrEqual<*> -> Filters.lte(field, serializer.encode(this.value, type as Type<Any?>))
+        is Condition.GreaterThanOrEqual<*> -> Filters.gte(field, serializer.encode(this.value, type as Type<Any?>))
+        is Condition.TextSearch<*> -> Filters.text(field, this.query)
+        is Condition.RegexTextSearch<*> -> Filters.regex(field, this.query.pattern)
+    }
 }

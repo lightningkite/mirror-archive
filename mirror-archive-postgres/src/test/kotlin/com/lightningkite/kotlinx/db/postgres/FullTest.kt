@@ -1,9 +1,7 @@
 package com.lightningkite.kotlinx.db.postgres
 
 import com.lightningkite.mirror.archive.ModificationOnItem
-import com.lightningkite.mirror.archive.Transaction
 import com.lightningkite.mirror.archive.postgres.*
-import com.lightningkite.mirror.archive.use
 import com.lightningkite.mirror.serialization.DefaultRegistry
 import io.reactiverse.pgclient.PgClient
 import io.reactiverse.pgclient.PgConnectOptions
@@ -36,55 +34,54 @@ class FullTest {
     }
 
     @Test
-    fun postTest(){
+    fun postTest() {
         runBlocking {
             //Set up the database
             val db = PostgresDatabase(pool, DefaultRegistry + TestRegistry)
 
             //Set up the table
             val table = db.table(Post::class)
-            Transaction(null, false, false).use {
-                val insertResult = table.insert(it, Post(
-                        userId = 0,
-                        title = "Title",
-                        body = "This is a test post."
-                ))
-                println("Insert result: $insertResult")
+            val insertResult = table.insert(Post(
+                    userId = 0,
+                    title = "Title",
+                    body = "This is a test post."
+            ))
+            println("Insert result: $insertResult")
 
-                val insert2Result = table.insert(it, Post(
-                        userId = 1,
-                        title = "Other Post",
-                        body = "This is a different test post."
-                ))
-                println("Insert2 result: $insert2Result")
+            val insert2Result = table.insert(Post(
+                    userId = 1,
+                    title = "Other Post",
+                    body = "This is a different test post."
+            ))
+            println("Insert2 result: $insert2Result")
 
-                val getResult = table.get(it, insertResult.id)
-                println("Get result: $getResult")
-                assertEquals(insertResult, getResult)
+            val getResult = table.get(insertResult.id)
+            println("Get result: $getResult")
+            assertEquals(insertResult, getResult)
 
-                val fullQueryResult = table.query(it)
-                println("Full Query result: $fullQueryResult")
-                assertEquals(insertResult, fullQueryResult.results[0])
-                assertEquals(insert2Result, fullQueryResult.results[1])
+            val fullQueryResult = table.query()
+            println("Full Query result: $fullQueryResult")
+            assertEquals(insertResult, fullQueryResult.results[0])
+            assertEquals(insert2Result, fullQueryResult.results[1])
 
-                val page1QueryResult = table.query(it, count = 1)
-                println("Page 1 Query Result result: $page1QueryResult")
-                assertEquals(insertResult, page1QueryResult.results[0])
+            val page1QueryResult = table.query(count = 1)
+            println("Page 1 Query Result result: $page1QueryResult")
+            assertEquals(insertResult, page1QueryResult.results[0])
 
-                val page2QueryResult = table.query(it, count = 1, continuationToken = page1QueryResult.continuationToken)
-                println("Page 2 Query Result result: $page2QueryResult")
-                assertEquals(insert2Result, page2QueryResult.results[0])
+            val page2QueryResult = table.query(count = 1, continuationToken = page1QueryResult.continuationToken)
+            println("Page 2 Query Result result: $page2QueryResult")
+            assertEquals(insert2Result, page2QueryResult.results[0])
 
-                val updateResult = table.update(it, insertResult.copy(userId = 1))
-                println("Update result: $updateResult")
+            val updateResult = table.update(insertResult.copy(userId = 1))
+            println("Update result: $updateResult")
 
-                val modifyResult = table.modify(it, insertResult.id, listOf(
-                        ModificationOnItem.Set(PostClassInfo.fieldTitle, "Test Post")
-                ))
-                println("Modify result: $modifyResult")
+            val modifyResult = table.modify(insertResult.id, listOf(
+                    ModificationOnItem.Set(PostClassInfo.fieldTitle, "Test Post")
+            ))
+            println("Modify result: $modifyResult")
 
-                table.delete(it, insertResult.id)
-            }
+            table.delete(insertResult.id)
         }
+
     }
 }

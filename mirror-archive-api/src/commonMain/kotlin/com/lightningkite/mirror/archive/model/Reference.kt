@@ -1,4 +1,4 @@
-package com.lightningkite.mirror.archive
+package com.lightningkite.mirror.archive.model
 
 @Suppress("unused") /*inline*/ data class Reference<MODEL : HasId>(val id: Id)
 

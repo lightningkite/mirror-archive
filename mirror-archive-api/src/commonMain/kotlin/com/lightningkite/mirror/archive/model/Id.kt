@@ -1,4 +1,4 @@
-package com.lightningkite.mirror.archive
+package com.lightningkite.mirror.archive.model
 
 import com.lightningkite.lokalize.TimeStamp
 import com.lightningkite.lokalize.now

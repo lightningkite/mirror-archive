@@ -1,9 +1,7 @@
 package com.lightningkite.kotlinx.persistence
 
 import com.lightningkite.mirror.archive.ModificationOnItem
-import com.lightningkite.mirror.archive.Transaction
 import com.lightningkite.mirror.archive.nitrite.NitriteDatabase
-import com.lightningkite.mirror.archive.use
 import com.lightningkite.mirror.serialization.DefaultRegistry
 import kotlinx.coroutines.runBlocking
 import org.dizitart.no2.Nitrite
@@ -34,27 +32,21 @@ class NitriteDatabaseTableTest {
         runBlocking {
 
             //Insert
-            Transaction().use {
-                posts.insert(it, post1)
-                posts.insert(it, post2)
-            }
+            posts.insert(post1)
+            posts.insert(post2)
 
             //Query, ID order expected by default
-            Transaction().use {
-                val results = posts.query(it)
-                println(results)
-                assert(post1 in results.results)
-                assert(post2 in results.results)
-                assert(results.results.size == 2)
-            }
+            val results = posts.query()
+            println(results)
+            assert(post1 in results.results)
+            assert(post2 in results.results)
+            assert(results.results.size == 2)
 
             //Modify and get
-            Transaction().use {
-                val newTitle = "Post Title Updated"
-                posts.modify(it, post1.id, listOf(ModificationOnItem.Set(PostClassInfo.fieldTitle, newTitle)))
-                val result = posts.get(it, post1.id)
-                assertEquals(newTitle, result!!.title)
-            }
+            val newTitle = "Post Title Updated"
+            posts.modify(post1.id, listOf(ModificationOnItem.Set(PostClassInfo.fieldTitle, newTitle)))
+            val result = posts.get(post1.id)
+            assertEquals(newTitle, result!!.title)
 
         }
     }
