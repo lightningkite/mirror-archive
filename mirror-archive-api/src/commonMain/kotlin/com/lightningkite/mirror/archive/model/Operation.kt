@@ -12,17 +12,19 @@ interface Operation<T>{
         override fun invoke(item: T): T = value
     }
 
-    interface AddNumeric<T>: Operation<T>
-    data class AddInt(var amount: Int) : AddNumeric<Int> {
+    interface AddNumeric<T>: Operation<T> {
+        val amount: Number
+    }
+    data class AddInt(override var amount: Int) : AddNumeric<Int> {
         override fun invoke(item: Int): Int = item + amount
     }
-    data class AddLong(var amount: Long) : AddNumeric<Long> {
+    data class AddLong(override var amount: Long) : AddNumeric<Long> {
         override fun invoke(item: Long): Long = item + amount
     }
-    data class AddFloat(var amount: Float) : AddNumeric<Float> {
+    data class AddFloat(override var amount: Float) : AddNumeric<Float> {
         override fun invoke(item: Float): Float = item + amount
     }
-    data class AddDouble(var amount: Double) : AddNumeric<Double> {
+    data class AddDouble(override var amount: Double) : AddNumeric<Double> {
         override fun invoke(item: Double): Double = item + amount
     }
 
@@ -30,13 +32,13 @@ interface Operation<T>{
         override fun invoke(item: String): String = item + string
     }
 
-    data class AppendArray<T>(var item: T): Operation<Array<T>> {
-        override fun invoke(item: Array<T>): Array<T> = item + this.item
-    }
-
-    data class RemoveArray<T>(var item: T): Operation<Array<T>> {
-        override fun invoke(item: Array<T>): Array<T> = item.toMutableList().also{ it.remove(this.item) }.toTypedArray()
-    }
+//    data class AppendArray<T>(var item: T): Operation<Array<T>> {
+//        override fun invoke(item: Array<T>): Array<T> = item + this.item
+//    }
+//
+//    data class RemoveArray<T>(var item: T): Operation<Array<T>> {
+//        override fun invoke(item: Array<T>): Array<T> = item.toMutableList().also{ it.remove(this.item) }.toTypedArray()
+//    }
 
     data class Fields<T: Any>(var classInfo: ClassInfo<T>, var changes: Map<FieldInfo<T, *>, Operation<*>>): Operation<T> {
         override fun invoke(item: T): T {

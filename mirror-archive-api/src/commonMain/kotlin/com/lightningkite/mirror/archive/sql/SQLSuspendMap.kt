@@ -1,35 +1,199 @@
 package com.lightningkite.mirror.archive.sql
 
 import com.lightningkite.mirror.archive.database.SuspendMap
-import com.lightningkite.mirror.archive.model.Condition
-import com.lightningkite.mirror.archive.model.HasId
-import com.lightningkite.mirror.archive.model.Id
-import com.lightningkite.mirror.archive.model.Sort
+import com.lightningkite.mirror.archive.database.SuspendMapProvider
+import com.lightningkite.mirror.archive.model.*
+import com.lightningkite.mirror.info.*
+import com.lightningkite.mirror.serialization.TypeDecoder
 
-class SQLSuspendMap<T: HasId>(
+class SQLSuspendMap<K : Comparable<K>, V : Any>(
+        val schema: String = "generatedschema",
+        val tableName: String,
         val connection: SQLConnection,
-        val serializer: SQLSerializer
-): SuspendMap<Id, T> {
+        val serializer: SQLSerializer,
+        val keyType: Type<K>,
+        val valueType: Type<V>,
+        val generateKey: () -> K
+) : SuspendMap<K, V> {
 
-    init {
-        //setup
+    class Provider(val serializer: SQLSerializer, val connection: SQLConnection) : SuspendMapProvider {
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>): SuspendMap<K, V> {
+            val tableName = serializer.registry.kClassToExternalNameRegistry[key.kClass] + "_to_" + serializer.registry.kClassToExternalNameRegistry[value.kClass]
+            @Suppress("UNCHECKED_CAST")
+            return SQLSuspendMap<Comparable<Comparable<*>>, V>(
+                    tableName = tableName,
+                    connection = connection,
+                    serializer = serializer,
+                    keyType = key as Type<Comparable<Comparable<*>>>,
+                    valueType = value,
+                    generateKey = { throw UnsupportedOperationException() }
+            ) as SuspendMap<K, V>
+        }
+
     }
 
-    override suspend fun getNewKey(): Id = Id.key()
+    val virtualKeyField = FieldInfo(AnyClassInfo, "key", keyType, false, { throw UnsupportedOperationException() }, listOf())
+    val keyTablePartial = serializer.definition(keyType).let {
+        it.copy(columns = it.columns.map { it.copy(name = "key" nameAppend it.name) })
+    }
+    val valueTablePartial = serializer.definition(valueType).let {
+        it.copy(columns = it.columns.map { it.noNameToValue() })
+    }
+    val table = Table(
+            schemaName = schema,
+            name = tableName,
+            columns = keyTablePartial.columns + valueTablePartial.columns,
+            constraints = keyTablePartial.constraints + valueTablePartial.constraints + Constraint(
+                    type = Constraint.Type.PrimaryKey,
+                    columns = keyTablePartial.columns.map { it.name },
+                    name = "primary_key"
+            ),
+            indexes = keyTablePartial.indexes + valueTablePartial.indexes
+    )
 
-    override suspend fun get(key: Id): T? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val keyDecoder = serializer.decoder(keyType)
+    val valueDecoder = serializer.decoder(valueType)
+    val decoder: TypeDecoder<SQLSerializer.RowReader, Pair<K, V>> = {
+        keyDecoder(this) to valueDecoder(this)
     }
 
-    override suspend fun put(key: Id, value: T, conditionIfExists: Condition<T>, create: Boolean): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    var isSetUp = false
+    suspend fun setup() {
+        val old = connection.reflect(schema, tableName)
+        if (old == null) {
+            serializer.createTable(table).forEach { connection.execute(it) }
+        } else {
+            serializer.migrate(old, table).forEach { connection.execute(it) }
+        }
+        isSetUp = true
     }
 
-    override suspend fun remove(key: Id, condition: Condition<T>): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    suspend fun checkSetup() {
+        if (isSetUp) return
+        else setup()
     }
 
-    override suspend fun query(condition: Condition<T>, sortedBy: Sort<T>, after: T?, count: Int): List<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun getNewKey(): K = generateKey()
+
+    override suspend fun get(key: K): V? {
+        checkSetup()
+        return connection.execute(serializer.select(
+                table = table,
+                columns = valueTablePartial.columns,
+                where = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)), valueType),
+                limit = 1
+        )).firstOrNull()?.let {
+            valueDecoder.invoke(SQLSerializer.RowReader(it))
+        }
+    }
+
+    override suspend fun getMany(keys: Collection<K>): Map<K, V?> {
+        checkSetup()
+        return connection.execute(serializer.select(
+                table = table,
+                where = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.EqualToOne(keys)), valueType),
+                limit = 1
+        )).associate {
+            decoder.invoke(SQLSerializer.RowReader(it))
+        }
+    }
+
+    override suspend fun put(key: K, value: V, conditionIfExists: Condition<V>, create: Boolean): Boolean {
+        checkSetup()
+        val values = ArrayList<String>().also {
+            serializer.encode(it, key, keyType)
+            serializer.encode(it, value, valueType)
+        }
+        if (create) {
+            if (conditionIfExists is Condition.Never) {
+                return connection.execute(serializer.insert(table, values)).any()
+
+            } else {
+                val upsertSpecial = serializer.upsert(
+                        table = table,
+                        values = values,
+                        condition = serializer.convertToSQLCondition(conditionIfExists, valueType)
+                )
+                if (upsertSpecial != null) {
+                    return connection.execute(upsertSpecial).any()
+                } else {
+                    val insertSucceeded = connection.execute(serializer.insert(table, values)).any()
+                    if (insertSucceeded) {
+                        return true
+                    } else {
+                        return connection.execute(serializer.update(
+                                table = table,
+                                values = values,
+                                condition = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and conditionIfExists, valueType)
+                        )).any()
+                    }
+                }
+            }
+        } else {
+            return connection.execute(serializer.update(
+                    table = table,
+                    values = values,
+                    condition = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and conditionIfExists, valueType)
+            )).any()
+        }
+    }
+
+    override suspend fun modify(key: K, operation: Operation<V>, condition: Condition<V>): V? {
+        val updateReturning = serializer.updateModifyReturning(
+                table = table,
+                modifications = serializer.convertToSQLSet(operation, valueType),
+                condition = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and condition, valueType)
+        )
+        if (updateReturning != null) {
+            return connection.execute(updateReturning).toList().also { println("MOD RESULT: " + it.joinToString()) }.firstOrNull()?.let {
+                valueDecoder.invoke(SQLSerializer.RowReader(it))
+            }
+        } else {
+            val c = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and condition, valueType)
+            return connection.executeBatch(listOf(
+                    serializer.updateModify(
+                            table = table,
+                            modifications = serializer.convertToSQLSet(operation, valueType),
+                            condition = c
+                    ),
+                    serializer.select(
+                            table = table,
+                            columns = valueTablePartial.columns,
+                            where = c,
+                            limit = 1
+                    )
+            )).firstOrNull()?.let {
+                valueDecoder.invoke(SQLSerializer.RowReader(it))
+            }
+        }
+    }
+
+    override suspend fun remove(key: K, condition: Condition<V>): Boolean {
+        checkSetup()
+        return connection.execute(serializer.delete(
+                table = table,
+                condition = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and condition, valueType)
+        )).any()
+    }
+
+    fun Sort<V>.toColumnList(): List<Column> = when (this) {
+        is Sort.Field<*, *> -> listOf(table.columns.find { it.name == this.field.name }!!)
+        is Sort.Multi -> this.comparators.flatMap { it.toColumnList() }
+        else -> throw IllegalArgumentException()
+    }
+
+    override suspend fun query(condition: Condition<V>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+        checkSetup()
+        val extendedCondition = if (after != null)
+            (sortedBy?.after(after.second)
+                    ?: Condition.Field(virtualKeyField, Condition.GreaterThan(after.first))) and condition
+        else condition
+        val sqlCondition = serializer.convertToSQLCondition(extendedCondition, valueType)
+        return connection.execute(serializer.select(
+                table = table,
+                where = sqlCondition,
+                orderBy = sortedBy?.toColumnList() ?: keyTablePartial.columns,
+                limit = count
+        )).map { decoder.invoke(SQLSerializer.RowReader(it)) }.toList()
     }
 }

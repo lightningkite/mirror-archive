@@ -16,11 +16,15 @@ sealed class Condition<in T> {
 
     class Never<T> : Condition<T>() {
         override fun invoke(item: T): Boolean = false
+        override fun hashCode(): Int = 0
+        override fun equals(other: Any?): Boolean = other is Never<*>
     }
 
 
     class Always<T> : Condition<T>() {
         override fun invoke(item: T): Boolean = true
+        override fun hashCode(): Int = 1
+        override fun equals(other: Any?): Boolean = other is Always<*>
     }
 
 
@@ -53,7 +57,7 @@ sealed class Condition<in T> {
                 val innerSimp = condition.simplify()
                 when(innerSimp){
                     is Always -> return Always()
-                    is Not -> {}
+                    is Never -> {}
                     is Or -> result.addAll(innerSimp.conditions)
                     else -> result.add(innerSimp)
                 }

@@ -33,22 +33,23 @@ interface SuspendMap<K, V : Any> {
 
     suspend fun find(
             condition: Condition<V>,
-            sortedBy: Sort<V> = Sort.DontCare()
-    ): V? = query(
+            sortedBy: Sort<V>? = null
+    ): Pair<K, V>? = query(
             condition = condition,
             sortedBy = sortedBy,
             count = 1
     ).firstOrNull()
 
-    suspend fun getMany(keys: Iterable<K>): Map<K, V?> = keys.associate { it to get(it) }
+    suspend fun getMany(keys: Collection<K>): Map<K, V?> = keys.associate { it to get(it) }
     suspend fun putMany(map: Map<K, V>) = map.entries.forEach { put(it.key, it.value) }
     suspend fun removeMany(keys: Iterable<K>) = keys.forEach { remove(it) }
+
     suspend fun query(
             condition: Condition<V> = Condition.Always(),
-            sortedBy: Sort<V> = Sort.DontCare(),
-            after: V? = null,
+            sortedBy: Sort<V>? = null,
+            after: Pair<K, V>? = null,
             count: Int = 100
-    ): List<V>
+    ): List<Pair<K, V>>
 }
 
 //Traditional database: SuspendMap<Id, HasId>

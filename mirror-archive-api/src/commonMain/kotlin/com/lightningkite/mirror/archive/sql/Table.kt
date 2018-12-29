@@ -7,8 +7,9 @@ data class Table(
         var name: String,
         var columns: List<Column>,
         var constraints: List<Constraint>,
-        var indexes: List<Index>
+        var indexes: List<Index> = listOf()
 ) {
+    val fullName: String get() = "$schemaName.$name"
 
     fun isBuiltInIndex(index: Index): Boolean {
         if (constraints.any { it.columns contentEquals index.columns }) {
@@ -106,7 +107,7 @@ data class Table(
 //                val mine = myIndexes[key]!!
 //                val other = oldIndexes[key]!!
 //                if (mine != other) {
-//                    throw IllegalStateException("Index $key is trying to change an index; this is not currently supported.\n$other\nmigrate to\n$mine")
+//                    throw IllegalStateException("Index $key is trying to change an createIndex; this is not currently supported.\n$other\nmigrate to\n$mine")
 //                }
 //            }
 //        }

@@ -10,4 +10,5 @@ data class Column(
         name = name.toLowerCase()
         type = type.toLowerCase()
     }
+    fun noNameToValue(): Column = if(name.isBlank()) copy(name = "value") else this
 }

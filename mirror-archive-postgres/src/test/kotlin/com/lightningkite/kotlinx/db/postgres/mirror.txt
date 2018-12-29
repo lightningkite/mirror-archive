@@ -1,3 +1,4 @@
 name = com.lightningkite.kotlinx.db.postgres.TestRegistry
 
 com.lightningkite.kotlinx.db.postgres.Post
+com.lightningkite.mirror.archive.model.Id

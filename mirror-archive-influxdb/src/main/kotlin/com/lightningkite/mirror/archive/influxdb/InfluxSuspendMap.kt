@@ -4,11 +4,7 @@ import com.lightningkite.lokalize.TimeConstants
 import com.lightningkite.lokalize.TimeStamp
 import com.lightningkite.mirror.archive.model.*
 import com.lightningkite.mirror.archive.database.*
-import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.Type
-import com.lightningkite.mirror.info.localName
-import com.lightningkite.mirror.info.type
-import com.lightningkite.mirror.serialization.SerializationRegistry
+import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.StringSerializer
 import org.influxdb.InfluxDB
 import org.influxdb.dto.Point
@@ -17,7 +13,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import kotlin.reflect.KClass
 
 class InfluxSuspendMap<T: HasId>(
         val classInfo: ClassInfo<T>,
@@ -27,13 +22,27 @@ class InfluxSuspendMap<T: HasId>(
         val database: String = "main"
 ): SuspendMap<Id, T> {
 
+    class Provider(val serializer: StringSerializer, val connection: InfluxDB): SuspendMapProvider {
+        @Suppress("UNCHECKED_CAST")
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>): SuspendMap<K, V> {
+            if(key != Id::class.type) throw UnsupportedOperationException()
+            if(value.nullable) throw UnsupportedOperationException()
+            return InfluxSuspendMap(
+                    classInfo = serializer.registry.classInfoRegistry[value.kClass]!! as ClassInfo<HasId>,
+                    connection = connection,
+                    backupStringSerializer = serializer
+            ) as SuspendMap<K, V>
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
     val timestampField = classInfo.fields
             .filter { it.type == TimeStamp::class.type }
             .run {
                 find { it.name.equals("timestamp", true) }
                         ?: find { it.name.equals("date", true) }
                         ?: find { it.name.equals("time", true) }
-            }
+            } as FieldInfo<T, TimeStamp>
 
     init {
         connection.query(Query("CREATE DATABASE $database", database))
@@ -65,21 +74,23 @@ class InfluxSuspendMap<T: HasId>(
 
     override suspend fun remove(key: Id, condition: Condition<T>): Boolean = throw UnsupportedOperationException()
 
-    override suspend fun query(condition: Condition<T>, sortedBy: Sort<T>, after: T?, count: Int): List<T> = suspendCoroutine { cont ->
-        //TODO: sort
-        if (sortedBy !is Sort.DontCare) throw UnsupportedOperationException()
-        //TODO: pagination
-        if (after != null) throw UnsupportedOperationException()
+    override suspend fun query(condition: Condition<T>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> = suspendCoroutine { cont ->
+        val fullCondition = if(after != null) sortedBy?.after(after.second) ?: Condition.Field(timestampField, Condition.GreaterThan(timestampField.get(after.second))) and condition else condition
 
         try {
-            val queryFromCondition = condition.convert()
-            val query = if (queryFromCondition.isNotBlank()) {
-                Query("SELECT * FROM $tableName WHERE $queryFromCondition", database)
-            } else {
-                Query("SELECT * FROM $tableName", database)
+            val queryFromCondition = fullCondition.convert()
+            val query = buildString {
+                append("SELECT * FROM $tableName")
+
+                if (queryFromCondition.isNotBlank()) {
+                    append(" WHERE $queryFromCondition", database)
+                }
+                if(sortedBy != null){
+                    append(" ORDER BY " + sortedBy.convert())
+                }
             }
-            connection.query(query, {
-                val results = it.results.flatMap { it.series.flatMap { modelsFromResult(it) } }
+            connection.query(Query(query, database), {
+                val results = it.results.flatMap { it.series.flatMap { modelsFromResult(it).map { it.id to it } } }
                 cont.resume(results)
             }, {
                 cont.resumeWithException(it)
@@ -148,6 +159,14 @@ class InfluxSuspendMap<T: HasId>(
                 }
             }
             classInfo.construct(map)
+        }
+    }
+
+    fun Sort<*>.convert(): String {
+        return when (this) {
+            is Sort.Multi -> this.comparators.joinToString { it.convert() }
+            is Sort.Field<*, *> -> this.field.name + if(ascending) " ASC" else " DESC"
+            else -> throw UnsupportedOperationException()
         }
     }
 

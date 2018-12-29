@@ -1,7 +1,10 @@
 package com.lightningkite.kotlinx.db.influxdb
 
+import com.lightningkite.mirror.archive.database.insert
 import com.lightningkite.mirror.archive.influxdb.EmbeddedInflux
-import com.lightningkite.mirror.archive.influxdb.InfluxDatalog
+import com.lightningkite.mirror.archive.influxdb.InfluxSuspendMap
+import com.lightningkite.mirror.archive.model.Id
+import com.lightningkite.mirror.info.type
 import com.lightningkite.mirror.serialization.DefaultRegistry
 import com.lightningkite.mirror.serialization.json.JsonSerializer
 import kotlinx.coroutines.delay
@@ -36,29 +39,24 @@ class InfluxDBTest {
 
     @Test
     fun testInsert() {
-        val db = InfluxDatalog(
-                registry = registry,
+        val db = InfluxSuspendMap.Provider(
                 connection = connection!!,
-                backupStringSerializer = JsonSerializer(registry = registry),
-                database = "main"
+                serializer = JsonSerializer(registry = registry)
         )
-        val cpuUsageTable = db.table(CPUUsage::class)
+        val cpuUsageTable = db.suspendMap(Id::class.type, CPUUsage::class.type)
         runBlocking {
             cpuUsageTable.insert(CPUUsage(amount = .12))
             cpuUsageTable.insert(CPUUsage(amount = .22))
-
         }
     }
 
     @Test
     fun testGet() {
-        val db = InfluxDatalog(
-                registry = registry,
+        val db = InfluxSuspendMap.Provider(
                 connection = connection!!,
-                backupStringSerializer = JsonSerializer(registry = registry),
-                database = "main"
+                serializer = JsonSerializer(registry = registry)
         )
-        val cpuUsageTable = db.table(CPUUsage::class)
+        val cpuUsageTable = db.suspendMap(Id::class.type, CPUUsage::class.type)
         runBlocking {
             val newUsage = CPUUsage(amount = .23)
             cpuUsageTable.insert(newUsage)
@@ -70,13 +68,11 @@ class InfluxDBTest {
 
     @Test
     fun testQuery() {
-        val db = InfluxDatalog(
-                registry = registry,
+        val db = InfluxSuspendMap.Provider(
                 connection = connection!!,
-                backupStringSerializer = JsonSerializer(registry = registry),
-                database = "main"
+                serializer = JsonSerializer(registry = registry)
         )
-        val cpuUsageTable = db.table(CPUUsage::class)
+        val cpuUsageTable = db.suspendMap(Id::class.type, CPUUsage::class.type)
         runBlocking {
             val newUsage = CPUUsage(amount = .23)
             cpuUsageTable.insert(newUsage)
@@ -88,9 +84,9 @@ class InfluxDBTest {
 
             delay(100)
 
-            val result = cpuUsageTable.query().results
-            assertEquals(newUsage, result[0])
-            assertEquals(newUsage2, result[1])
+            val result = cpuUsageTable.query()
+            assertEquals(newUsage, result[0].second)
+            assertEquals(newUsage2, result[1].second)
 
         }
     }

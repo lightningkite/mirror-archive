@@ -2,8 +2,8 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.kotlinx.persistence
 
-import com.lightningkite.mirror.archive.HasId
-import com.lightningkite.mirror.archive.Id
+import com.lightningkite.mirror.archive.model.HasId
+import com.lightningkite.mirror.archive.model.Id
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 

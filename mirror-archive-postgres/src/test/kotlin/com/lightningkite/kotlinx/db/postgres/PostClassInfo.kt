@@ -2,8 +2,8 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.kotlinx.db.postgres
 
-import com.lightningkite.mirror.archive.HasId
-import com.lightningkite.mirror.archive.Id
+import com.lightningkite.mirror.archive.model.HasId
+import com.lightningkite.mirror.archive.model.Id
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 
@@ -34,7 +34,7 @@ object PostClassInfo: ClassInfo<Post> {
        //Gather variables
        
            //Handle the optionals
-       val id:Id = map["id"] as? Id ?: Id.key()
+       val id:Id = map["id"] as? Id ?: Id.randomUUID4()
         val userId:Long = map["userId"] as? Long ?: 0
         val title:String = map["title"] as? String ?: ""
         val body:String = map["body"] as? String ?: ""

@@ -1,8 +1,14 @@
 package com.lightningkite.kotlinx.db.postgres
 
-import com.lightningkite.mirror.archive.ModificationOnItem
+import com.lightningkite.mirror.archive.database.insert
+import com.lightningkite.mirror.archive.model.Id
+import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.postgres.*
+import com.lightningkite.mirror.archive.sql.SQLSuspendMap
+import com.lightningkite.mirror.info.FieldInfo
+import com.lightningkite.mirror.info.type
 import com.lightningkite.mirror.serialization.DefaultRegistry
+import com.lightningkite.mirror.serialization.json.JsonSerializer
 import io.reactiverse.pgclient.PgClient
 import io.reactiverse.pgclient.PgConnectOptions
 import io.reactiverse.pgclient.PgPool
@@ -34,53 +40,87 @@ class FullTest {
     }
 
     @Test
-    fun postTest() {
+    fun testSimpleKV() {
         runBlocking {
             //Set up the database
-            val db = PostgresDatabase(pool, DefaultRegistry + TestRegistry)
+            val provider = SQLSuspendMap.Provider(
+                    serializer = PostgresSerializer(DefaultRegistry + TestRegistry),
+                    connection = PostgresConnection(pool)
+            )
 
-            //Set up the table
-            val table = db.table(Post::class)
-            val insertResult = table.insert(Post(
+            val simple = provider.suspendMap(String::class.type, Int::class.type)
+
+            simple.put("setting", 32)
+            simple.put("answer", 42)
+            assert(simple.query().contains("setting" to 32))
+            assert(simple.query().contains("answer" to 42))
+            assertEquals(32, simple.get("setting"))
+            assertEquals(33, simple.modify("setting", Operation.AddInt(1)))
+            assert(simple.query().contains("setting" to 33))
+            assert(simple.query().contains("answer" to 42))
+            assertEquals(33, simple.get("setting"))
+            simple.remove("setting")
+            assertFalse(simple.query().any { it.first == "setting" })
+            assert(simple.query().contains("answer" to 42))
+            assertEquals(null, simple.get("setting"))
+        }
+    }
+
+    @Test
+    fun testAll() {
+        runBlocking {
+            //Set up the database
+            val provider = SQLSuspendMap.Provider(
+                    serializer = PostgresSerializer(DefaultRegistry + TestRegistry),
+                    connection = PostgresConnection(pool)
+            )
+
+            val post1 = Post(
                     userId = 0,
                     title = "Title",
                     body = "This is a test post."
-            ))
-            println("Insert result: $insertResult")
-
-            val insert2Result = table.insert(Post(
+            )
+            val post2 = Post(
                     userId = 1,
                     title = "Other Post",
                     body = "This is a different test post."
-            ))
-            println("Insert2 result: $insert2Result")
+            )
 
-            val getResult = table.get(insertResult.id)
+            //Set up the table
+            val table = provider.suspendMap(Id::class.type, Post::class.type)
+            table.insert(post1)
+            table.insert(post2)
+
+            val getResult = table.get(post1.id)
             println("Get result: $getResult")
-            assertEquals(insertResult, getResult)
+            assertEquals(post1, getResult)
 
             val fullQueryResult = table.query()
             println("Full Query result: $fullQueryResult")
-            assertEquals(insertResult, fullQueryResult.results[0])
-            assertEquals(insert2Result, fullQueryResult.results[1])
+            assertTrue(fullQueryResult.any { it.second == post1 })
+            assertTrue(fullQueryResult.any { it.second == post2 })
 
             val page1QueryResult = table.query(count = 1)
             println("Page 1 Query Result result: $page1QueryResult")
-            assertEquals(insertResult, page1QueryResult.results[0])
-
-            val page2QueryResult = table.query(count = 1, continuationToken = page1QueryResult.continuationToken)
+            val page2QueryResult = table.query(count = 1, after = page1QueryResult[0])
             println("Page 2 Query Result result: $page2QueryResult")
-            assertEquals(insert2Result, page2QueryResult.results[0])
+            val totalPagedResults = page1QueryResult + page2QueryResult
 
-            val updateResult = table.update(insertResult.copy(userId = 1))
+            assertTrue(totalPagedResults.any { it.second == post1 })
+            assertTrue(totalPagedResults.any { it.second == post2 })
+
+            val updateResult = table.insert(post1.copy(userId = 1))
             println("Update result: $updateResult")
 
-            val modifyResult = table.modify(insertResult.id, listOf(
-                    ModificationOnItem.Set(PostClassInfo.fieldTitle, "Test Post")
+            val modifyResult = table.modify(post1.id, Operation.Fields(
+                    classInfo = PostClassInfo,
+                    changes = mapOf<FieldInfo<Post, *>, Operation<*>>(
+                            PostClassInfo.fieldTitle to Operation.Set("Test Post")
+                    )
             ))
             println("Modify result: $modifyResult")
 
-            table.delete(insertResult.id)
+            table.remove(post1.id)
         }
 
     }

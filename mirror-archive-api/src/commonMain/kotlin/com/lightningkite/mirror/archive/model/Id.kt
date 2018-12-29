@@ -26,7 +26,7 @@ data class Id(
         }
         fun randomUUID4(): Id = Id(
                 mostSignificantBits = (Random.nextLong() and (-1L - 0x000000000000F000) or (0x4000)),
-                leastSignificantBits = (Random.nextLong() and 0x3FFFFFFFFFFFFFFF or (0x8 shl 60))
+                leastSignificantBits = (Random.nextLong() and 0x3FFFFFFFFFFFFFFFL or (0x8000_0000L shl 32))
         )
         fun key(): Id = Id(
                 mostSignificantBits = TimeStamp.now().millisecondsSinceEpoch,

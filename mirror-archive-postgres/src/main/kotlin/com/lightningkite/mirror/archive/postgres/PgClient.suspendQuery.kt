@@ -8,14 +8,3 @@ import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-
-suspend fun PgClient.suspendQuery(sql: String) = suspendCoroutine<PgRowSet> { cont ->
-    println("Executing... $sql")
-    this.query(sql){
-        if(it.succeeded()){
-            cont.resume(it.result())
-        } else {
-            cont.resumeWithException(it.cause()!!)
-        }
-    }
-}

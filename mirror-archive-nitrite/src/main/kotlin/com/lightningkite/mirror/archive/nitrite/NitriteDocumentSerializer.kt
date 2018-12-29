@@ -1,6 +1,6 @@
 package com.lightningkite.mirror.archive.nitrite
 
-import com.lightningkite.mirror.archive.Id
+import com.lightningkite.mirror.archive.model.Id
 import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.*
 import com.lightningkite.mirror.serialization.json.JsonSerializer

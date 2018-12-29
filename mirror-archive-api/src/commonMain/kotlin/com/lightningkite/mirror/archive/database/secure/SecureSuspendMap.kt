@@ -20,7 +20,7 @@ class SecureSuspendMap<K, V : Any, USER>(
             val sortPermitted: (USER?, Sort<V>) -> Unit = { _, sort -> },
             val validate: (USER?, V) -> V? = { _, v -> v },
             val operation: (USER?, Operation<V>) -> Operation<V> = { _, op -> op },
-            val create: (USER?)->Boolean = {true}
+            val create: (USER?) -> Boolean = { true }
     ) {
         operator fun plus(other: Rules<K, V, USER>): Rules<K, V, USER> {
             return Rules(
@@ -79,32 +79,32 @@ class SecureSuspendMap<K, V : Any, USER>(
             return underlying.remove(key, condition and rules.overwriteRule(user))
         }
 
-        override suspend fun find(condition: Condition<V>, sortedBy: Sort<V>): V? {
-            rules.sortPermitted(user, sortedBy)
-            return underlying.find(condition and rules.readRule(user), sortedBy)?.let { rules.mask(user, it) }
+        override suspend fun find(condition: Condition<V>, sortedBy: Sort<V>?): Pair<K, V>? {
+            sortedBy?.let { rules.sortPermitted(user, it) }
+            return underlying.find(condition and rules.readRule(user), sortedBy)?.let { it.first to rules.mask(user, it.second) }
         }
 
-        override suspend fun getMany(keys: Iterable<K>): Map<K, V?> {
+        override suspend fun getMany(keys: Collection<K>): Map<K, V?> {
             val map = HashMap<K, V?>()
-            for((key, value) in underlying.getMany(keys)){
+            for ((key, value) in underlying.getMany(keys)) {
                 val maskedValue = value
                         ?.takeIf { rules.readRule(user).invoke(it) }
                         ?.let { rules.mask(user, it) }
-                if(maskedValue != null){
+                if (maskedValue != null) {
                     map[key] = maskedValue
                 }
             }
             return map
         }
 
-        override suspend fun query(condition: Condition<V>, sortedBy: Sort<V>, after: V?, count: Int): List<V> {
-            rules.sortPermitted(user, sortedBy)
+        override suspend fun query(condition: Condition<V>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+            sortedBy?.let { rules.sortPermitted(user, it) }
             return underlying.query(
                     condition = condition and rules.readRule(user),
                     sortedBy = sortedBy,
                     after = after,
                     count = count
-            ).map { rules.mask(user, it) }
+            ).map { it.first to rules.mask(user, it.second) }
         }
     }
 }
