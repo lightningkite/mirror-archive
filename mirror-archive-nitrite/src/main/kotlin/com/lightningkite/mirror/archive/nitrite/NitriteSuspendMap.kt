@@ -22,7 +22,7 @@ class NitriteSuspendMap<T : HasId>(
     class Provider(val nitrite: Nitrite, val registry: SerializationRegistry): SuspendMapProvider {
         val serializer = NitriteDocumentSerializer(registry)
         @Suppress("UNCHECKED_CAST")
-        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>): SuspendMap<K, V> {
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>, name: String?): SuspendMap<K, V> {
             if(key != Id::class.type) throw UnsupportedOperationException()
             if(value.nullable) throw UnsupportedOperationException()
             val info = serializer.registry.classInfoRegistry[value.kClass]!! as ClassInfo<HasId>
@@ -30,7 +30,7 @@ class NitriteSuspendMap<T : HasId>(
                     classInfo = info,
                     registry = serializer.registry,
                     serializer = serializer,
-                    nitrite = nitrite.getCollection(info.qualifiedName)
+                    nitrite = nitrite.getCollection(name ?: info.qualifiedName)
             ) as SuspendMap<K, V>
         }
     }
@@ -69,7 +69,7 @@ class NitriteSuspendMap<T : HasId>(
         return nitrite.remove(Filters.eq("id", key.toUUIDString())).affectedCount > 0
     }
 
-    override suspend fun query(condition: Condition<T>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> {
+    override suspend fun query(condition: Condition<T>, keyCondition: Condition<Id>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> {
         val options = when (sortedBy) {
             is Sort.Field<*, *> -> FindOptions(
                     sortedBy.field.name,

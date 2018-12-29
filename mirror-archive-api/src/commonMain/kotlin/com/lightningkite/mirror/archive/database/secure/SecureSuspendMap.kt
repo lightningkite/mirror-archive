@@ -97,10 +97,11 @@ class SecureSuspendMap<K, V : Any, USER>(
             return map
         }
 
-        override suspend fun query(condition: Condition<V>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+        override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
             sortedBy?.let { rules.sortPermitted(user, it) }
             return underlying.query(
                     condition = condition and rules.readRule(user),
+                    keyCondition = keyCondition,
                     sortedBy = sortedBy,
                     after = after,
                     count = count

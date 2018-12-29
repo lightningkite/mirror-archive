@@ -17,11 +17,11 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
 ) : SuspendMap<K, V> {
 
     class Provider(val serializer: SQLSerializer, val connection: SQLConnection) : SuspendMapProvider {
-        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>): SuspendMap<K, V> {
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>, name: String?): SuspendMap<K, V> {
             val tableName = serializer.registry.kClassToExternalNameRegistry[key.kClass] + "_to_" + serializer.registry.kClassToExternalNameRegistry[value.kClass]
             @Suppress("UNCHECKED_CAST")
             return SQLSuspendMap<Comparable<Comparable<*>>, V>(
-                    tableName = tableName,
+                    tableName = name ?: tableName,
                     connection = connection,
                     serializer = serializer,
                     keyType = key as Type<Comparable<Comparable<*>>>,
@@ -182,13 +182,16 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
         else -> throw IllegalArgumentException()
     }
 
-    override suspend fun query(condition: Condition<V>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+    override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
         checkSetup()
         val extendedCondition = if (after != null)
             (sortedBy?.after(after.second)
                     ?: Condition.Field(virtualKeyField, Condition.GreaterThan(after.first))) and condition
         else condition
-        val sqlCondition = serializer.convertToSQLCondition(extendedCondition, valueType)
+        val sqlCondition = serializer.convertToSQLCondition(
+                extendedCondition and Condition.Field(virtualKeyField, keyCondition),
+                valueType
+        )
         return connection.execute(serializer.select(
                 table = table,
                 where = sqlCondition,

@@ -4,12 +4,17 @@ import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.model.Sort
 import com.lightningkite.mirror.info.Type
+import kotlin.random.Random
 
 class RAMSuspendMap<K, V : Any>(val underlying: MutableMap<K, V>, val makeNewKey: () -> K) : SuspendMap<K, V> {
 
     object Provider : SuspendMapProvider {
-        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>): RAMSuspendMap<K, V> {
-            return RAMSuspendMap(HashMap()) { throw UnsupportedOperationException() }
+        val maps = HashMap<String, RAMSuspendMap<*, *>>()
+        @Suppress("UNCHECKED_CAST")
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>, name: String?): RAMSuspendMap<K, V> {
+            return maps.getOrPut(name ?: Random.nextInt().toString(16)) {
+                RAMSuspendMap<K, V>(HashMap()) { throw UnsupportedOperationException() }
+            } as RAMSuspendMap<K, V>
         }
     }
 
@@ -50,10 +55,10 @@ class RAMSuspendMap<K, V : Any>(val underlying: MutableMap<K, V>, val makeNewKey
         }
     }
 
-    override suspend fun query(condition: Condition<V>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+    override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
         var afterFound = false
         return underlying.entries.asSequence()
-                .filter { condition.invoke(it.value) }
+                .filter { condition.invoke(it.value) && keyCondition.invoke(it.key) }
                 .map { it.toPair() }
                 .let {
                     if (sortedBy == null) {

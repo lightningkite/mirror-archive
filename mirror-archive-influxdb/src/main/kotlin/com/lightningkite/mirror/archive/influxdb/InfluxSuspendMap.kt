@@ -24,11 +24,13 @@ class InfluxSuspendMap<T: HasId>(
 
     class Provider(val serializer: StringSerializer, val connection: InfluxDB): SuspendMapProvider {
         @Suppress("UNCHECKED_CAST")
-        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>): SuspendMap<K, V> {
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>, name: String?): SuspendMap<K, V> {
             if(key != Id::class.type) throw UnsupportedOperationException()
             if(value.nullable) throw UnsupportedOperationException()
+            val info = serializer.registry.classInfoRegistry[value.kClass]!! as ClassInfo<HasId>
             return InfluxSuspendMap(
-                    classInfo = serializer.registry.classInfoRegistry[value.kClass]!! as ClassInfo<HasId>,
+                    classInfo = info,
+                    tableName = name ?: info.localName,
                     connection = connection,
                     backupStringSerializer = serializer
             ) as SuspendMap<K, V>
@@ -74,7 +76,7 @@ class InfluxSuspendMap<T: HasId>(
 
     override suspend fun remove(key: Id, condition: Condition<T>): Boolean = throw UnsupportedOperationException()
 
-    override suspend fun query(condition: Condition<T>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> = suspendCoroutine { cont ->
+    override suspend fun query(condition: Condition<T>, keyCondition: Condition<Id>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> = suspendCoroutine { cont ->
         val fullCondition = if(after != null) sortedBy?.after(after.second) ?: Condition.Field(timestampField, Condition.GreaterThan(timestampField.get(after.second))) and condition else condition
 
         try {

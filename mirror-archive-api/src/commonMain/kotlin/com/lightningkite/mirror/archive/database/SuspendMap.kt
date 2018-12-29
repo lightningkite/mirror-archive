@@ -32,7 +32,7 @@ interface SuspendMap<K, V : Any> {
     ): Boolean
 
     suspend fun find(
-            condition: Condition<V>,
+            condition: Condition<V> = Condition.Always(),
             sortedBy: Sort<V>? = null
     ): Pair<K, V>? = query(
             condition = condition,
@@ -46,6 +46,7 @@ interface SuspendMap<K, V : Any> {
 
     suspend fun query(
             condition: Condition<V> = Condition.Always(),
+            keyCondition: Condition<K> = Condition.Always(),
             sortedBy: Sort<V>? = null,
             after: Pair<K, V>? = null,
             count: Int = 100
