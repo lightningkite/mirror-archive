@@ -49,4 +49,6 @@ data class Id(
             append(second.substring(4, 16))
         }
     }
+
+    override fun toString(): String = toUUIDString()
 }

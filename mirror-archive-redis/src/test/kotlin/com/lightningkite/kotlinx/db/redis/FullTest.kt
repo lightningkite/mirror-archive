@@ -41,6 +41,24 @@ class FullTest {
         connection?.sync()?.set("key", "value")
         println("Set successfully!")
     }
+
+    @Test fun basic(){
+        runBlocking {
+            val provider = RedisSuspendMap.Provider(
+                    connection = connection!!,
+                    serializer = RedisSerializer(DefaultRegistry + TestRegistry)
+            )
+            val simple = provider.suspendMap(String::class.type, Int::class.type)
+
+            simple.put("setting", 32)
+            simple.put("answer", 42)
+            assertEquals(32, simple.get("setting"))
+            assertEquals(33, simple.modify("setting", Operation.AddInt(1)))
+            assertEquals(33, simple.get("setting"))
+            simple.remove("setting")
+            assertEquals(null, simple.get("setting"))
+        }
+    }
 //
 //    @Test
 //    fun testSimpleKV() {
