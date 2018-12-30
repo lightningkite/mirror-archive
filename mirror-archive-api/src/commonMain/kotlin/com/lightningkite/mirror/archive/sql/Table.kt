@@ -9,6 +9,11 @@ data class Table(
         var constraints: List<Constraint>,
         var indexes: List<Index> = listOf()
 ) {
+    init {
+        schemaName = schemaName.toLowerCase()
+        name = name.toLowerCase()
+    }
+
     val fullName: String get() = "$schemaName.$name"
 
     fun isBuiltInIndex(index: Index): Boolean {

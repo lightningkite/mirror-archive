@@ -23,10 +23,11 @@ open class SQLSerializer(
 ) : Encoder<MutableList<String>>, DefinitionRepository<PartialTable>, Decoder<SQLSerializer.RowReader> {
 
     open fun constraint(constraint: Constraint): String = constraint.run {
+        val type = type
         when (type) {
-            Constraint.Type.PrimaryKey -> "CONSTRAINT $name PRIMARY KEY (${columns.joinToString()})"
-            Constraint.Type.ForeignKey -> "CONSTRAINT $name FOREIGN KEY (${columns.joinToString()}) REFERENCES $otherSchema.$otherTable (${otherColumns.joinToString()}) ON DELETE SET NULL"
-            Constraint.Type.Unique -> "CONSTRAINT $name UNIQUE (${columns.joinToString()})"
+            Constraint.Type.PrimaryKey -> "$name PRIMARY KEY (${columns.joinToString()})"
+            Constraint.Type.Unique -> "$name UNIQUE (${columns.joinToString()})"
+            is Constraint.Type.ForeignKey -> "$name FOREIGN KEY (${columns.joinToString()}) REFERENCES ${type.otherSchema}.${type.otherTable} (${type.otherColumns.joinToString()}) ON DELETE SET NULL"
         }
     }
 
@@ -64,7 +65,7 @@ open class SQLSerializer(
                 SQLQuery("CREATE TABLE IF NOT EXISTS $schemaName.$name (${(columns + constraints).joinToString {
                     when (it) {
                         is Column -> column(it)
-                        is Constraint -> constraint(it)
+                        is Constraint -> "CONSTRAINT " + constraint(it)
                         else -> throw IllegalArgumentException()
                     }
                 }})")

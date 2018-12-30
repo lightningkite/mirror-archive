@@ -1,6 +1,7 @@
 package com.lightningkite.kotlinx.db.postgres
 
 import com.lightningkite.mirror.archive.database.insert
+import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Id
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.postgres.*
@@ -37,33 +38,6 @@ class FullTest {
     fun after() {
         println("Stopping...")
         poolProvider.stop()
-    }
-
-    @Test
-    fun testSimpleKV() {
-        runBlocking {
-            //Set up the database
-            val provider = SQLSuspendMap.Provider(
-                    serializer = PostgresSerializer(DefaultRegistry + TestRegistry),
-                    connection = PostgresConnection(pool)
-            )
-
-            val simple = provider.suspendMap(String::class.type, Int::class.type)
-
-            simple.put("setting", 32)
-            simple.put("answer", 42)
-            assert(simple.query().contains("setting" to 32))
-            assert(simple.query().contains("answer" to 42))
-            assertEquals(32, simple.get("setting"))
-            assertEquals(33, simple.modify("setting", Operation.AddInt(1)))
-            assert(simple.query().contains("setting" to 33))
-            assert(simple.query().contains("answer" to 42))
-            assertEquals(33, simple.get("setting"))
-            simple.remove("setting")
-            assertFalse(simple.query().any { it.first == "setting" })
-            assert(simple.query().contains("answer" to 42))
-            assertEquals(null, simple.get("setting"))
-        }
     }
 
     @Test

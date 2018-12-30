@@ -5,8 +5,7 @@ data class Column(
         var type: String,
         var size: Int? = null
 ) {
-    fun toSql(): String = if (size == null) "$name $type" else "$name $type($size)"
-    fun toLowerCase() {
+    init{
         name = name.toLowerCase()
         type = type.toLowerCase()
     }

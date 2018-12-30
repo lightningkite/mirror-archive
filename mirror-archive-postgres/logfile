@@ -927,3 +927,893 @@
 2018-12-28 17:52:36.463 MST [2868] LOG:  worker process: logical replication launcher (PID 3952) exited with exit code 1
 2018-12-28 17:52:36.468 MST [2124] LOG:  shutting down
 2018-12-28 17:52:36.707 MST [2868] LOG:  database system is shut down
+2018-12-30 00:11:21.862 MST [5412] FATAL:  lock file "postmaster.pid" already exists
+2018-12-30 00:11:21.862 MST [5412] HINT:  Is another postgres (PID 1332) running in data directory "C:/Users/josep/Projects/krosslin/mirror-archive/mirror-archive-postgres/./build/run/files"?
+2018-12-30 00:11:35.276 MST [7052] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:11:35.276 MST [7052] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:11:35.343 MST [9528] LOG:  database system was shut down at 2018-12-30 00:11:33 MST
+2018-12-30 00:11:35.391 MST [7052] LOG:  database system is ready to accept connections
+2018-12-30 00:11:35.653 MST [7052] LOG:  received fast shutdown request
+2018-12-30 00:11:35.660 MST [7052] LOG:  aborting any active transactions
+2018-12-30 00:11:35.661 MST [1608] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:35.661 MST [2520] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:35.661 MST [9304] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:35.661 MST [12224] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:35.679 MST [7052] LOG:  worker process: logical replication launcher (PID 13380) exited with exit code 1
+2018-12-30 00:11:35.683 MST [12016] LOG:  shutting down
+2018-12-30 00:11:36.044 MST [7052] LOG:  database system is shut down
+2018-12-30 00:11:45.760 MST [1800] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:11:45.760 MST [1800] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:11:45.826 MST [6496] LOG:  database system was shut down at 2018-12-30 00:11:44 MST
+2018-12-30 00:11:45.879 MST [1800] LOG:  database system is ready to accept connections
+2018-12-30 00:11:46.070 MST [1800] LOG:  received fast shutdown request
+2018-12-30 00:11:46.078 MST [1800] LOG:  aborting any active transactions
+2018-12-30 00:11:46.078 MST [1408] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:46.078 MST [8500] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:46.079 MST [12032] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:46.079 MST [1712] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:46.096 MST [1800] LOG:  worker process: logical replication launcher (PID 2348) exited with exit code 1
+2018-12-30 00:11:46.103 MST [8700] LOG:  shutting down
+2018-12-30 00:11:46.426 MST [1800] LOG:  database system is shut down
+2018-12-30 00:11:56.012 MST [6412] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:11:56.013 MST [6412] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:11:56.078 MST [3280] LOG:  database system was shut down at 2018-12-30 00:11:54 MST
+2018-12-30 00:11:56.133 MST [6412] LOG:  database system is ready to accept connections
+2018-12-30 00:11:56.332 MST [6412] LOG:  received fast shutdown request
+2018-12-30 00:11:56.341 MST [6412] LOG:  aborting any active transactions
+2018-12-30 00:11:56.342 MST [3528] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:56.342 MST [9868] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:56.343 MST [6968] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:56.343 MST [6100] FATAL:  terminating connection due to administrator command
+2018-12-30 00:11:56.358 MST [6412] LOG:  worker process: logical replication launcher (PID 14292) exited with exit code 1
+2018-12-30 00:11:56.360 MST [2676] LOG:  shutting down
+2018-12-30 00:11:56.647 MST [6412] LOG:  database system is shut down
+2018-12-30 00:12:06.127 MST [128] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:12:06.127 MST [128] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:12:06.187 MST [5752] LOG:  database system was shut down at 2018-12-30 00:12:04 MST
+2018-12-30 00:12:06.235 MST [128] LOG:  database system is ready to accept connections
+2018-12-30 00:12:06.552 MST [128] LOG:  received fast shutdown request
+2018-12-30 00:12:06.558 MST [128] LOG:  aborting any active transactions
+2018-12-30 00:12:06.559 MST [3984] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:06.559 MST [8108] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:06.559 MST [14244] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:06.560 MST [3632] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:06.577 MST [128] LOG:  worker process: logical replication launcher (PID 7072) exited with exit code 1
+2018-12-30 00:12:06.583 MST [12824] LOG:  shutting down
+2018-12-30 00:12:06.874 MST [128] LOG:  database system is shut down
+2018-12-30 00:12:16.441 MST [9560] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:12:16.441 MST [9560] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:12:16.501 MST [14256] LOG:  database system was shut down at 2018-12-30 00:12:15 MST
+2018-12-30 00:12:16.539 MST [9560] LOG:  database system is ready to accept connections
+2018-12-30 00:12:16.760 MST [9560] LOG:  received fast shutdown request
+2018-12-30 00:12:16.768 MST [9560] LOG:  aborting any active transactions
+2018-12-30 00:12:16.769 MST [11152] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:16.769 MST [12016] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:16.769 MST [4308] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:16.769 MST [5692] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:16.789 MST [9560] LOG:  worker process: logical replication launcher (PID 9000) exited with exit code 1
+2018-12-30 00:12:16.804 MST [13460] LOG:  shutting down
+2018-12-30 00:12:17.105 MST [9560] LOG:  database system is shut down
+2018-12-30 00:12:26.674 MST [12012] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:12:26.674 MST [12012] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:12:26.731 MST [9972] LOG:  database system was shut down at 2018-12-30 00:12:25 MST
+2018-12-30 00:12:26.777 MST [12012] LOG:  database system is ready to accept connections
+2018-12-30 00:12:27.008 MST [12012] LOG:  received fast shutdown request
+2018-12-30 00:12:27.018 MST [12012] LOG:  aborting any active transactions
+2018-12-30 00:12:27.019 MST [13612] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:27.019 MST [3280] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:27.019 MST [13244] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:27.019 MST [7156] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:27.040 MST [12012] LOG:  worker process: logical replication launcher (PID 14256) exited with exit code 1
+2018-12-30 00:12:27.041 MST [9876] LOG:  shutting down
+2018-12-30 00:12:27.355 MST [12012] LOG:  database system is shut down
+2018-12-30 00:12:37.210 MST [6464] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:12:37.210 MST [6464] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:12:37.276 MST [2892] LOG:  database system was shut down at 2018-12-30 00:12:35 MST
+2018-12-30 00:12:37.326 MST [6464] LOG:  database system is ready to accept connections
+2018-12-30 00:12:37.521 MST [6464] LOG:  received fast shutdown request
+2018-12-30 00:12:37.526 MST [6464] LOG:  aborting any active transactions
+2018-12-30 00:12:37.526 MST [13736] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:37.526 MST [8776] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:37.527 MST [9408] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:37.527 MST [10508] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:37.540 MST [6464] LOG:  worker process: logical replication launcher (PID 9868) exited with exit code 1
+2018-12-30 00:12:37.550 MST [9872] LOG:  shutting down
+2018-12-30 00:12:37.853 MST [6464] LOG:  database system is shut down
+2018-12-30 00:12:47.363 MST [2428] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:12:47.363 MST [2428] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:12:47.414 MST [3348] LOG:  database system was shut down at 2018-12-30 00:12:46 MST
+2018-12-30 00:12:47.452 MST [2428] LOG:  database system is ready to accept connections
+2018-12-30 00:12:47.668 MST [2428] LOG:  received fast shutdown request
+2018-12-30 00:12:47.680 MST [2428] LOG:  aborting any active transactions
+2018-12-30 00:12:47.680 MST [3108] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:47.680 MST [3184] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:47.681 MST [9972] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:47.681 MST [12824] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:47.700 MST [2428] LOG:  worker process: logical replication launcher (PID 11152) exited with exit code 1
+2018-12-30 00:12:47.707 MST [12660] LOG:  shutting down
+2018-12-30 00:12:47.974 MST [2428] LOG:  database system is shut down
+2018-12-30 00:12:56.494 MST [572] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:12:56.494 MST [572] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:12:56.546 MST [9924] LOG:  database system was shut down at 2018-12-30 00:12:55 MST
+2018-12-30 00:12:56.591 MST [572] LOG:  database system is ready to accept connections
+2018-12-30 00:12:56.797 MST [572] LOG:  received fast shutdown request
+2018-12-30 00:12:56.803 MST [572] LOG:  aborting any active transactions
+2018-12-30 00:12:56.804 MST [5836] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:56.804 MST [8452] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:56.804 MST [1536] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:56.804 MST [7752] FATAL:  terminating connection due to administrator command
+2018-12-30 00:12:56.810 MST [572] LOG:  worker process: logical replication launcher (PID 9948) exited with exit code 1
+2018-12-30 00:12:56.830 MST [12916] LOG:  shutting down
+2018-12-30 00:12:57.070 MST [572] LOG:  database system is shut down
+2018-12-30 00:13:05.308 MST [2496] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:13:05.308 MST [2496] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:13:05.354 MST [1012] LOG:  database system was shut down at 2018-12-30 00:13:04 MST
+2018-12-30 00:13:05.395 MST [2496] LOG:  database system is ready to accept connections
+2018-12-30 00:13:05.597 MST [2496] LOG:  received fast shutdown request
+2018-12-30 00:13:05.603 MST [2496] LOG:  aborting any active transactions
+2018-12-30 00:13:05.614 MST [4896] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:05.614 MST [6576] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:05.614 MST [4560] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:05.636 MST [2496] LOG:  worker process: logical replication launcher (PID 11860) exited with exit code 1
+2018-12-30 00:13:05.653 MST [128] LOG:  shutting down
+2018-12-30 00:13:06.024 MST [2496] LOG:  database system is shut down
+2018-12-30 00:13:14.116 MST [7872] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:13:14.117 MST [7872] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:13:14.166 MST [2608] LOG:  database system was shut down at 2018-12-30 00:13:12 MST
+2018-12-30 00:13:14.214 MST [7872] LOG:  database system is ready to accept connections
+2018-12-30 00:13:14.459 MST [7872] LOG:  received fast shutdown request
+2018-12-30 00:13:14.465 MST [7872] LOG:  aborting any active transactions
+2018-12-30 00:13:14.466 MST [2352] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:14.466 MST [3984] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:14.466 MST [724] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:14.467 MST [2496] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:14.487 MST [7872] LOG:  worker process: logical replication launcher (PID 12824) exited with exit code 1
+2018-12-30 00:13:14.495 MST [8636] LOG:  shutting down
+2018-12-30 00:13:14.797 MST [7872] LOG:  database system is shut down
+2018-12-30 00:13:23.031 MST [9788] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:13:23.031 MST [9788] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:13:23.077 MST [9924] LOG:  database system was shut down at 2018-12-30 00:13:21 MST
+2018-12-30 00:13:23.111 MST [9788] LOG:  database system is ready to accept connections
+2018-12-30 00:13:23.345 MST [9788] LOG:  received fast shutdown request
+2018-12-30 00:13:23.351 MST [9788] LOG:  aborting any active transactions
+2018-12-30 00:13:23.352 MST [10504] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:23.352 MST [12184] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:23.352 MST [4896] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:23.352 MST [4652] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:23.372 MST [9788] LOG:  worker process: logical replication launcher (PID 14196) exited with exit code 1
+2018-12-30 00:13:23.380 MST [12692] LOG:  shutting down
+2018-12-30 00:13:23.647 MST [9788] LOG:  database system is shut down
+2018-12-30 00:13:32.212 MST [10072] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:13:32.212 MST [10072] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:13:32.259 MST [10144] LOG:  database system was shut down at 2018-12-30 00:13:31 MST
+2018-12-30 00:13:32.300 MST [10072] LOG:  database system is ready to accept connections
+2018-12-30 00:13:32.514 MST [10072] LOG:  received fast shutdown request
+2018-12-30 00:13:32.522 MST [10072] LOG:  aborting any active transactions
+2018-12-30 00:13:32.522 MST [13768] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:32.523 MST [8492] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:32.523 MST [10744] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:32.523 MST [4560] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:32.544 MST [10072] LOG:  worker process: logical replication launcher (PID 14196) exited with exit code 1
+2018-12-30 00:13:32.548 MST [4204] LOG:  shutting down
+2018-12-30 00:13:32.842 MST [10072] LOG:  database system is shut down
+2018-12-30 00:13:40.651 MST [5532] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:13:40.651 MST [5532] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:13:40.703 MST [13768] LOG:  database system was shut down at 2018-12-30 00:13:39 MST
+2018-12-30 00:13:40.738 MST [5532] LOG:  database system is ready to accept connections
+2018-12-30 00:13:40.942 MST [5532] LOG:  received fast shutdown request
+2018-12-30 00:13:40.948 MST [5532] LOG:  aborting any active transactions
+2018-12-30 00:13:40.948 MST [12256] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:40.948 MST [1748] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:40.948 MST [12444] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:40.949 MST [2896] FATAL:  terminating connection due to administrator command
+2018-12-30 00:13:40.966 MST [5532] LOG:  worker process: logical replication launcher (PID 7036) exited with exit code 1
+2018-12-30 00:13:40.969 MST [4896] LOG:  shutting down
+2018-12-30 00:13:41.244 MST [5532] LOG:  database system is shut down
+2018-12-30 00:20:47.930 MST [7100] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:20:47.931 MST [7100] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:20:47.997 MST [1800] LOG:  database system was shut down at 2018-12-30 00:20:46 MST
+2018-12-30 00:20:48.046 MST [7100] LOG:  database system is ready to accept connections
+2018-12-30 00:20:49.430 MST [7100] LOG:  received fast shutdown request
+2018-12-30 00:20:49.442 MST [7100] LOG:  aborting any active transactions
+2018-12-30 00:20:49.443 MST [12164] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:49.443 MST [2848] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:49.443 MST [10484] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:49.444 MST [8452] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:49.462 MST [7100] LOG:  worker process: logical replication launcher (PID 9680) exited with exit code 1
+2018-12-30 00:20:49.471 MST [7412] LOG:  shutting down
+2018-12-30 00:20:49.773 MST [7100] LOG:  database system is shut down
+2018-12-30 00:20:59.376 MST [11424] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:20:59.376 MST [11424] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:20:59.434 MST [4312] LOG:  database system was shut down at 2018-12-30 00:20:58 MST
+2018-12-30 00:20:59.480 MST [11424] LOG:  database system is ready to accept connections
+2018-12-30 00:20:59.736 MST [11424] LOG:  received fast shutdown request
+2018-12-30 00:20:59.742 MST [11424] LOG:  aborting any active transactions
+2018-12-30 00:20:59.743 MST [4940] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:59.743 MST [13668] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:59.743 MST [10144] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:59.744 MST [724] FATAL:  terminating connection due to administrator command
+2018-12-30 00:20:59.761 MST [11424] LOG:  worker process: logical replication launcher (PID 7776) exited with exit code 1
+2018-12-30 00:20:59.766 MST [2124] LOG:  shutting down
+2018-12-30 00:21:00.072 MST [11424] LOG:  database system is shut down
+2018-12-30 00:22:54.411 MST [12836] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:22:54.411 MST [12836] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:22:54.478 MST [1156] LOG:  database system was shut down at 2018-12-30 00:22:53 MST
+2018-12-30 00:22:54.529 MST [12836] LOG:  database system is ready to accept connections
+2018-12-30 00:22:55.896 MST [12836] LOG:  received fast shutdown request
+2018-12-30 00:22:55.905 MST [12836] LOG:  aborting any active transactions
+2018-12-30 00:22:55.906 MST [4632] FATAL:  terminating connection due to administrator command
+2018-12-30 00:22:55.906 MST [3476] FATAL:  terminating connection due to administrator command
+2018-12-30 00:22:55.906 MST [7052] FATAL:  terminating connection due to administrator command
+2018-12-30 00:22:55.907 MST [9408] FATAL:  terminating connection due to administrator command
+2018-12-30 00:22:55.913 MST [12836] LOG:  worker process: logical replication launcher (PID 9972) exited with exit code 1
+2018-12-30 00:22:55.926 MST [11636] LOG:  shutting down
+2018-12-30 00:22:56.278 MST [12836] LOG:  database system is shut down
+2018-12-30 00:23:06.073 MST [3944] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:23:06.073 MST [3944] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:23:06.135 MST [5460] LOG:  database system was shut down at 2018-12-30 00:23:04 MST
+2018-12-30 00:23:06.184 MST [3944] LOG:  database system is ready to accept connections
+2018-12-30 00:23:06.422 MST [3944] LOG:  received fast shutdown request
+2018-12-30 00:23:06.427 MST [3944] LOG:  aborting any active transactions
+2018-12-30 00:23:06.427 MST [10076] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:06.427 MST [9276] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:06.428 MST [1600] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:06.428 MST [7600] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:06.445 MST [3944] LOG:  worker process: logical replication launcher (PID 8676) exited with exit code 1
+2018-12-30 00:23:06.447 MST [2352] LOG:  shutting down
+2018-12-30 00:23:06.712 MST [3944] LOG:  database system is shut down
+2018-12-30 00:23:16.123 MST [12184] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:23:16.124 MST [12184] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:23:16.186 MST [8676] LOG:  database system was shut down at 2018-12-30 00:23:14 MST
+2018-12-30 00:23:16.232 MST [12184] LOG:  database system is ready to accept connections
+2018-12-30 00:23:16.352 MST [1144] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.352 MST [1144] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.355 MST [1144] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.355 MST [1144] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.359 MST [9080] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.359 MST [9080] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.362 MST [3392] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.362 MST [3392] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.369 MST [5552] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.369 MST [5552] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.373 MST [1144] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.373 MST [1144] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.377 MST [9080] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.377 MST [9080] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.384 MST [3392] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.384 MST [3392] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.386 MST [5552] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.386 MST [5552] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.389 MST [1144] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.389 MST [1144] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.393 MST [9080] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.393 MST [9080] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.397 MST [3392] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.397 MST [3392] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.404 MST [5552] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.404 MST [5552] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.409 MST [1144] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:23:16.409 MST [1144] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:23:16.445 MST [12184] LOG:  received fast shutdown request
+2018-12-30 00:23:16.453 MST [12184] LOG:  aborting any active transactions
+2018-12-30 00:23:16.454 MST [5552] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:16.455 MST [3392] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:16.455 MST [9080] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:16.455 MST [1144] FATAL:  terminating connection due to administrator command
+2018-12-30 00:23:16.471 MST [12184] LOG:  worker process: logical replication launcher (PID 4484) exited with exit code 1
+2018-12-30 00:23:16.471 MST [1804] LOG:  shutting down
+2018-12-30 00:23:16.545 MST [12184] LOG:  database system is shut down
+2018-12-30 00:28:03.827 MST [9004] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:28:03.827 MST [9004] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:28:03.878 MST [2056] LOG:  database system was shut down at 2018-12-30 00:28:02 MST
+2018-12-30 00:28:03.924 MST [9004] LOG:  database system is ready to accept connections
+2018-12-30 00:28:13.899 MST [9004] LOG:  received fast shutdown request
+2018-12-30 00:28:13.906 MST [9004] LOG:  aborting any active transactions
+2018-12-30 00:28:13.906 MST [9304] FATAL:  terminating connection due to administrator command
+2018-12-30 00:28:13.907 MST [12756] FATAL:  terminating connection due to administrator command
+2018-12-30 00:28:13.907 MST [3528] FATAL:  terminating connection due to administrator command
+2018-12-30 00:28:13.908 MST [8256] FATAL:  terminating connection due to administrator command
+2018-12-30 00:28:13.925 MST [9004] LOG:  worker process: logical replication launcher (PID 9484) exited with exit code 1
+2018-12-30 00:28:13.927 MST [2140] LOG:  shutting down
+2018-12-30 00:28:14.195 MST [9004] LOG:  database system is shut down
+2018-12-30 00:28:21.747 MST [9484] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:28:21.747 MST [9484] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:28:21.892 MST [12208] LOG:  database system was shut down at 2018-12-30 00:28:20 MST
+2018-12-30 00:28:21.933 MST [9484] LOG:  database system is ready to accept connections
+2018-12-30 00:29:18.765 MST [9484] LOG:  received fast shutdown request
+2018-12-30 00:29:18.772 MST [9484] LOG:  aborting any active transactions
+2018-12-30 00:29:18.773 MST [9936] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:18.773 MST [3244] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:18.773 MST [4964] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:18.773 MST [9408] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:18.782 MST [9484] LOG:  worker process: logical replication launcher (PID 11128) exited with exit code 1
+2018-12-30 00:29:18.790 MST [1800] LOG:  shutting down
+2018-12-30 00:29:19.040 MST [9484] LOG:  database system is shut down
+2018-12-30 00:29:26.494 MST [9624] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:29:26.494 MST [9624] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:29:26.541 MST [11128] LOG:  database system was shut down at 2018-12-30 00:29:25 MST
+2018-12-30 00:29:26.582 MST [9624] LOG:  database system is ready to accept connections
+2018-12-30 00:29:26.714 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.714 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.717 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.717 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.721 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.721 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.725 MST [1800] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.725 MST [1800] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.728 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.728 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.732 MST [2496] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.732 MST [2496] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.736 MST [1800] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.736 MST [1800] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.740 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.740 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.743 MST [2496] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.743 MST [2496] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.747 MST [1800] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.747 MST [1800] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.753 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.753 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.756 MST [2496] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.756 MST [2496] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.761 MST [1800] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.761 MST [1800] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.766 MST [2140] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:29:26.766 MST [2140] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:29:26.797 MST [9624] LOG:  received fast shutdown request
+2018-12-30 00:29:26.802 MST [9624] LOG:  aborting any active transactions
+2018-12-30 00:29:26.803 MST [2496] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:26.803 MST [1800] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:26.803 MST [2140] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:26.807 MST [8676] FATAL:  terminating connection due to administrator command
+2018-12-30 00:29:26.819 MST [9624] LOG:  worker process: logical replication launcher (PID 5832) exited with exit code 1
+2018-12-30 00:29:26.819 MST [7092] LOG:  shutting down
+2018-12-30 00:29:26.886 MST [9624] LOG:  database system is shut down
+2018-12-30 00:30:29.870 MST [13692] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:30:29.870 MST [13692] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:30:29.925 MST [12828] LOG:  database system was shut down at 2018-12-30 00:30:28 MST
+2018-12-30 00:30:29.965 MST [13692] LOG:  database system is ready to accept connections
+2018-12-30 00:30:31.050 MST [13692] LOG:  received fast shutdown request
+2018-12-30 00:30:31.057 MST [13692] LOG:  aborting any active transactions
+2018-12-30 00:30:31.057 MST [5184] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:31.058 MST [11772] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:31.058 MST [5832] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:31.058 MST [8744] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:31.075 MST [13692] LOG:  worker process: logical replication launcher (PID 7048) exited with exit code 1
+2018-12-30 00:30:31.076 MST [11128] LOG:  shutting down
+2018-12-30 00:30:31.353 MST [13692] LOG:  database system is shut down
+2018-12-30 00:30:38.936 MST [11144] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:30:38.936 MST [11144] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:30:38.987 MST [8592] LOG:  database system was shut down at 2018-12-30 00:30:37 MST
+2018-12-30 00:30:39.029 MST [11144] LOG:  database system is ready to accept connections
+2018-12-30 00:30:39.272 MST [11144] LOG:  received fast shutdown request
+2018-12-30 00:30:39.277 MST [11144] LOG:  aborting any active transactions
+2018-12-30 00:30:39.278 MST [1012] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:39.278 MST [12952] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:39.278 MST [1872] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:39.279 MST [5160] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:39.295 MST [11144] LOG:  worker process: logical replication launcher (PID 4888) exited with exit code 1
+2018-12-30 00:30:39.296 MST [7048] LOG:  shutting down
+2018-12-30 00:30:39.535 MST [11144] LOG:  database system is shut down
+2018-12-30 00:30:47.200 MST [9788] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:30:47.200 MST [9788] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:30:47.246 MST [1872] LOG:  database system was shut down at 2018-12-30 00:30:45 MST
+2018-12-30 00:30:47.286 MST [9788] LOG:  database system is ready to accept connections
+2018-12-30 00:30:47.423 MST [7444] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.423 MST [7444] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.426 MST [7444] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.426 MST [7444] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.429 MST [7444] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.429 MST [7444] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.433 MST [7444] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.433 MST [7444] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.437 MST [12448] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.437 MST [12448] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.441 MST [9592] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.441 MST [9592] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.445 MST [7444] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.445 MST [7444] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.450 MST [12448] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.450 MST [12448] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.454 MST [12596] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.454 MST [12596] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.457 MST [9592] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.457 MST [9592] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.461 MST [7444] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.461 MST [7444] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.465 MST [12448] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.465 MST [12448] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.468 MST [12596] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.468 MST [12596] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.473 MST [9592] ERROR:  relation "generatedschema.string_to_int" does not exist at character 13
+2018-12-30 00:30:47.473 MST [9592] STATEMENT:  DELETE FROM generatedschema.String_to_Int
+2018-12-30 00:30:47.505 MST [9788] LOG:  received fast shutdown request
+2018-12-30 00:30:47.511 MST [9788] LOG:  aborting any active transactions
+2018-12-30 00:30:47.511 MST [12596] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:47.511 MST [9592] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:47.511 MST [7444] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:47.512 MST [12448] FATAL:  terminating connection due to administrator command
+2018-12-30 00:30:47.516 MST [9788] LOG:  worker process: logical replication launcher (PID 11144) exited with exit code 1
+2018-12-30 00:30:47.527 MST [11388] LOG:  shutting down
+2018-12-30 00:30:47.593 MST [9788] LOG:  database system is shut down
+2018-12-30 00:31:46.614 MST [4308] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:31:46.614 MST [4308] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:31:46.663 MST [2692] LOG:  database system was shut down at 2018-12-30 00:31:45 MST
+2018-12-30 00:31:46.703 MST [4308] LOG:  database system is ready to accept connections
+2018-12-30 00:31:47.810 MST [4308] LOG:  received fast shutdown request
+2018-12-30 00:31:47.817 MST [4308] LOG:  aborting any active transactions
+2018-12-30 00:31:47.817 MST [9996] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:47.817 MST [9684] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:47.818 MST [8580] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:47.818 MST [3092] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:47.835 MST [4308] LOG:  worker process: logical replication launcher (PID 7032) exited with exit code 1
+2018-12-30 00:31:47.836 MST [100] LOG:  shutting down
+2018-12-30 00:31:48.127 MST [4308] LOG:  database system is shut down
+2018-12-30 00:31:56.144 MST [600] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:31:56.144 MST [600] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:31:56.193 MST [8580] LOG:  database system was shut down at 2018-12-30 00:31:54 MST
+2018-12-30 00:31:56.257 MST [600] LOG:  database system is ready to accept connections
+2018-12-30 00:31:56.473 MST [600] LOG:  received fast shutdown request
+2018-12-30 00:31:56.479 MST [600] LOG:  aborting any active transactions
+2018-12-30 00:31:56.480 MST [3920] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:56.480 MST [7356] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:56.480 MST [6460] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:56.480 MST [2892] FATAL:  terminating connection due to administrator command
+2018-12-30 00:31:56.486 MST [600] LOG:  worker process: logical replication launcher (PID 3536) exited with exit code 1
+2018-12-30 00:31:56.498 MST [892] LOG:  shutting down
+2018-12-30 00:31:56.793 MST [600] LOG:  database system is shut down
+2018-12-30 00:32:04.600 MST [5244] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:32:04.600 MST [5244] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:32:04.649 MST [8752] LOG:  database system was shut down at 2018-12-30 00:32:03 MST
+2018-12-30 00:32:04.682 MST [5244] LOG:  database system is ready to accept connections
+2018-12-30 00:32:05.180 MST [5244] LOG:  received fast shutdown request
+2018-12-30 00:32:05.186 MST [5244] LOG:  aborting any active transactions
+2018-12-30 00:32:05.186 MST [8500] FATAL:  terminating connection due to administrator command
+2018-12-30 00:32:05.186 MST [9004] FATAL:  terminating connection due to administrator command
+2018-12-30 00:32:05.186 MST [5500] FATAL:  terminating connection due to administrator command
+2018-12-30 00:32:05.187 MST [5188] FATAL:  terminating connection due to administrator command
+2018-12-30 00:32:05.207 MST [5244] LOG:  worker process: logical replication launcher (PID 9680) exited with exit code 1
+2018-12-30 00:32:05.217 MST [9408] LOG:  shutting down
+2018-12-30 00:32:05.471 MST [5244] LOG:  database system is shut down
+2018-12-30 00:36:45.298 MST [9600] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:36:45.298 MST [9600] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:36:45.344 MST [4636] LOG:  database system was shut down at 2018-12-30 00:36:44 MST
+2018-12-30 00:36:45.385 MST [9600] LOG:  database system is ready to accept connections
+2018-12-30 00:36:46.525 MST [9600] LOG:  received fast shutdown request
+2018-12-30 00:36:46.533 MST [9600] LOG:  aborting any active transactions
+2018-12-30 00:36:46.534 MST [9996] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:46.534 MST [2892] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:46.534 MST [6496] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:46.535 MST [1844] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:46.553 MST [9600] LOG:  worker process: logical replication launcher (PID 3876) exited with exit code 1
+2018-12-30 00:36:46.558 MST [13092] LOG:  shutting down
+2018-12-30 00:36:46.847 MST [9600] LOG:  database system is shut down
+2018-12-30 00:36:54.681 MST [9600] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:36:54.681 MST [9600] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:36:54.727 MST [4476] LOG:  database system was shut down at 2018-12-30 00:36:53 MST
+2018-12-30 00:36:54.771 MST [9600] LOG:  database system is ready to accept connections
+2018-12-30 00:36:55.015 MST [9600] LOG:  received fast shutdown request
+2018-12-30 00:36:55.021 MST [9600] LOG:  aborting any active transactions
+2018-12-30 00:36:55.022 MST [12952] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:55.022 MST [9352] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:55.022 MST [4732] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:55.023 MST [11860] FATAL:  terminating connection due to administrator command
+2018-12-30 00:36:55.043 MST [9600] LOG:  worker process: logical replication launcher (PID 12188) exited with exit code 1
+2018-12-30 00:36:55.061 MST [9300] LOG:  shutting down
+2018-12-30 00:36:55.310 MST [9600] LOG:  database system is shut down
+2018-12-30 00:37:02.700 MST [7048] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:37:02.700 MST [7048] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:37:02.746 MST [8776] LOG:  database system was shut down at 2018-12-30 00:37:01 MST
+2018-12-30 00:37:02.787 MST [7048] LOG:  database system is ready to accept connections
+2018-12-30 00:37:03.005 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.005 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.025 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.025 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.042 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.042 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.059 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.059 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.077 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.077 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.094 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.094 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.113 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.113 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.130 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.130 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.153 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.153 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.173 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.173 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.192 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.192 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.211 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.211 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.229 MST [5816] ERROR:  syntax error at or near "CONSTRAINT" at character 58
+2018-12-30 00:37:03.229 MST [5816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:37:03.261 MST [7048] LOG:  received fast shutdown request
+2018-12-30 00:37:03.267 MST [7048] LOG:  aborting any active transactions
+2018-12-30 00:37:03.267 MST [5816] FATAL:  terminating connection due to administrator command
+2018-12-30 00:37:03.267 MST [4252] FATAL:  terminating connection due to administrator command
+2018-12-30 00:37:03.267 MST [13104] FATAL:  terminating connection due to administrator command
+2018-12-30 00:37:03.267 MST [9540] FATAL:  terminating connection due to administrator command
+2018-12-30 00:37:03.272 MST [7048] LOG:  worker process: logical replication launcher (PID 3256) exited with exit code 1
+2018-12-30 00:37:03.290 MST [10148] LOG:  shutting down
+2018-12-30 00:37:03.562 MST [7048] LOG:  database system is shut down
+2018-12-30 00:42:48.621 MST [1156] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:42:48.621 MST [1156] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:42:48.692 MST [6592] LOG:  database system was shut down at 2018-12-30 00:42:47 MST
+2018-12-30 00:42:48.745 MST [1156] LOG:  database system is ready to accept connections
+2018-12-30 00:42:50.267 MST [1156] LOG:  received fast shutdown request
+2018-12-30 00:42:50.275 MST [1156] LOG:  aborting any active transactions
+2018-12-30 00:42:50.276 MST [10140] FATAL:  terminating connection due to administrator command
+2018-12-30 00:42:50.276 MST [5180] FATAL:  terminating connection due to administrator command
+2018-12-30 00:42:50.276 MST [11460] FATAL:  terminating connection due to administrator command
+2018-12-30 00:42:50.277 MST [6572] FATAL:  terminating connection due to administrator command
+2018-12-30 00:42:50.285 MST [1156] LOG:  worker process: logical replication launcher (PID 11128) exited with exit code 1
+2018-12-30 00:42:50.303 MST [9684] LOG:  shutting down
+2018-12-30 00:42:50.650 MST [1156] LOG:  database system is shut down
+2018-12-30 00:42:59.990 MST [7196] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:42:59.990 MST [7196] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:43:00.051 MST [8196] LOG:  database system was shut down at 2018-12-30 00:42:58 MST
+2018-12-30 00:43:00.101 MST [7196] LOG:  database system is ready to accept connections
+2018-12-30 00:43:00.328 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.328 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.354 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.354 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.375 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.375 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.402 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.402 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.423 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.423 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.451 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.451 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.472 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.472 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.497 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.497 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.519 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.519 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.540 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.540 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.559 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.559 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.584 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.584 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.608 MST [2816] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:43:00.608 MST [2816] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:43:00.653 MST [7196] LOG:  received fast shutdown request
+2018-12-30 00:43:00.660 MST [7196] LOG:  aborting any active transactions
+2018-12-30 00:43:00.661 MST [2816] FATAL:  terminating connection due to administrator command
+2018-12-30 00:43:00.663 MST [10148] FATAL:  terminating connection due to administrator command
+2018-12-30 00:43:00.664 MST [3536] FATAL:  terminating connection due to administrator command
+2018-12-30 00:43:00.666 MST [13768] FATAL:  terminating connection due to administrator command
+2018-12-30 00:43:00.684 MST [7196] LOG:  worker process: logical replication launcher (PID 5408) exited with exit code 1
+2018-12-30 00:43:00.689 MST [11332] LOG:  shutting down
+2018-12-30 00:43:01.034 MST [7196] LOG:  database system is shut down
+2018-12-30 00:56:46.851 MST [9872] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:56:46.851 MST [9872] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:56:46.929 MST [1456] LOG:  database system was shut down at 2018-12-30 00:56:45 MST
+2018-12-30 00:56:46.977 MST [9872] LOG:  database system is ready to accept connections
+2018-12-30 00:56:48.336 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.336 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.366 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.366 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.392 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.392 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.417 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.417 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.443 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.443 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.467 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.467 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.492 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.492 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.513 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.513 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.534 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.534 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.560 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.560 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.587 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.587 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.620 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.620 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.654 MST [7164] ERROR:  multiple primary keys for table "string_to_int" are not allowed
+2018-12-30 00:56:48.654 MST [7164] STATEMENT:  ALTER TABLE generatedschema.string_to_int ADD CONSTRAINT primary_key PRIMARY KEY (key)
+2018-12-30 00:56:48.701 MST [9872] LOG:  received fast shutdown request
+2018-12-30 00:56:48.711 MST [9872] LOG:  aborting any active transactions
+2018-12-30 00:56:48.711 MST [7164] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:48.712 MST [8476] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:48.712 MST [7356] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:48.713 MST [2140] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:48.731 MST [9872] LOG:  worker process: logical replication launcher (PID 9600) exited with exit code 1
+2018-12-30 00:56:48.736 MST [9004] LOG:  shutting down
+2018-12-30 00:56:49.109 MST [9872] LOG:  database system is shut down
+2018-12-30 00:56:58.915 MST [13668] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 00:56:58.915 MST [13668] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 00:56:59.075 MST [10144] LOG:  database system was shut down at 2018-12-30 00:56:57 MST
+2018-12-30 00:56:59.126 MST [13668] LOG:  database system is ready to accept connections
+2018-12-30 00:56:59.399 MST [13668] LOG:  received fast shutdown request
+2018-12-30 00:56:59.407 MST [13668] LOG:  aborting any active transactions
+2018-12-30 00:56:59.408 MST [4712] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:59.408 MST [2372] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:59.408 MST [412] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:59.408 MST [2896] FATAL:  terminating connection due to administrator command
+2018-12-30 00:56:59.413 MST [13668] LOG:  worker process: logical replication launcher (PID 8196) exited with exit code 1
+2018-12-30 00:56:59.432 MST [11512] LOG:  shutting down
+2018-12-30 00:56:59.743 MST [13668] LOG:  database system is shut down
+2018-12-30 01:00:57.412 MST [10228] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:00:57.413 MST [10228] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:00:57.459 MST [5576] LOG:  database system was shut down at 2018-12-30 01:00:56 MST
+2018-12-30 01:00:57.500 MST [10228] LOG:  database system is ready to accept connections
+2018-12-30 01:00:58.952 MST [10228] LOG:  received fast shutdown request
+2018-12-30 01:00:58.958 MST [10228] LOG:  aborting any active transactions
+2018-12-30 01:00:58.959 MST [10260] FATAL:  terminating connection due to administrator command
+2018-12-30 01:00:58.959 MST [1920] FATAL:  terminating connection due to administrator command
+2018-12-30 01:00:58.959 MST [6452] FATAL:  terminating connection due to administrator command
+2018-12-30 01:00:58.959 MST [7036] FATAL:  terminating connection due to administrator command
+2018-12-30 01:00:58.977 MST [10228] LOG:  worker process: logical replication launcher (PID 5224) exited with exit code 1
+2018-12-30 01:00:58.979 MST [11380] LOG:  shutting down
+2018-12-30 01:00:59.249 MST [10228] LOG:  database system is shut down
+2018-12-30 01:01:07.265 MST [4476] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:01:07.265 MST [4476] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:01:07.315 MST [4940] LOG:  database system was shut down at 2018-12-30 01:01:05 MST
+2018-12-30 01:01:07.358 MST [4476] LOG:  database system is ready to accept connections
+2018-12-30 01:01:07.618 MST [4476] LOG:  received fast shutdown request
+2018-12-30 01:01:07.624 MST [4476] LOG:  aborting any active transactions
+2018-12-30 01:01:07.624 MST [7980] FATAL:  terminating connection due to administrator command
+2018-12-30 01:01:07.624 MST [9348] FATAL:  terminating connection due to administrator command
+2018-12-30 01:01:07.625 MST [13092] FATAL:  terminating connection due to administrator command
+2018-12-30 01:01:07.625 MST [9940] FATAL:  terminating connection due to administrator command
+2018-12-30 01:01:07.642 MST [4476] LOG:  worker process: logical replication launcher (PID 4672) exited with exit code 1
+2018-12-30 01:01:07.646 MST [8688] LOG:  shutting down
+2018-12-30 01:01:07.964 MST [4476] LOG:  database system is shut down
+2018-12-30 01:02:45.970 MST [3528] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:02:45.970 MST [3528] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:02:46.043 MST [9900] LOG:  database system was shut down at 2018-12-30 01:02:44 MST
+2018-12-30 01:02:46.090 MST [3528] LOG:  database system is ready to accept connections
+2018-12-30 01:02:47.845 MST [3528] LOG:  received fast shutdown request
+2018-12-30 01:02:47.854 MST [3528] LOG:  aborting any active transactions
+2018-12-30 01:02:47.854 MST [7472] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:47.854 MST [6140] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:47.854 MST [1956] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:47.855 MST [14260] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:47.873 MST [3528] LOG:  worker process: logical replication launcher (PID 4940) exited with exit code 1
+2018-12-30 01:02:47.876 MST [2692] LOG:  shutting down
+2018-12-30 01:02:48.271 MST [3528] LOG:  database system is shut down
+2018-12-30 01:02:57.663 MST [10496] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:02:57.663 MST [10496] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:02:57.717 MST [13768] LOG:  database system was shut down at 2018-12-30 01:02:56 MST
+2018-12-30 01:02:57.767 MST [10496] LOG:  database system is ready to accept connections
+2018-12-30 01:02:58.056 MST [10496] LOG:  received fast shutdown request
+2018-12-30 01:02:58.063 MST [10496] LOG:  aborting any active transactions
+2018-12-30 01:02:58.063 MST [9972] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:58.063 MST [344] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:58.064 MST [7156] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:58.064 MST [10620] FATAL:  terminating connection due to administrator command
+2018-12-30 01:02:58.081 MST [10496] LOG:  worker process: logical replication launcher (PID 6828) exited with exit code 1
+2018-12-30 01:02:58.086 MST [2496] LOG:  shutting down
+2018-12-30 01:02:58.417 MST [10496] LOG:  database system is shut down
+2018-12-30 01:11:26.445 MST [2472] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:11:26.445 MST [2472] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:11:26.494 MST [12456] LOG:  database system was shut down at 2018-12-30 01:11:24 MST
+2018-12-30 01:11:26.537 MST [2472] LOG:  database system is ready to accept connections
+2018-12-30 01:11:27.621 MST [12956] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.621 MST [12956] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.686 MST [1016] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.686 MST [1016] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.715 MST [12956] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.715 MST [12956] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.733 MST [708] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.733 MST [708] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.758 MST [7052] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.758 MST [7052] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.785 MST [1016] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.785 MST [1016] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.806 MST [12956] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.806 MST [12956] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.826 MST [708] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.826 MST [708] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.843 MST [7052] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.843 MST [7052] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.861 MST [1016] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.861 MST [1016] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.883 MST [12956] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.883 MST [12956] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.902 MST [708] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.902 MST [708] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.921 MST [7052] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.921 MST [7052] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.940 MST [1016] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:11:27.940 MST [1016] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:11:27.975 MST [2472] LOG:  received fast shutdown request
+2018-12-30 01:11:27.983 MST [2472] LOG:  aborting any active transactions
+2018-12-30 01:11:27.983 MST [12956] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:27.984 MST [1016] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:27.984 MST [708] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:27.985 MST [7052] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:28.001 MST [2472] LOG:  worker process: logical replication launcher (PID 5504) exited with exit code 1
+2018-12-30 01:11:28.009 MST [8688] LOG:  shutting down
+2018-12-30 01:11:28.359 MST [2472] LOG:  database system is shut down
+2018-12-30 01:11:37.020 MST [9296] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:11:37.020 MST [9296] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:11:37.072 MST [12164] LOG:  database system was shut down at 2018-12-30 01:11:35 MST
+2018-12-30 01:11:37.118 MST [9296] LOG:  database system is ready to accept connections
+2018-12-30 01:11:37.278 MST [10620] ERROR:  syntax error at or near "Column" at character 422
+2018-12-30 01:11:37.278 MST [10620] STATEMENT:  INSERT INTO generatedschema.id_to_post (key, id, userid, title, body) VALUES ('e32ccd85-710b-44f4-97f6-7a3a9a3463c4', 'e32ccd85-710b-44f4-97f6-7a3a9a3463c4', 0, E'Title', E'This is a test post.') ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = 'e32ccd85-710b-44f4-97f6-7a3a9a3463c4', id = 'e32ccd85-710b-44f4-97f6-7a3a9a3463c4', userid = 0, title = E'Title', body = E'This is a test post.' WHERE TRUE RETURNING Column(name=key, type=uuid, size=null)
+2018-12-30 01:11:37.308 MST [9296] LOG:  received fast shutdown request
+2018-12-30 01:11:37.314 MST [9296] LOG:  aborting any active transactions
+2018-12-30 01:11:37.315 MST [1800] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:37.315 MST [3272] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:37.315 MST [10620] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:37.315 MST [12208] FATAL:  terminating connection due to administrator command
+2018-12-30 01:11:37.331 MST [9296] LOG:  worker process: logical replication launcher (PID 5496) exited with exit code 1
+2018-12-30 01:11:37.334 MST [1016] LOG:  shutting down
+2018-12-30 01:11:37.582 MST [9296] LOG:  database system is shut down
+2018-12-30 01:13:18.297 MST [11636] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:13:18.298 MST [11636] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:13:18.364 MST [2752] LOG:  database system was shut down at 2018-12-30 01:13:16 MST
+2018-12-30 01:13:18.408 MST [11636] LOG:  database system is ready to accept connections
+2018-12-30 01:13:19.771 MST [14624] ERROR:  syntax error at or near "Column" at character 422
+2018-12-30 01:13:19.771 MST [14624] STATEMENT:  INSERT INTO generatedschema.id_to_post (key, id, userid, title, body) VALUES ('b4b08df7-fae8-431e-88c6-19e639fae2d4', 'b4b08df7-fae8-431e-88c6-19e639fae2d4', 0, E'Title', E'This is a test post.') ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = 'b4b08df7-fae8-431e-88c6-19e639fae2d4', id = 'b4b08df7-fae8-431e-88c6-19e639fae2d4', userid = 0, title = E'Title', body = E'This is a test post.' WHERE TRUE RETURNING Column(name=key, type=uuid, size=null)
+2018-12-30 01:13:19.808 MST [11636] LOG:  received fast shutdown request
+2018-12-30 01:13:19.816 MST [11636] LOG:  aborting any active transactions
+2018-12-30 01:13:19.816 MST [14624] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:19.816 MST [14592] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:19.816 MST [4512] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:19.817 MST [14572] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:19.833 MST [11636] LOG:  worker process: logical replication launcher (PID 14480) exited with exit code 1
+2018-12-30 01:13:19.841 MST [13104] LOG:  shutting down
+2018-12-30 01:13:20.169 MST [11636] LOG:  database system is shut down
+2018-12-30 01:13:29.720 MST [14484] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:13:29.720 MST [14484] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:13:29.781 MST [6460] LOG:  database system was shut down at 2018-12-30 01:13:28 MST
+2018-12-30 01:13:29.829 MST [14484] LOG:  database system is ready to accept connections
+2018-12-30 01:13:30.010 MST [15208] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.010 MST [15208] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.080 MST [15144] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.080 MST [15144] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.122 MST [15208] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.122 MST [15208] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.152 MST [15180] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.152 MST [15180] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.199 MST [15204] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.199 MST [15204] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.235 MST [15144] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.235 MST [15144] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.262 MST [15208] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.262 MST [15208] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.282 MST [15180] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.282 MST [15180] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.300 MST [15204] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.300 MST [15204] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.320 MST [15144] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.320 MST [15144] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.341 MST [15208] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.341 MST [15208] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.365 MST [15180] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.365 MST [15180] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.389 MST [15204] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.389 MST [15204] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.418 MST [15144] ERROR:  syntax error at or near "Column" at character 168
+2018-12-30 01:13:30.418 MST [15144] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 1) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 1 WHERE TRUE RETURNING Column(name=key, type=text, size=null)
+2018-12-30 01:13:30.472 MST [14484] LOG:  received fast shutdown request
+2018-12-30 01:13:30.485 MST [14484] LOG:  aborting any active transactions
+2018-12-30 01:13:30.485 MST [15144] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:30.486 MST [15208] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:30.486 MST [15204] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:30.486 MST [15180] FATAL:  terminating connection due to administrator command
+2018-12-30 01:13:30.490 MST [14484] LOG:  worker process: logical replication launcher (PID 14912) exited with exit code 1
+2018-12-30 01:13:30.510 MST [7256] LOG:  shutting down
+2018-12-30 01:13:30.833 MST [14484] LOG:  database system is shut down
+2018-12-30 01:14:53.382 MST [2140] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:14:53.382 MST [2140] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:14:53.432 MST [12112] LOG:  database system was shut down at 2018-12-30 01:14:51 MST
+2018-12-30 01:14:53.466 MST [2140] LOG:  database system is ready to accept connections
+2018-12-30 01:14:54.665 MST [2140] LOG:  received fast shutdown request
+2018-12-30 01:14:54.672 MST [2140] LOG:  aborting any active transactions
+2018-12-30 01:14:54.672 MST [15048] FATAL:  terminating connection due to administrator command
+2018-12-30 01:14:54.672 MST [6440] FATAL:  terminating connection due to administrator command
+2018-12-30 01:14:54.672 MST [15116] FATAL:  terminating connection due to administrator command
+2018-12-30 01:14:54.673 MST [14912] FATAL:  terminating connection due to administrator command
+2018-12-30 01:14:54.690 MST [2140] LOG:  worker process: logical replication launcher (PID 15224) exited with exit code 1
+2018-12-30 01:14:54.694 MST [12660] LOG:  shutting down
+2018-12-30 01:14:54.973 MST [2140] LOG:  database system is shut down
+2018-12-30 01:15:04.554 MST [9268] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:15:04.554 MST [9268] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:15:04.603 MST [5108] LOG:  database system was shut down at 2018-12-30 01:15:03 MST
+2018-12-30 01:15:04.643 MST [9268] LOG:  database system is ready to accept connections
+2018-12-30 01:15:04.911 MST [7136] ERROR:  column reference "value" is ambiguous at character 153
+2018-12-30 01:15:04.911 MST [7136] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE value = 3 RETURNING key
+2018-12-30 01:15:05.053 MST [10140] ERROR:  column reference "value" is ambiguous at character 153
+2018-12-30 01:15:05.053 MST [10140] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE value = 1 RETURNING key
+2018-12-30 01:15:05.158 MST [10140] ERROR:  duplicate key value violates unique constraint "primary_key"
+2018-12-30 01:15:05.158 MST [10140] DETAIL:  Key (key)=(a) already exists.
+2018-12-30 01:15:05.158 MST [10140] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2)
+2018-12-30 01:15:05.239 MST [9268] LOG:  received fast shutdown request
+2018-12-30 01:15:05.245 MST [9268] LOG:  aborting any active transactions
+2018-12-30 01:15:05.245 MST [11512] FATAL:  terminating connection due to administrator command
+2018-12-30 01:15:05.246 MST [128] FATAL:  terminating connection due to administrator command
+2018-12-30 01:15:05.309 MST [6452] FATAL:  terminating connection due to administrator command
+2018-12-30 01:15:05.309 MST [7136] FATAL:  terminating connection due to administrator command
+2018-12-30 01:15:05.310 MST [12828] FATAL:  terminating connection due to administrator command
+2018-12-30 01:15:05.316 MST [9268] LOG:  worker process: logical replication launcher (PID 11636) exited with exit code 1
+2018-12-30 01:15:05.327 MST [13460] LOG:  shutting down
+2018-12-30 01:15:05.605 MST [9268] LOG:  database system is shut down
+2018-12-30 01:19:22.924 MST [9624] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:19:22.925 MST [9624] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:19:22.979 MST [9344] LOG:  database system was shut down at 2018-12-30 01:19:21 MST
+2018-12-30 01:19:23.029 MST [9624] LOG:  database system is ready to accept connections
+2018-12-30 01:19:24.411 MST [1872] ERROR:  column reference "value" is ambiguous at character 153
+2018-12-30 01:19:24.411 MST [1872] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE value = 3 RETURNING key
+2018-12-30 01:19:24.578 MST [3476] ERROR:  column reference "value" is ambiguous at character 153
+2018-12-30 01:19:24.578 MST [3476] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE value = 1 RETURNING key
+2018-12-30 01:19:24.688 MST [3476] ERROR:  duplicate key value violates unique constraint "primary_key"
+2018-12-30 01:19:24.688 MST [3476] DETAIL:  Key (key)=(a) already exists.
+2018-12-30 01:19:24.688 MST [3476] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2)
+2018-12-30 01:19:24.822 MST [9624] LOG:  received fast shutdown request
+2018-12-30 01:19:24.828 MST [9624] LOG:  aborting any active transactions
+2018-12-30 01:19:24.828 MST [4884] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.828 MST [14680] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.828 MST [11636] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.828 MST [14552] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.829 MST [14444] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.829 MST [1872] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.830 MST [12452] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.831 MST [3476] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:24.853 MST [9624] LOG:  worker process: logical replication launcher (PID 14692) exited with exit code 1
+2018-12-30 01:19:24.858 MST [8448] LOG:  shutting down
+2018-12-30 01:19:25.144 MST [9624] LOG:  database system is shut down
+2018-12-30 01:19:34.933 MST [14780] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:19:34.933 MST [14780] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:19:34.990 MST [15116] LOG:  database system was shut down at 2018-12-30 01:19:33 MST
+2018-12-30 01:19:35.042 MST [14780] LOG:  database system is ready to accept connections
+2018-12-30 01:19:35.318 MST [14780] LOG:  received fast shutdown request
+2018-12-30 01:19:35.324 MST [14780] LOG:  aborting any active transactions
+2018-12-30 01:19:35.324 MST [14772] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:35.324 MST [10168] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:35.324 MST [3724] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:35.325 MST [6964] FATAL:  terminating connection due to administrator command
+2018-12-30 01:19:35.340 MST [14780] LOG:  worker process: logical replication launcher (PID 15220) exited with exit code 1
+2018-12-30 01:19:35.342 MST [15332] LOG:  shutting down
+2018-12-30 01:19:35.626 MST [14780] LOG:  database system is shut down
+2018-12-30 01:22:19.280 MST [6852] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:22:19.280 MST [6852] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:22:19.332 MST [14924] LOG:  database system was shut down at 2018-12-30 01:22:17 MST
+2018-12-30 01:22:19.373 MST [6852] LOG:  database system is ready to accept connections
+2018-12-30 01:22:20.530 MST [2096] ERROR:  column reference "value" is ambiguous at character 153
+2018-12-30 01:22:20.530 MST [2096] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE value = 3 RETURNING key
+2018-12-30 01:22:20.721 MST [3476] ERROR:  column reference "value" is ambiguous at character 153
+2018-12-30 01:22:20.721 MST [3476] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2) ON CONFLICT ON CONSTRAINT primary_key DO UPDATE SET key = E'a', value = 2 WHERE value = 1 RETURNING key
+2018-12-30 01:22:20.850 MST [3476] ERROR:  duplicate key value violates unique constraint "primary_key"
+2018-12-30 01:22:20.850 MST [3476] DETAIL:  Key (key)=(a) already exists.
+2018-12-30 01:22:20.850 MST [3476] STATEMENT:  INSERT INTO generatedschema.string_to_int (key, value) VALUES (E'a', 2)
+2018-12-30 01:22:20.975 MST [6852] LOG:  received fast shutdown request
+2018-12-30 01:22:20.982 MST [6852] LOG:  aborting any active transactions
+2018-12-30 01:22:20.983 MST [1920] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.983 MST [13324] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.984 MST [14836] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.984 MST [7524] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.985 MST [15320] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.987 MST [2096] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.988 MST [3476] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.989 MST [344] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:20.994 MST [6852] LOG:  worker process: logical replication launcher (PID 14040) exited with exit code 1
+2018-12-30 01:22:21.004 MST [7472] LOG:  shutting down
+2018-12-30 01:22:21.301 MST [6852] LOG:  database system is shut down
+2018-12-30 01:22:29.530 MST [11380] LOG:  listening on IPv6 address "::1", port 5432
+2018-12-30 01:22:29.531 MST [11380] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-12-30 01:22:29.587 MST [14788] LOG:  database system was shut down at 2018-12-30 01:22:28 MST
+2018-12-30 01:22:29.640 MST [11380] LOG:  database system is ready to accept connections
+2018-12-30 01:22:29.895 MST [11380] LOG:  received fast shutdown request
+2018-12-30 01:22:29.901 MST [11380] LOG:  aborting any active transactions
+2018-12-30 01:22:29.902 MST [424] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:29.902 MST [1012] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:29.902 MST [6708] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:29.903 MST [14704] FATAL:  terminating connection due to administrator command
+2018-12-30 01:22:29.921 MST [11380] LOG:  worker process: logical replication launcher (PID 8196) exited with exit code 1
+2018-12-30 01:22:29.923 MST [15224] LOG:  shutting down
+2018-12-30 01:22:30.237 MST [11380] LOG:  database system is shut down

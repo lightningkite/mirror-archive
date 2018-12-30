@@ -6,7 +6,7 @@ import com.lightningkite.mirror.archive.model.*
 import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.serialization.TypeDecoder
 
-class SQLSuspendMap<K : Comparable<K>, V : Any>(
+class SQLSuspendMap<K, V : Any>(
         val schema: String = "generatedschema",
         val tableName: String,
         val connection: SQLConnection,
@@ -17,22 +17,22 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
 ) : SuspendMap<K, V> {
 
     class Provider(val serializer: SQLSerializer, val connection: SQLConnection) : SuspendMapProvider {
-        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>, name: String?): SuspendMap<K, V> {
+        override fun <K, V : Any> suspendMap(key: Type<K>, value: Type<V>, name: String?): SQLSuspendMap<K, V> {
             val tableName = serializer.registry.kClassToExternalNameRegistry[key.kClass] + "_to_" + serializer.registry.kClassToExternalNameRegistry[value.kClass]
             @Suppress("UNCHECKED_CAST")
-            return SQLSuspendMap<Comparable<Comparable<*>>, V>(
+            return SQLSuspendMap(
                     tableName = name ?: tableName,
                     connection = connection,
                     serializer = serializer,
-                    keyType = key as Type<Comparable<Comparable<*>>>,
+                    keyType = key,
                     valueType = value,
                     generateKey = { throw UnsupportedOperationException() }
-            ) as SuspendMap<K, V>
+            )
         }
 
     }
 
-    val virtualKeyField = FieldInfo(AnyClassInfo, "key", keyType, false, { throw UnsupportedOperationException() }, listOf())
+    val virtualKeyField = FieldInfo<Any, K>(AnyClassInfo, "key", keyType, false, { throw UnsupportedOperationException() }, listOf())
     val keyTablePartial = serializer.definition(keyType).let {
         it.copy(columns = it.columns.map { it.copy(name = "key" nameAppend it.name) })
     }
@@ -61,8 +61,12 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
     suspend fun setup() {
         val old = connection.reflect(schema, tableName)
         if (old == null) {
+            println("Creating table...")
             serializer.createTable(table).forEach { connection.execute(it) }
         } else {
+            println("Migrating table...")
+            println("Old: $old")
+            println("New: $table")
             serializer.migrate(old, table).forEach { connection.execute(it) }
         }
         isSetUp = true
@@ -106,8 +110,11 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
         }
         if (create) {
             if (conditionIfExists is Condition.Never) {
-                return connection.execute(serializer.insert(table, values)).any()
-
+                return try {
+                    connection.execute(serializer.insert(table, values)).any()
+                } catch (e: Exception) {
+                    false
+                }
             } else {
                 val upsertSpecial = serializer.upsert(
                         table = table,
@@ -115,9 +122,13 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
                         condition = serializer.convertToSQLCondition(conditionIfExists, valueType)
                 )
                 if (upsertSpecial != null) {
-                    return connection.execute(upsertSpecial).any()
+                    return connection.execute(upsertSpecial).also { println("GOT: " + it.joinToString()) }.any()
                 } else {
-                    val insertSucceeded = connection.execute(serializer.insert(table, values)).any()
+                    val insertSucceeded = try {
+                        connection.execute(serializer.insert(table, values)).any()
+                    } catch (e: Exception) {
+                        false
+                    }
                     if (insertSucceeded) {
                         return true
                     } else {
@@ -139,6 +150,7 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
     }
 
     override suspend fun modify(key: K, operation: Operation<V>, condition: Condition<V>): V? {
+        checkSetup()
         val updateReturning = serializer.updateModifyReturning(
                 table = table,
                 modifications = serializer.convertToSQLSet(operation, valueType),
@@ -184,9 +196,9 @@ class SQLSuspendMap<K : Comparable<K>, V : Any>(
 
     override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
         checkSetup()
-        val extendedCondition = if (after != null)
+        @Suppress("UNCHECKED_CAST") val extendedCondition = if (after != null)
             (sortedBy?.after(after.second)
-                    ?: Condition.Field(virtualKeyField, Condition.GreaterThan(after.first))) and condition
+                    ?: Condition.Field(virtualKeyField as FieldInfo<Any, Comparable<Any?>>, Condition.GreaterThan(after.first as Comparable<Any?>))) and condition
         else condition
         val sqlCondition = serializer.convertToSQLCondition(
                 extendedCondition and Condition.Field(virtualKeyField, keyCondition),

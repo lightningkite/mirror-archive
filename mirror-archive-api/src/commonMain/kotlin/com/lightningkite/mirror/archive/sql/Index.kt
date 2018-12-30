@@ -6,6 +6,11 @@ data class Index(
         var unique: Boolean = false,
         var usingMethod: String = "btree"
 ) {
+    init {
+        name = name.toLowerCase()
+        columns = columns.map { it.toLowerCase() }
+        usingMethod = usingMethod.toLowerCase()
+    }
     companion object {
         fun parse(sql: String): Index {
             return Index(

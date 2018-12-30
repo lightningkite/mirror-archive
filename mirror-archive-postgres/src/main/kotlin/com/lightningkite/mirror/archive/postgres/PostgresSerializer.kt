@@ -90,12 +90,20 @@ class PostgresSerializer(registry: SerializationRegistry, backup:StringSerialize
             append(table.columns.zip(values).joinToString(", ") { it.first.name + " = " + it.second })
             if (condition != null) {
                 append(" WHERE ")
+                //TODO: Mod condition to use 'excluded.'
                 append(condition)
             }
+            append(" RETURNING ${table.columns.first().name}")
         })
     }
 
-//    override fun updateModifyReturning(
+    override fun update(table: Table, columns: List<Column>, values: List<String>, condition: String?): SQLQuery {
+        return SQLQuery(
+                super.update(table, columns, values, condition).string + " RETURNING ${table.columns.first().name}"
+        )
+    }
+
+    //    override fun updateModifyReturning(
 //            table: Table,
 //            resultColumns: List<Column>,
 //            modifications: List<String>,

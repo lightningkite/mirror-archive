@@ -85,17 +85,6 @@ class PostgresConnection(val client: PgPool) : SQLConnection {
         }
     }
 
-    private suspend fun PgClient.suspendQuery(sql: String) = suspendCoroutine<PgRowSet> { cont ->
-        println("Executing... $sql")
-        this.query(sql){
-            if(it.succeeded()){
-                cont.resume(it.result())
-            } else {
-                cont.resumeWithException(it.cause()!!)
-            }
-        }
-    }
-
     override suspend fun reflect(schema: String, table: String): Table? {
         val columns = client.suspendQuery("""
         SELECT
@@ -130,26 +119,36 @@ class PostgresConnection(val client: PgPool) : SQLConnection {
                 .asSequence()
                 .mapNotNull {
                     Constraint(
-                            type = it.getString("constraint_type").let {
-                                when (it) {
+                            name = it.getString("constraint_name"),
+                            type = it.getString("constraint_type").let { type ->
+                                when (type) {
                                     "PRIMARY KEY" -> Constraint.Type.PrimaryKey
-                                    "FOREIGN KEY" -> Constraint.Type.ForeignKey
+                                    "FOREIGN KEY" -> Constraint.Type.ForeignKey(
+                                            otherSchema = it.getString("target_schema"),
+                                            otherTable = it.getString("target_table"),
+                                            otherColumns = listOf(it.getString("target_column"))
+                                    )
                                     "UNIQUE" -> Constraint.Type.Unique
                                     else -> return@mapNotNull null
                                 }
                             },
-                            columns = listOf(it.getString("column_name")),
-                            otherSchema = it.getString("target_schema"),
-                            otherTable = it.getString("target_table"),
-                            otherColumns = listOf(it.getString("target_column"))
+                            columns = listOf(it.getString("column_name"))
                     )
                 }
                 .groupBy { it.name }
                 .values
                 .map {
-                    it.first().copy(
+                    val first = it.first()
+                    val firstType = first.type
+                    first.copy(
                             columns = it.map { it.columns.first() },
-                            otherColumns = it.map { it.otherColumns.first() }
+                            type = when(firstType) {
+                                Constraint.Type.PrimaryKey -> Constraint.Type.PrimaryKey
+                                Constraint.Type.Unique -> Constraint.Type.Unique
+                                is Constraint.Type.ForeignKey -> firstType.copy(
+                                        otherColumns = it.map { it.type.let{ it as Constraint.Type.ForeignKey }.otherColumns.first() }
+                                )
+                            }
                     )
                 }
 
