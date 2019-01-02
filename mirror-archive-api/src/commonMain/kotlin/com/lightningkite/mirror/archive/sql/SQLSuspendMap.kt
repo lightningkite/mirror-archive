@@ -91,7 +91,7 @@ class SQLSuspendMap<K, V : Any>(
         }
     }
 
-    override suspend fun getMany(keys: Collection<K>): Map<K, V?> {
+    override suspend fun getMany(keys: List<K>): Map<K, V?> {
         checkSetup()
         return connection.execute(serializer.select(
                 table = table,

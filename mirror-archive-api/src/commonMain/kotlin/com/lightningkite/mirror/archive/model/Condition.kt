@@ -85,7 +85,7 @@ sealed class Condition<in T> {
     }
 
 
-    data class EqualToOne<T>(val values: Collection<T>) : Condition<T>() {
+    data class EqualToOne<T>(val values: List<T>) : Condition<T>() {
         override fun invoke(item: T): Boolean = item in values
     }
 

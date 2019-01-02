@@ -6,6 +6,15 @@ import com.lightningkite.mirror.serialization.toAttributeHashMap
 
 interface Operation<T>{
 
+    companion object {
+        fun <T: Any, F> SetField(classInfo: ClassInfo<T>, field: FieldInfo<T, F>, value: F) = Operation.Fields<T>(
+                classInfo = classInfo,
+                changes = mapOf(
+                        field to Operation.Set(value)
+                )
+        )
+    }
+
     operator fun invoke(item: T): T
     
     data class Set<T>(var value: T) : Operation<T> {

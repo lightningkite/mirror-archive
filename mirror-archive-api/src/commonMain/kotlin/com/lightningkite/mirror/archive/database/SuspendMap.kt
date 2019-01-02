@@ -40,9 +40,9 @@ interface SuspendMap<K, V : Any> {
             count = 1
     ).firstOrNull()
 
-    suspend fun getMany(keys: Collection<K>): Map<K, V?> = keys.associate { it to get(it) }
-    suspend fun putMany(map: Map<K, V>) = map.entries.forEach { put(it.key, it.value) }
-    suspend fun removeMany(keys: Iterable<K>) = keys.forEach { remove(it) }
+    suspend fun getMany(keys: List<K>): Map<K, V?> = keys.associate { it to get(it) }
+    suspend fun putMany(map: Map<K, V>): Unit = map.entries.forEach { put(it.key, it.value) }
+    suspend fun removeMany(keys: List<K>): Unit = keys.forEach { remove(it) }
 
     suspend fun query(
             condition: Condition<V> = Condition.Always(),

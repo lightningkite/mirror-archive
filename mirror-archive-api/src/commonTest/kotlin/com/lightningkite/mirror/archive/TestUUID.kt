@@ -1,6 +1,6 @@
-package com.lightningkite
+package com.lightningkite.mirror.archive
 
-import com.lightningkite.mirror.archive.Id
+import com.lightningkite.mirror.archive.model.Id
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

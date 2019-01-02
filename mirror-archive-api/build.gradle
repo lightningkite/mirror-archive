@@ -8,12 +8,14 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+        classpath "com.lightningkite:mirror-plugin:0.0.2"
     }
 }
 
 apply plugin: 'kotlin-multiplatform'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.lightningkite.mirror'
 
 bintray {
     user = System.getenv('BINTRAY_USER')
