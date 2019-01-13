@@ -6,8 +6,6 @@ import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.model.Sort
 import com.lightningkite.mirror.archive.model.and
-import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.FieldInfo
 
 class SecureSuspendMap<K, V : Any, USER>(
         val underlying: SuspendMap<K, V>,
@@ -98,9 +96,10 @@ class SecureSuspendMap<K, V : Any, USER>(
             return underlying.remove(key, condition and rules.overwriteRuleOrDefault(user))
         }
 
-        override suspend fun find(condition: Condition<V>, sortedBy: Sort<V>?): Pair<K, V>? {
+        override suspend fun find(condition: Condition<V>, sortedBy: Sort<V>?): SuspendMap.Entry<K, V>? {
             sortedBy?.let { rules.sortPermittedOrDefault(user, it) }
-            return underlying.find(condition and rules.readRuleOrDefault(user), sortedBy)?.let { it.first to rules.maskOrDefault(user, it.second) }
+            return underlying.find(condition and rules.readRuleOrDefault(user), sortedBy)?.let {
+                SuspendMap.Entry(it.key, rules.maskOrDefault(user, it.value)) }
         }
 
         override suspend fun getMany(keys: List<K>): Map<K, V?> {
@@ -116,7 +115,13 @@ class SecureSuspendMap<K, V : Any, USER>(
             return map
         }
 
-        override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+        override suspend fun query(
+                condition: Condition<V>,
+                keyCondition: Condition<K>,
+                sortedBy: Sort<V>?,
+                after: SuspendMap.Entry<K, V>?,
+                count: Int
+        ): List<SuspendMap.Entry<K, V>> {
             sortedBy?.let { rules.sortPermittedOrDefault(user, it) }
             return underlying.query(
                     condition = condition and rules.readRuleOrDefault(user),
@@ -124,7 +129,7 @@ class SecureSuspendMap<K, V : Any, USER>(
                     sortedBy = sortedBy,
                     after = after,
                     count = count
-            ).map { it.first to rules.maskOrDefault(user, it.second) }
+            ).map { SuspendMap.Entry(it.key, rules.maskOrDefault(user, it.value)) }
         }
     }
 }

@@ -148,9 +148,9 @@ class RedisSuspendMap<K, V : Any>(
             condition: Condition<V>,
             keyCondition: Condition<K>,
             sortedBy: Sort<V>?,
-            after: Pair<K, V>?,
+            after: SuspendMap.Entry<K, V>?,
             count: Int
-    ): List<Pair<K, V>> {
+    ): List<SuspendMap.Entry<K, V>> {
         throw UnsupportedOperationException()
     }
 

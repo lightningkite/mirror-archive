@@ -76,8 +76,14 @@ class InfluxSuspendMap<T: HasId>(
 
     override suspend fun remove(key: Id, condition: Condition<T>): Boolean = throw UnsupportedOperationException()
 
-    override suspend fun query(condition: Condition<T>, keyCondition: Condition<Id>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> = suspendCoroutine { cont ->
-        val fullCondition = if(after != null) sortedBy?.after(after.second) ?: Condition.Field(timestampField, Condition.GreaterThan(timestampField.get(after.second))) and condition else condition
+    override suspend fun query(
+            condition: Condition<T>,
+            keyCondition: Condition<Id>,
+            sortedBy: Sort<T>?,
+            after: SuspendMap.Entry<Id, T>?,
+            count: Int
+    ): List<SuspendMap.Entry<Id, T>> = suspendCoroutine { cont ->
+        val fullCondition = if(after != null) sortedBy?.after(after.value) ?: Condition.Field(timestampField, Condition.GreaterThan(timestampField.get(after.value))) and condition else condition
 
         try {
             val queryFromCondition = fullCondition.convert()
@@ -92,7 +98,7 @@ class InfluxSuspendMap<T: HasId>(
                 }
             }
             connection.query(Query(query, database), {
-                val results = it.results.flatMap { it.series.flatMap { modelsFromResult(it).map { it.id to it } } }
+                val results = it.results.flatMap { it.series.flatMap { modelsFromResult(it).map { SuspendMap.Entry(it.id, it) } } }
                 cont.resume(results)
             }, {
                 cont.resumeWithException(it)

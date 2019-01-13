@@ -1,8 +1,16 @@
 package com.lightningkite.mirror.archive.database
 
-import com.lightningkite.mirror.archive.model.*
+import com.lightningkite.mirror.archive.model.Condition
+import com.lightningkite.mirror.archive.model.Operation
+import com.lightningkite.mirror.archive.model.Sort
 
 interface SuspendMap<K, V : Any> {
+
+    data class Entry<K, V: Any>(
+            override val key: K,
+            override val value: V
+    ): Map.Entry<K, V>
+
     suspend fun getNewKey(): K
 
     suspend fun get(key: K): V?
@@ -34,7 +42,7 @@ interface SuspendMap<K, V : Any> {
     suspend fun find(
             condition: Condition<V> = Condition.Always(),
             sortedBy: Sort<V>? = null
-    ): Pair<K, V>? = query(
+    ): SuspendMap.Entry<K, V>? = query(
             condition = condition,
             sortedBy = sortedBy,
             count = 1
@@ -48,9 +56,9 @@ interface SuspendMap<K, V : Any> {
             condition: Condition<V> = Condition.Always(),
             keyCondition: Condition<K> = Condition.Always(),
             sortedBy: Sort<V>? = null,
-            after: Pair<K, V>? = null,
+            after: SuspendMap.Entry<K, V>? = null,
             count: Int = 100
-    ): List<Pair<K, V>>
+    ): List<SuspendMap.Entry<K, V>>
 }
 
 //Traditional database: SuspendMap<Id, HasId>

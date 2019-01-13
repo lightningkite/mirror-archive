@@ -69,7 +69,13 @@ class NitriteSuspendMap<T : HasId>(
         return nitrite.remove(Filters.eq("id", key.toUUIDString())).affectedCount > 0
     }
 
-    override suspend fun query(condition: Condition<T>, keyCondition: Condition<Id>, sortedBy: Sort<T>?, after: Pair<Id, T>?, count: Int): List<Pair<Id, T>> {
+    override suspend fun query(
+            condition: Condition<T>,
+            keyCondition: Condition<Id>,
+            sortedBy: Sort<T>?,
+            after: SuspendMap.Entry<Id, T>?,
+            count: Int
+    ): List<SuspendMap.Entry<Id, T>> {
         val options = when (sortedBy) {
             is Sort.Field<*, *> -> FindOptions(
                     sortedBy.field.name,
@@ -80,11 +86,11 @@ class NitriteSuspendMap<T : HasId>(
         }
 
         val fullCondition = if (after == null) condition
-        else if (sortedBy != null) sortedBy.after(item = after.second) and condition
-        else Condition.Field(idField, Condition.GreaterThan(after.first)) and condition
+        else if (sortedBy != null) sortedBy.after(item = after.value) and condition
+        else Condition.Field(idField, Condition.GreaterThan(after.key)) and condition
         return nitrite.find(fullCondition.toNitrite(), options)
                 .map {
-                    serializer.decode(it, classInfo.kClass.type).let{ it.id to it }
+                    serializer.decode(it, classInfo.kClass.type).let{ SuspendMap.Entry(it.id, it) }
                 }
     }
 

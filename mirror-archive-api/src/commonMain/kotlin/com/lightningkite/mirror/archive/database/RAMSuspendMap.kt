@@ -55,17 +55,23 @@ class RAMSuspendMap<K, V : Any>(val underlying: MutableMap<K, V>, val makeNewKey
         }
     }
 
-    override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+    override suspend fun query(
+            condition: Condition<V>,
+            keyCondition: Condition<K>,
+            sortedBy: Sort<V>?,
+            after: SuspendMap.Entry<K, V>?,
+            count: Int
+    ): List<SuspendMap.Entry<K, V>> {
         var afterFound = false
         return underlying.entries.asSequence()
                 .filter { condition.invoke(it.value) && keyCondition.invoke(it.key) }
-                .map { it.toPair() }
+                .map { SuspendMap.Entry(it.key, it.value) }
                 .let {
                     if (sortedBy == null) {
                         it
                     } else {
                         it.sortedWith(Comparator { a, b ->
-                            sortedBy.compare(a.second, b.second)
+                            sortedBy.compare(a.value, b.value)
                         })
                     }
                 }

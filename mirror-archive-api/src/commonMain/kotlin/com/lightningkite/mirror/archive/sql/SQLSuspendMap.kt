@@ -53,8 +53,8 @@ class SQLSuspendMap<K, V : Any>(
 
     val keyDecoder = serializer.decoder(keyType)
     val valueDecoder = serializer.decoder(valueType)
-    val decoder: TypeDecoder<SQLSerializer.RowReader, Pair<K, V>> = {
-        keyDecoder(this) to valueDecoder(this)
+    val decoder: TypeDecoder<SQLSerializer.RowReader, SuspendMap.Entry<K, V>> = {
+        SuspendMap.Entry(keyDecoder(this), valueDecoder(this))
     }
 
     var isSetUp = false
@@ -98,7 +98,7 @@ class SQLSuspendMap<K, V : Any>(
                 where = serializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.EqualToOne(keys)), valueType),
                 limit = 1
         )).associate {
-            decoder.invoke(SQLSerializer.RowReader(it))
+            decoder.invoke(SQLSerializer.RowReader(it)).run{ key to value }
         }
     }
 
@@ -194,11 +194,17 @@ class SQLSuspendMap<K, V : Any>(
         else -> throw IllegalArgumentException()
     }
 
-    override suspend fun query(condition: Condition<V>, keyCondition: Condition<K>, sortedBy: Sort<V>?, after: Pair<K, V>?, count: Int): List<Pair<K, V>> {
+    override suspend fun query(
+            condition: Condition<V>,
+            keyCondition: Condition<K>,
+            sortedBy: Sort<V>?,
+            after: SuspendMap.Entry<K, V>?,
+            count: Int
+    ): List<SuspendMap.Entry<K, V>> {
         checkSetup()
         @Suppress("UNCHECKED_CAST") val extendedCondition = if (after != null)
-            (sortedBy?.after(after.second)
-                    ?: Condition.Field(virtualKeyField as FieldInfo<Any, Comparable<Any?>>, Condition.GreaterThan(after.first as Comparable<Any?>))) and condition
+            (sortedBy?.after(after.value)
+                    ?: Condition.Field(virtualKeyField as FieldInfo<Any, Comparable<Any?>>, Condition.GreaterThan(after.key as Comparable<Any?>))) and condition
         else condition
         val sqlCondition = serializer.convertToSQLCondition(
                 extendedCondition and Condition.Field(virtualKeyField, keyCondition),
