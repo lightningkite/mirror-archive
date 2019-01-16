@@ -7,11 +7,9 @@ import com.lightningkite.mirror.serialization.toAttributeHashMap
 interface Operation<T>{
 
     companion object {
-        fun <T: Any, F> SetField(classInfo: ClassInfo<T>, field: FieldInfo<T, F>, value: F) = Operation.Fields<T>(
-                classInfo = classInfo,
-                changes = mapOf(
-                        field to Operation.Set(value)
-                )
+        fun <T: Any, F> SetField(field: FieldInfo<T, F>, value: F) = Operation.Field(
+                field = field,
+                operation = Operation.Set(value)
         )
     }
 
@@ -49,48 +47,46 @@ interface Operation<T>{
 //        override fun invoke(item: Array<T>): Array<T> = item.toMutableList().also{ it.remove(this.item) }.toTypedArray()
 //    }
 
-    data class Fields<T: Any>(var classInfo: ClassInfo<T>, var changes: Map<FieldInfo<T, *>, Operation<*>>): Operation<T> {
+    data class Field<T: Any, V>(val field: FieldInfo<T, V>, val operation: Operation<V>): Operation<T> {
         override fun invoke(item: T): T {
-            val map = item.toAttributeHashMap(classInfo)
-            for((field, operation) in changes){
-                val anyOp = operation as Operation<Any?>
-                map[field.name] = anyOp.invoke(map[field.name])
-            }
-            return classInfo.construct(map)
+            val map = item.toAttributeHashMap(field.owner)
+            @Suppress("UNCHECKED_CAST")
+            map[field.name] = operation.invoke(map[field.name] as V)
+            return field.owner.construct(map)
         }
     }
+
+    data class Multiple<T>(val operations: List<Operation<T>>): Operation<T> {
+        @Suppress("UNCHECKED_CAST")
+        override fun invoke(item: T): T {
+            return if(operations.isNotEmpty() && operations.all { it is Condition.Field<*, *> }){
+                //Optimization to avoid allocations
+                val classInfo = operations.first().let{ it as Operation.Field<*, *> }.field.owner as ClassInfo<Any>
+                val map = (item as Any).toAttributeHashMap(classInfo)
+                for(op in operations){
+                    val casted = op as Operation.Field<*, *>
+                    map[casted.field.name] = (op as Operation.Field<*, *>).operation
+                            .let{ it as Operation<Any?> }
+                            .invoke(map[casted.field.name])
+                }
+                return classInfo.construct(map) as T
+            } else {
+                //Backup
+                operations.fold(item){ acc, op -> op.invoke(acc)}
+            }
+        }
+    }
+
 
 //    
 //    data class Place<T : Any, V : Collection<I>, I>(override var field: FieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
 //        override fun invoke(item: T) {
-//            field.set.untyped(item, invokeOnSub(amount))
 //        }
-//        @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-//        override fun invokeOnSub(value: V): V = when (field.type.base) {
-//            ByteReflection -> value.let { it as Byte? }?.times(amount as Byte)
-//            ShortReflection -> value.let { it as Short? }?.times(amount as Short)
-//            IntReflection -> value.let { it as Int? }?.times(amount as Int)
-//            LongReflection -> value.let { it as Long? }?.times(amount as Long)
-//            FloatReflection -> value.let { it as Float? }?.times(amount as Float)
-//            DoubleReflection -> value.let { it as Double? }?.times(amount as Double)
-//            else -> throw IllegalArgumentException()
-//        } as V
 //    }
 //
 //    
 //    data class Remove<T : Any, V : Collection<I>, I>(override var field: FieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
 //        override fun invoke(item: T) {
-//            field.set.untyped(item, invokeOnSub(amount))
 //        }
-//        @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-//        override fun invokeOnSub(value: V): V = when (field.type.base) {
-//            ByteReflection -> value.let { it as Byte? }?.times(amount as Byte)
-//            ShortReflection -> value.let { it as Short? }?.times(amount as Short)
-//            IntReflection -> value.let { it as Int? }?.times(amount as Int)
-//            LongReflection -> value.let { it as Long? }?.times(amount as Long)
-//            FloatReflection -> value.let { it as Float? }?.times(amount as Float)
-//            DoubleReflection -> value.let { it as Double? }?.times(amount as Double)
-//            else -> throw IllegalArgumentException()
-//        } as V
 //    }
 }

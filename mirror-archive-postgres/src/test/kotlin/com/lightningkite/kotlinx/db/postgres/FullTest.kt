@@ -1,7 +1,6 @@
 package com.lightningkite.kotlinx.db.postgres
 
 import com.lightningkite.mirror.archive.database.insert
-import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Id
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.postgres.*
@@ -9,11 +8,7 @@ import com.lightningkite.mirror.archive.sql.SQLSuspendMap
 import com.lightningkite.mirror.info.FieldInfo
 import com.lightningkite.mirror.info.type
 import com.lightningkite.mirror.serialization.DefaultRegistry
-import com.lightningkite.mirror.serialization.json.JsonSerializer
-import io.reactiverse.pgclient.PgClient
-import io.reactiverse.pgclient.PgConnectOptions
 import io.reactiverse.pgclient.PgPool
-import io.reactiverse.pgclient.PgPoolOptions
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.io.File
@@ -44,7 +39,7 @@ class FullTest {
     fun testAll() {
         runBlocking {
             //Set up the database
-            val provider = SQLSuspendMap.Provider(
+            val provider = PostgresSuspendMap.Provider(
                     serializer = PostgresSerializer(DefaultRegistry + TestRegistry),
                     connection = PostgresConnection(pool)
             )
