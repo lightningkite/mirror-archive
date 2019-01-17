@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 
 @SharedImmutable
 val TestRegistry = ClassInfoRegistry(
-    com.lightningkite.kotlinx.db.redis.PostClassInfo,
     com.lightningkite.mirror.archive.model.HasIdClassInfo,
-    com.lightningkite.mirror.archive.model.IdClassInfo
+    com.lightningkite.mirror.archive.model.IdClassInfo,
+    com.lightningkite.kotlinx.db.redis.PostClassInfo
 )

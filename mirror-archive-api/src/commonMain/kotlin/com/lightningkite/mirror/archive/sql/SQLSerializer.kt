@@ -1,9 +1,9 @@
 package com.lightningkite.mirror.archive.sql
 
-import com.lightningkite.lokalize.Date
-import com.lightningkite.lokalize.DateTime
-import com.lightningkite.lokalize.Time
-import com.lightningkite.lokalize.TimeStamp
+import com.lightningkite.lokalize.time.Date
+import com.lightningkite.lokalize.time.DateTime
+import com.lightningkite.lokalize.time.Time
+import com.lightningkite.lokalize.time.TimeStamp
 import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Id
 import com.lightningkite.mirror.archive.model.Operation
