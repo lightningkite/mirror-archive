@@ -1,7 +1,7 @@
 package com.lightningkite.mirror.archive.model
 
-import com.lightningkite.lokalize.TimeStamp
-import com.lightningkite.lokalize.now
+import com.lightningkite.lokalize.time.TimeStamp
+import com.lightningkite.lokalize.time.now
 import kotlin.random.Random
 
 data class Id(

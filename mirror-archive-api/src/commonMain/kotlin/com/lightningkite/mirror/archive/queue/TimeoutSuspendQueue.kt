@@ -1,7 +1,7 @@
 package com.lightningkite.mirror.archive.queue
 
-import com.lightningkite.lokalize.DateTime
-import com.lightningkite.lokalize.Duration
+import com.lightningkite.lokalize.time.DateTime
+import com.lightningkite.lokalize.time.Duration
 import com.lightningkite.mirror.archive.database.SuspendMap
 import com.lightningkite.mirror.archive.database.SuspendMapProvider
 import com.lightningkite.mirror.archive.model.*

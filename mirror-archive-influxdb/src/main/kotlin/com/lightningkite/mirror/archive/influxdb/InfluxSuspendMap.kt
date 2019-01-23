@@ -1,7 +1,7 @@
 package com.lightningkite.mirror.archive.influxdb
 
-import com.lightningkite.lokalize.TimeConstants
-import com.lightningkite.lokalize.TimeStamp
+import com.lightningkite.lokalize.time.TimeConstants
+import com.lightningkite.lokalize.time.TimeStamp
 import com.lightningkite.mirror.archive.model.*
 import com.lightningkite.mirror.archive.database.*
 import com.lightningkite.mirror.info.*
