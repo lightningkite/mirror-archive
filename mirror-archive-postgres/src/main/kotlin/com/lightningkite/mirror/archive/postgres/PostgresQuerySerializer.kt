@@ -1,8 +1,9 @@
 package com.lightningkite.mirror.archive.postgres
 
-import com.lightningkite.mirror.archive.sql.Index
-import com.lightningkite.mirror.archive.sql.SQLQuerySerializer
-import com.lightningkite.mirror.archive.sql.Table
+import com.lightningkite.mirror.archive.model.Condition
+import com.lightningkite.mirror.archive.model.Operation
+import com.lightningkite.mirror.archive.sql.*
+import com.lightningkite.mirror.info.Type
 import io.reactiverse.pgclient.PgPool
 
 class PostgresQuerySerializer(override val serializer: PostgresSerializer) : SQLQuerySerializer(serializer) {
@@ -31,5 +32,35 @@ class PostgresQuerySerializer(override val serializer: PostgresSerializer) : SQL
                 constraints = constraints,
                 indexes = indexes
         )
+    }
+
+    fun upsert(
+            table: Table,
+            type: Type<*>,
+            writeColumns: SQLQuery.Builder.() -> Unit,
+            writeValues: SQLQuery.Builder.() -> Unit,
+            condition: Condition<*>? = null
+    ): SQLQuery {
+        return SQLQuery.build {
+            sql.append("INSERT INTO ")
+            sql.append(table.fullName)
+            sql.append(" (")
+            writeColumns()
+            sql.append(") VALUES (")
+            writeValues()
+            sql.append(")")
+            sql.append(" ON CONFLICT ON CONSTRAINT ")
+            sql.append(table.constraints.find { it.type == Constraint.Type.PrimaryKey }!!.name)
+            sql.append(" DO UPDATE SET ")
+            operation(Operation.Multiple(listOf(
+                    operation(Operation.Set(), type)
+            )), type)
+            if (condition != null) {
+                sql.append(" WHERE ")
+                //TODO: Mod condition to use 'excluded.'
+                sql.append(condition)
+            }
+            sql.append(" RETURNING ${table.columns.first().name}")
+        }
     }
 }

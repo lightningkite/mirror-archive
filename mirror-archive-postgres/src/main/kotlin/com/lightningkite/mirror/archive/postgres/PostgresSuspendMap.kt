@@ -105,7 +105,7 @@ class PostgresSuspendMap<K, V : Any>(
                 orderBy = null,
                 limit = 1
         )).firstOrNull()?.let {
-            valueDecoder.invoke(SQLSerializer.RowReader(it))
+            valueDecoder.invoke(SQLSerializer.RowReader(it.asList()))
         }
     }
 
@@ -118,7 +118,7 @@ class PostgresSuspendMap<K, V : Any>(
                 orderBy = null,
                 limit = 1
         )).associate {
-            decoder.invoke(SQLSerializer.RowReader(it)).run{ key to value }
+            decoder.invoke(SQLSerializer.RowReader(it.asList())).run{ key to value }
         }
     }
 
@@ -127,40 +127,32 @@ class PostgresSuspendMap<K, V : Any>(
         if (create) {
             if (conditionIfExists is Condition.Never) {
                 return try {
-                    connection.suspendQuery(querySerializer.insert(table, values)).any()
+                    connection.suspendQuery(querySerializer.insert(table, writeColumns = {
+                        for(keyColumn in keyTablePartial.columns) {
+                            sql.append(keyColumn.name)
+                        }
+                        for(valueColumn in valueTablePartial.columns) {
+                            sql.append(valueColumn.name)
+                        }
+                    }, writeValues = {
+                        serializer.encode(this, key, keyType)
+                        serializer.encode(this, value, valueType)
+                    })).any()
                 } catch (e: Exception) {
                     false
                 }
             } else {
-                val upsertSpecial = querySerializer.upsert(
+                return connection.suspendQuery(querySerializer.upsert(
                         table = table,
-                        values = values,
-                        condition = querySerializer.convertToSQLConditionForUpsert(conditionIfExists, valueType)
-                )
-                if (upsertSpecial != null) {
-                    return connection.suspendQuery(upsertSpecial).also { println("GOT: " + it.joinToString()) }.any()
-                } else {
-                    val insertSucceeded = try {
-                        connection.suspendQuery(querySerializer.insert(table, values)).any()
-                    } catch (e: Exception) {
-                        false
-                    }
-                    if (insertSucceeded) {
-                        return true
-                    } else {
-                        return connection.suspendQuery(querySerializer.update(
-                                table = table,
-                                values = values,
-                                condition = querySerializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and conditionIfExists, valueType)
-                        )).any()
-                    }
-                }
+                        type = valueType,
+                        condition = (Condition.Field(virtualKeyField, Condition.Equal(key)) and conditionIfExists)
+                )).any()
             }
         } else {
             return connection.suspendQuery(querySerializer.update(
                     table = table,
-                    values = values,
-                    condition = querySerializer.convertToSQLCondition(Condition.Field(virtualKeyField, Condition.Equal(key)) and conditionIfExists, valueType)
+                    type = valueType,
+                    condition = (Condition.Field(virtualKeyField, Condition.Equal(key)) and conditionIfExists)
             )).any()
         }
     }
