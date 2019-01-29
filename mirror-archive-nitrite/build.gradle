@@ -70,7 +70,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
     api 'com.lightningkite:kommon-jvm:0.0.2'
     compile project(':mirror-archive-api')
     api 'org.dizitart:nitrite:3.0.2'
