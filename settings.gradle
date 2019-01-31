@@ -4,4 +4,4 @@ include ':mirror-archive-nitrite'
 include ':mirror-archive-influxdb'
 include ':mirror-archive-redis'
 
-//enableFeaturePreview('GRADLE_METADATA')
+enableFeaturePreview('GRADLE_METADATA')
