@@ -119,6 +119,14 @@ sealed class Condition<in T> {
         override fun invoke(item: T): Boolean = item.contains(query)
     }
 
+    data class StartsWith<T : CharSequence>(val query: String) : Condition<T>() {
+        override fun invoke(item: T): Boolean = item.startsWith(query)
+    }
+
+    data class EndsWith<T : CharSequence>(val query: String) : Condition<T>() {
+        override fun invoke(item: T): Boolean = item.endsWith(query)
+    }
+
 
     data class RegexTextSearch<T : CharSequence>(val query: Regex) : Condition<T>() {
         override fun invoke(item: T): Boolean = item.contains(query)
