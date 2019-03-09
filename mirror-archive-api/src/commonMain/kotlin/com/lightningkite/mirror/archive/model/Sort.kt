@@ -1,8 +1,10 @@
 package com.lightningkite.mirror.archive.model
 
-import com.lightningkite.mirror.info.FieldInfo
+import com.lightningkite.mirror.info.MirrorClass
 
-interface Sort<T>: Comparator<T> {
+
+interface Sort<in T> {
+    fun compare(a: T, b: T): Int
     fun iterable(): Iterable<Sort<T>> = listOf()
     fun after(item: T): Condition<T>
     fun equal(item: T): Condition<T>
@@ -30,22 +32,22 @@ interface Sort<T>: Comparator<T> {
         }
     }
 
-    class Natural<T : Comparable<T>> : Sort<T> {
-        override fun compare(a: T, b: T): Int {
+    object Natural : Sort<Comparable<Comparable<*>>> {
+        override fun compare(a: Comparable<Comparable<*>>, b: Comparable<Comparable<*>>): Int {
             return a.compareTo(b)
         }
 
-        override fun after(item: T): Condition<T> {
+        override fun after(item: Comparable<Comparable<*>>): Condition<Comparable<Comparable<*>>> {
             return Condition.GreaterThan(item)
         }
 
-        override fun equal(item: T): Condition<T> {
+        override fun equal(item: Comparable<Comparable<*>>): Condition<Comparable<Comparable<*>>> {
             return Condition.Equal(item)
         }
     }
 
     data class Field<T : Any, V : Comparable<V>>(
-            val field: FieldInfo<T, V>,
+            val field: MirrorClass.Field<T, V>,
             val ascending: Boolean = true
     ) : Sort<T> {
         override fun compare(a: T, b: T): Int {

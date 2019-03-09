@@ -1,0 +1,11 @@
+name = com.lightningkite.mirror.archive.model.registerArchive
+
+com.lightningkite.mirror.archive.model.Condition
+com.lightningkite.mirror.archive.model.Condition.*
+com.lightningkite.mirror.archive.model.Operation
+com.lightningkite.mirror.archive.model.Operation.*
+com.lightningkite.mirror.archive.model.Link
+com.lightningkite.mirror.archive.model.Sort
+com.lightningkite.mirror.archive.model.Uuid
+com.lightningkite.mirror.archive.model.Reference
+com.lightningkite.mirror.archive.model.HasId

@@ -1,13 +1,12 @@
 package com.lightningkite.mirror.archive.model
 
-import com.lightningkite.mirror.info.ClassInfo
-import com.lightningkite.mirror.info.FieldInfo
-import com.lightningkite.mirror.serialization.toAttributeHashMap
+import com.lightningkite.mirror.info.MirrorClass
+import kotlinx.serialization.Mapper
 
 interface Operation<T>{
 
     companion object {
-        fun <T: Any, F> SetField(field: FieldInfo<T, F>, value: F) = Operation.Field(
+        fun <T : Any, F> SetField(field: MirrorClass.Field<T, F>, value: F) = Operation.Field(
                 field = field,
                 operation = Operation.Set(value)
         )
@@ -22,16 +21,20 @@ interface Operation<T>{
     interface AddNumeric<T>: Operation<T> {
         val amount: Number
     }
-    data class AddInt(override var amount: Int) : AddNumeric<Int> {
+
+    data class AddInt(override var amount: Int) : Operation.AddNumeric<Int> {
         override fun invoke(item: Int): Int = item + amount
     }
-    data class AddLong(override var amount: Long) : AddNumeric<Long> {
+
+    data class AddLong(override var amount: Long) : Operation.AddNumeric<Long> {
         override fun invoke(item: Long): Long = item + amount
     }
-    data class AddFloat(override var amount: Float) : AddNumeric<Float> {
+
+    data class AddFloat(override var amount: Float) : Operation.AddNumeric<Float> {
         override fun invoke(item: Float): Float = item + amount
     }
-    data class AddDouble(override var amount: Double) : AddNumeric<Double> {
+
+    data class AddDouble(override var amount: Double) : Operation.AddNumeric<Double> {
         override fun invoke(item: Double): Double = item + amount
     }
 
@@ -47,12 +50,13 @@ interface Operation<T>{
 //        override fun invoke(item: Array<T>): Array<T> = item.toMutableList().also{ it.remove(this.item) }.toTypedArray()
 //    }
 
-    data class Field<T: Any, V>(val field: FieldInfo<T, V>, val operation: Operation<V>): Operation<T> {
+    data class Field<T : Any, V>(val field: MirrorClass.Field<T, V>, val operation: Operation<V>) : Operation<T> {
+        @Suppress("UNCHECKED_CAST")
         override fun invoke(item: T): T {
-            val map = item.toAttributeHashMap(field.owner)
-            @Suppress("UNCHECKED_CAST")
+            val type = field.owner as MirrorClass<T>
+            val map = Mapper.mapNullable(type, item).toMutableMap()
             map[field.name] = operation.invoke(map[field.name] as V)
-            return field.owner.construct(map)
+            return Mapper.unmapNullable(type, map)
         }
     }
 
@@ -61,15 +65,15 @@ interface Operation<T>{
         override fun invoke(item: T): T {
             return if(operations.isNotEmpty() && operations.all { it is Condition.Field<*, *> }){
                 //Optimization to avoid allocations
-                val classInfo = operations.first().let{ it as Operation.Field<*, *> }.field.owner as ClassInfo<Any>
-                val map = (item as Any).toAttributeHashMap(classInfo)
+                val type = operations.first().let { it as Operation.Field<*, *> }.field.owner as MirrorClass<Any>
+                val map = Mapper.mapNullable(type, item as Any).toMutableMap()
                 for(op in operations){
                     val casted = op as Operation.Field<*, *>
                     map[casted.field.name] = (op as Operation.Field<*, *>).operation
                             .let{ it as Operation<Any?> }
                             .invoke(map[casted.field.name])
                 }
-                return classInfo.construct(map) as T
+                return Mapper.unmapNullable(type, map) as T
             } else {
                 //Backup
                 operations.fold(item){ acc, op -> op.invoke(acc)}
@@ -79,13 +83,13 @@ interface Operation<T>{
 
 
 //    
-//    data class Place<T : Any, V : Collection<I>, I>(override var field: FieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
+//    data class Place<T : Any, V : Collection<I>, I>(override var field: MirrorClass.Field<T, V>, var element: V) : ModificationOnItem<T, V>() {
 //        override fun invoke(item: T) {
 //        }
 //    }
 //
 //    
-//    data class Remove<T : Any, V : Collection<I>, I>(override var field: FieldInfo<T, V>, var element: V) : ModificationOnItem<T, V>() {
+//    data class Remove<T : Any, V : Collection<I>, I>(override var field: MirrorClass.Field<T, V>, var element: V) : ModificationOnItem<T, V>() {
 //        override fun invoke(item: T) {
 //        }
 //    }

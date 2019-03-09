@@ -11,7 +11,7 @@ class RAMDatabase<T>(private val backingData: MutableList<T> = ArrayList()) : Da
                 .filter { condition.invoke(it) }
                 .let {
                     if(sort != null){
-                        it.sortedWith(sort)
+                        it.sortedWith(Comparator { a, b -> sort.compare(a, b) })
                     } else it
                 }
                 .let {

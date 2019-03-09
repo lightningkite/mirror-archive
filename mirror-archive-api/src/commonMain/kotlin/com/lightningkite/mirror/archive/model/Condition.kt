@@ -1,7 +1,7 @@
 package com.lightningkite.mirror.archive.model
 
 import com.lightningkite.kommon.collection.treeWalkDepthSequence
-import com.lightningkite.mirror.info.FieldInfo
+import com.lightningkite.mirror.info.MirrorClass
 
 
 sealed class Condition<in T> {
@@ -14,17 +14,13 @@ sealed class Condition<in T> {
     open fun simplify(): Condition<T> = this
 
 
-    class Never<T> : Condition<T>() {
-        override fun invoke(item: T): Boolean = false
-        override fun hashCode(): Int = 0
-        override fun equals(other: Any?): Boolean = other is Never<*>
+    object Never : Condition<Any?>() {
+        override fun invoke(item: Any?): Boolean = false
     }
 
 
-    class Always<T> : Condition<T>() {
-        override fun invoke(item: T): Boolean = true
-        override fun hashCode(): Int = 1
-        override fun equals(other: Any?): Boolean = other is Always<*>
+    object Always : Condition<Any?>() {
+        override fun invoke(item: Any?): Boolean = true
     }
 
 
@@ -36,7 +32,7 @@ sealed class Condition<in T> {
             for(condition in conditions){
                 val innerSimp = condition.simplify()
                 when(innerSimp){
-                    is Never -> return Never()
+                    is Never -> return Never
                     is Always -> {}
                     is And -> result.addAll(innerSimp.conditions)
                     else -> result.add(innerSimp)
@@ -56,7 +52,7 @@ sealed class Condition<in T> {
             for(condition in conditions){
                 val innerSimp = condition.simplify()
                 when(innerSimp){
-                    is Always -> return Always()
+                    is Always -> return Always
                     is Never -> {}
                     is Or -> result.addAll(innerSimp.conditions)
                     else -> result.add(innerSimp)
@@ -74,7 +70,7 @@ sealed class Condition<in T> {
     }
 
 
-    data class Field<T: Any, V>(val field: FieldInfo<T, V>, val condition: Condition<V>): Condition<T>() {
+    data class Field<T : Any, V>(val field: MirrorClass.Field<T, V>, val condition: Condition<V>) : Condition<T>() {
         override fun invoke(item: T): Boolean = condition.invoke(field.get(item))
         override fun iterable(): Iterable<Condition<*>> = listOf(condition)
     }
@@ -115,21 +111,21 @@ sealed class Condition<in T> {
     }
 
 
-    data class TextSearch<T : CharSequence>(val query: String) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item.contains(query)
+    data class TextSearch(val query: String) : Condition<String>() {
+        override fun invoke(item: String): Boolean = item.contains(query)
     }
 
-    data class StartsWith<T : CharSequence>(val query: String) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item.startsWith(query)
+    data class StartsWith(val query: String) : Condition<String>() {
+        override fun invoke(item: String): Boolean = item.startsWith(query)
     }
 
-    data class EndsWith<T : CharSequence>(val query: String) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item.endsWith(query)
+    data class EndsWith(val query: String) : Condition<String>() {
+        override fun invoke(item: String): Boolean = item.endsWith(query)
     }
 
 
-    data class RegexTextSearch<T : CharSequence>(val query: Regex) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item.contains(query)
+    data class RegexTextSearch(val query: String) : Condition<String>() {
+        override fun invoke(item: String): Boolean = item.contains(Regex(query))
     }
 }
 
