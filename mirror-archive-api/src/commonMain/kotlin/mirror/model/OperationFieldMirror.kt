@@ -2,8 +2,11 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.mirror.archive.flatmap.Breaker
 import com.lightningkite.mirror.info.MirrorClass
+import com.lightningkite.mirror.info.MirrorType
 import kotlinx.serialization.Mapper
+import kotlinx.serialization.StructureKind
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
@@ -12,7 +15,7 @@ class OperationFieldMirror<T : Any, V : Any?>(
         val TMirror: MirrorType<T>,
         val VMirror: MirrorType<V>
 ) : MirrorClass<Operation.Field<T, V>>() {
-
+    
     companion object {
         val minimal = OperationFieldMirror(AnyMirror, AnyMirror.nullable)
     }
@@ -29,6 +32,7 @@ class OperationFieldMirror<T : Any, V : Any?>(
 
     val fieldField: Field<Operation.Field<T, V>, MirrorClass.Field<T, V>> = Field(
             owner = this,
+            index = 0,
             name = "field",
             type = MirrorClassFieldMirror(TMirror, VMirror),
             optional = false,
@@ -38,6 +42,7 @@ class OperationFieldMirror<T : Any, V : Any?>(
 
     val fieldOperation: Field<Operation.Field<T, V>, Operation<V>> = Field(
             owner = this,
+            index = 1,
             name = "operation",
             type = OperationMirror(VMirror),
             optional = false,

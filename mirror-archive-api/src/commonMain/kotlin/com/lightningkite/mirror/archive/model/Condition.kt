@@ -28,6 +28,7 @@ sealed class Condition<in T> {
         override fun invoke(item: T): Boolean = conditions.all { it(item) }
         override fun iterable(): Iterable<Condition<*>> = conditions
         override fun simplify(): Condition<T> {
+            if (conditions.isEmpty()) return Condition.Always
             val result = ArrayList<Condition<T>>()
             for(condition in conditions){
                 val innerSimp = condition.simplify()
@@ -48,6 +49,7 @@ sealed class Condition<in T> {
         override fun invoke(item: T): Boolean = conditions.any { it(item) }
         override fun iterable(): Iterable<Condition<*>> = conditions
         override fun simplify(): Condition<T> {
+            if (conditions.isEmpty()) return Condition.Always
             val result = ArrayList<Condition<T>>()
             for(condition in conditions){
                 val innerSimp = condition.simplify()

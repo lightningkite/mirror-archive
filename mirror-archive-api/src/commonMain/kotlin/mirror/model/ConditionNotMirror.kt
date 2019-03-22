@@ -28,6 +28,7 @@ class ConditionNotMirror<T : Any?>(
 
     val fieldCondition: Field<Condition.Not<T>, Condition<T>> = Field(
             owner = this,
+            index = 0,
             name = "condition",
             type = ConditionMirror(TMirror),
             optional = false,

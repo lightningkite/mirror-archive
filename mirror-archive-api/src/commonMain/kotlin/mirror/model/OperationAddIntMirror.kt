@@ -2,8 +2,11 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.mirror.archive.flatmap.Breaker
 import com.lightningkite.mirror.info.MirrorClass
+import com.lightningkite.mirror.info.MirrorType
 import kotlinx.serialization.Mapper
+import kotlinx.serialization.StructureKind
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
@@ -20,6 +23,7 @@ object OperationAddIntMirror : MirrorClass<Operation.AddInt>() {
 
     val fieldAmount: Field<Operation.AddInt, Int> = Field(
             owner = this,
+            index = 0,
             name = "amount",
             type = IntMirror,
             optional = false,

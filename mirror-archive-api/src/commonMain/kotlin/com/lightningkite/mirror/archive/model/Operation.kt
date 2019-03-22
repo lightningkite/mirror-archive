@@ -1,9 +1,12 @@
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.mirror.archive.flatmap.Breaker
 import com.lightningkite.mirror.info.MirrorClass
+import com.lightningkite.mirror.info.MirrorType
 import kotlinx.serialization.Mapper
+import kotlinx.serialization.StructureKind
 
-interface Operation<T>{
+interface Operation<T> {
 
     companion object {
         fun <T : Any, F> SetField(field: MirrorClass.Field<T, F>, value: F) = Operation.Field(
@@ -13,12 +16,12 @@ interface Operation<T>{
     }
 
     operator fun invoke(item: T): T
-    
+
     data class Set<T>(var value: T) : Operation<T> {
         override fun invoke(item: T): T = value
     }
 
-    interface AddNumeric<T>: Operation<T> {
+    interface AddNumeric<T> : Operation<T> {
         val amount: Number
     }
 
@@ -38,7 +41,7 @@ interface Operation<T>{
         override fun invoke(item: Double): Double = item + amount
     }
 
-    data class Append(var string: String): Operation<String> {
+    data class Append(var string: String) : Operation<String> {
         override fun invoke(item: String): String = item + string
     }
 
@@ -54,29 +57,29 @@ interface Operation<T>{
         @Suppress("UNCHECKED_CAST")
         override fun invoke(item: T): T {
             val type = field.owner as MirrorClass<T>
-            val map = Mapper.mapNullable(type, item).toMutableMap()
-            map[field.name] = operation.invoke(map[field.name] as V)
-            return Mapper.unmapNullable(type, map)
+            val map = Breaker.snap(type, item)
+            map[field.index] = operation.invoke(map[field.index] as V)
+            return Breaker.fold(type, map)
         }
     }
 
-    data class Multiple<T>(val operations: List<Operation<T>>): Operation<T> {
+    data class Multiple<T>(val operations: List<Operation<T>>) : Operation<T> {
         @Suppress("UNCHECKED_CAST")
         override fun invoke(item: T): T {
-            return if(operations.isNotEmpty() && operations.all { it is Condition.Field<*, *> }){
+            return if (operations.isNotEmpty() && operations.all { it is Condition.Field<*, *> }) {
                 //Optimization to avoid allocations
                 val type = operations.first().let { it as Operation.Field<*, *> }.field.owner as MirrorClass<Any>
-                val map = Mapper.mapNullable(type, item as Any).toMutableMap()
-                for(op in operations){
+                val map = Breaker.snap(type, item as Any)
+                for (op in operations) {
                     val casted = op as Operation.Field<*, *>
-                    map[casted.field.name] = (op as Operation.Field<*, *>).operation
-                            .let{ it as Operation<Any?> }
-                            .invoke(map[casted.field.name])
+                    map[casted.field.index] = (op as Operation.Field<*, *>).operation
+                            .let { it as Operation<Any?> }
+                            .invoke(map[casted.field.index])
                 }
-                return Mapper.unmapNullable(type, map) as T
+                return Breaker.fold(type, map) as T
             } else {
                 //Backup
-                operations.fold(item){ acc, op -> op.invoke(acc)}
+                operations.fold(item) { acc, op -> op.invoke(acc) }
             }
         }
     }
@@ -93,4 +96,13 @@ interface Operation<T>{
 //        override fun invoke(item: T) {
 //        }
 //    }
+}
+
+fun <T : Any> Operation.Set<T>.separate(type: MirrorClass<T>): Operation<T> {
+    return Operation.Multiple(type.fields.map {
+        Operation.Field<T, Any?>(
+                field = it as MirrorClass.Field<T, Any?>,
+                operation = Operation.Set(it.get(value))
+        )
+    })
 }

@@ -19,6 +19,7 @@ object UuidMirror : MirrorClass<Uuid>() {
 
     val fieldMostSignificantBits: Field<Uuid, Long> = Field(
             owner = this,
+            index = 0,
             name = "mostSignificantBits",
             type = LongMirror,
             optional = false,
@@ -28,6 +29,7 @@ object UuidMirror : MirrorClass<Uuid>() {
 
     val fieldLeastSignificantBits: Field<Uuid, Long> = Field(
             owner = this,
+            index = 1,
             name = "leastSignificantBits",
             type = LongMirror,
             optional = false,

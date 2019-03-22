@@ -9,19 +9,19 @@ class LocalDatabaseHandler : Database.Handler {
     }
 
     val invocations = HashMap<KClass<out Database.Request<*>>, (Any) -> Database<*>>()
-    inline fun <reified R : Database.Request<T>, T> invocation(noinline action: R.() -> T) {
+    inline fun <reified R : Database.Request<T>, T : Any> invocation(noinline action: R.() -> T) {
         @Suppress("UNCHECKED_CAST")
         invocations[R::class] = action as (Any) -> Database<T>
     }
 
-    fun <R : Database.Request<T>, T> invocation(kclass: KClass<R>, action: R.() -> Database<T>) {
+    fun <R : Database.Request<T>, T : Any> invocation(kclass: KClass<R>, action: R.() -> Database<T>) {
         @Suppress("UNCHECKED_CAST")
         invocations[kclass] = action as (Any) -> Database<T>
     }
 
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <T> invoke(request: Database.Request<T>): Database<T> {
+    override suspend fun <T : Any> invoke(request: Database.Request<T>): Database<T> {
         val invocation = invocations[request::class] ?: defaultInvocation
         val result = invocation.invoke(request)
         return result as Database<T>

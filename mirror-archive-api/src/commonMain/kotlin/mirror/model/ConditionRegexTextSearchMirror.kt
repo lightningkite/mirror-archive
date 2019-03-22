@@ -20,6 +20,7 @@ object ConditionRegexTextSearchMirror : MirrorClass<Condition.RegexTextSearch>()
 
     val fieldQuery: Field<Condition.RegexTextSearch, String> = Field(
             owner = this,
+            index = 0,
             name = "query",
             type = StringMirror,
             optional = false,

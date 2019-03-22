@@ -28,6 +28,7 @@ class ConditionGreaterThanMirror<T : Comparable<T>>(
 
     val fieldValue: Field<Condition.GreaterThan<T>, T> = Field(
             owner = this,
+            index = 0,
             name = "value",
             type = TMirror,
             optional = false,

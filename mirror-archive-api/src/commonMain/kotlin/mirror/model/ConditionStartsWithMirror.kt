@@ -20,6 +20,7 @@ object ConditionStartsWithMirror : MirrorClass<Condition.StartsWith>() {
 
     val fieldQuery: Field<Condition.StartsWith, String> = Field(
             owner = this,
+            index = 0,
             name = "query",
             type = StringMirror,
             optional = false,

@@ -10,7 +10,7 @@ class LinkMirror<A : HasId, B : HasId>(
         val AMirror: MirrorType<A>,
         val BMirror: MirrorType<B>
 ) : PolymorphicMirror<Link<A, B>>() {
-
+    
     companion object {
         val minimal = LinkMirror(HasIdMirror, HasIdMirror)
     }

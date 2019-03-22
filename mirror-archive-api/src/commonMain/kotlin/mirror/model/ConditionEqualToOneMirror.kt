@@ -28,6 +28,7 @@ class ConditionEqualToOneMirror<T : Any?>(
 
     val fieldValues: Field<Condition.EqualToOne<T>, List<T>> = Field(
             owner = this,
+            index = 0,
             name = "values",
             type = ListMirror(TMirror),
             optional = false,

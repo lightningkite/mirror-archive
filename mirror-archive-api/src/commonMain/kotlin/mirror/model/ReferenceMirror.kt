@@ -25,6 +25,7 @@ class ReferenceMirror<MODEL : HasId>(
 
     val fieldKey: Field<Reference<MODEL>, Uuid> = Field(
             owner = this,
+            index = 0,
             name = "key",
             type = UuidMirror,
             optional = false,

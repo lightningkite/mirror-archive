@@ -12,7 +12,7 @@ class ConditionFieldMirror<T : Any, V : Any?>(
         val TMirror: MirrorType<T>,
         val VMirror: MirrorType<V>
 ) : MirrorClass<Condition.Field<T, V>>() {
-
+    
     companion object {
         val minimal = ConditionFieldMirror(AnyMirror, AnyMirror.nullable)
     }
@@ -29,6 +29,7 @@ class ConditionFieldMirror<T : Any, V : Any?>(
 
     val fieldField: Field<Condition.Field<T, V>, MirrorClass.Field<T, V>> = Field(
             owner = this,
+            index = 0,
             name = "field",
             type = MirrorClassFieldMirror(TMirror, VMirror),
             optional = false,
@@ -38,6 +39,7 @@ class ConditionFieldMirror<T : Any, V : Any?>(
 
     val fieldCondition: Field<Condition.Field<T, V>, Condition<V>> = Field(
             owner = this,
+            index = 1,
             name = "condition",
             type = ConditionMirror(VMirror),
             optional = false,

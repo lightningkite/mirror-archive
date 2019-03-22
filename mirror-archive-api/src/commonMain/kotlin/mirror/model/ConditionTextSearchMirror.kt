@@ -20,6 +20,7 @@ object ConditionTextSearchMirror : MirrorClass<Condition.TextSearch>() {
 
     val fieldQuery: Field<Condition.TextSearch, String> = Field(
             owner = this,
+            index = 0,
             name = "query",
             type = StringMirror,
             optional = false,

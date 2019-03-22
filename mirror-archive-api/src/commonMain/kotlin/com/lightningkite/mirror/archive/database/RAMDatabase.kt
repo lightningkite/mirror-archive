@@ -3,17 +3,14 @@ package com.lightningkite.mirror.archive.database
 import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.model.Sort
+import com.lightningkite.mirror.archive.model.comparator
 
-class RAMDatabase<T>(private val backingData: MutableList<T> = ArrayList()) : Database<T> {
+class RAMDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()) : Database<T> {
 
-    override suspend fun get(condition: Condition<T>, sort: Sort<T>?, count: Int, after: T?): List<T> {
+    override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> {
         return backingData.asSequence()
                 .filter { condition.invoke(it) }
-                .let {
-                    if(sort != null){
-                        it.sortedWith(Comparator { a, b -> sort.compare(a, b) })
-                    } else it
-                }
+                .sortedWith(sort.comparator())
                 .let {
                     if (after == null)
                         it
@@ -22,7 +19,7 @@ class RAMDatabase<T>(private val backingData: MutableList<T> = ArrayList()) : Da
                         it.dropWhile { x ->
                             if (x == after) {
                                 pass = true
-                                false
+                                true
                             } else !pass
                         }
                     }
@@ -31,7 +28,7 @@ class RAMDatabase<T>(private val backingData: MutableList<T> = ArrayList()) : Da
                 .toList()
     }
 
-    override suspend fun insert(values: List<T>): List<T?> {
+    override suspend fun insert(values: List<T>): List<T> {
         backingData.addAll(values)
         return values
     }

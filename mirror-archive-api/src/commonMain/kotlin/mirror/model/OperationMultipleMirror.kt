@@ -2,8 +2,11 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.mirror.archive.flatmap.Breaker
 import com.lightningkite.mirror.info.MirrorClass
+import com.lightningkite.mirror.info.MirrorType
 import kotlinx.serialization.Mapper
+import kotlinx.serialization.StructureKind
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
@@ -28,6 +31,7 @@ class OperationMultipleMirror<T : Any?>(
 
     val fieldOperations: Field<Operation.Multiple<T>, List<Operation<T>>> = Field(
             owner = this,
+            index = 0,
             name = "operations",
             type = ListMirror(OperationMirror(TMirror)),
             optional = false,

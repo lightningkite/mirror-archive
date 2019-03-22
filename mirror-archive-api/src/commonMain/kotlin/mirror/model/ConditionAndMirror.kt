@@ -28,6 +28,7 @@ class ConditionAndMirror<T : Any?>(
 
     val fieldConditions: Field<Condition.And<T>, List<Condition<T>>> = Field(
             owner = this,
+            index = 0,
             name = "conditions",
             type = ListMirror(ConditionMirror(TMirror)),
             optional = false,

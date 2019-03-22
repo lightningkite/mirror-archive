@@ -28,6 +28,7 @@ class ConditionEqualMirror<T : Any?>(
 
     val fieldValue: Field<Condition.Equal<T>, T> = Field(
             owner = this,
+            index = 0,
             name = "value",
             type = TMirror,
             optional = false,

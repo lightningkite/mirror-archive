@@ -28,6 +28,7 @@ class ConditionLessThanMirror<T : Comparable<T>>(
 
     val fieldValue: Field<Condition.LessThan<T>, T> = Field(
             owner = this,
+            index = 0,
             name = "value",
             type = TMirror,
             optional = false,

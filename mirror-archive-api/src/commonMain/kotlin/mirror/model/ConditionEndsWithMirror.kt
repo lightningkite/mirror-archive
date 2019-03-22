@@ -20,6 +20,7 @@ object ConditionEndsWithMirror : MirrorClass<Condition.EndsWith>() {
 
     val fieldQuery: Field<Condition.EndsWith, String> = Field(
             owner = this,
+            index = 0,
             name = "query",
             type = StringMirror,
             optional = false,
