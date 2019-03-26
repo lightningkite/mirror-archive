@@ -23,7 +23,8 @@ class RequestDatabaseHandler(val handler: Request.Handler) : Database.Handler {
     data class Update<T : Any>(
             val databaseRequest: Database.Request<T>,
             val condition: Condition<T>,
-            val operation: Operation<T>
+            val operation: Operation<T>,
+            val limit: Int? = null
     ) : Request<Int>
 
     data class Delete<T : Any>(
@@ -49,11 +50,12 @@ class RequestDatabaseHandler(val handler: Request.Handler) : Database.Handler {
             ))
         }
 
-        override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
+        override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int {
             return handler.invoke(Update(
                     databaseRequest = request,
                     condition = condition,
-                    operation = operation
+                    operation = operation,
+                    limit = limit
             ))
         }
 

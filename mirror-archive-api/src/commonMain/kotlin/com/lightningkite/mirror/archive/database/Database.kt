@@ -25,7 +25,8 @@ interface Database<T : Any> {
 
     suspend fun update(
             condition: Condition<T>,
-            operation: Operation<T>
+            operation: Operation<T>,
+            limit: Int? = null
     ): Int
 
     suspend fun delete(

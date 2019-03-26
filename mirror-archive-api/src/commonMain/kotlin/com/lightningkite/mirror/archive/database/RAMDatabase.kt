@@ -33,14 +33,16 @@ class RAMDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()
         return values
     }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int {
         val iter = backingData.listIterator()
         var modifications = 0
+        val max = limit ?: Int.MAX_VALUE
         while(iter.hasNext()){
             val item = iter.next()
             if(condition.invoke(item)){
                 iter.set(operation.invoke(item))
                 modifications++
+                if (modifications >= max) break
             }
         }
         return modifications

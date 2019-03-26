@@ -130,7 +130,3 @@ sealed class Condition<in T> {
         override fun invoke(item: String): Boolean = item.contains(Regex(query))
     }
 }
-
-infix fun <T> Condition<T>.and(other:Condition<T>):Condition<T> = Condition.And(listOf(this, other)).simplify()
-infix fun <T> Condition<T>.or(other:Condition<T>):Condition<T> = Condition.Or(listOf(this, other)).simplify()
-operator fun <T> Condition<T>.not() = Condition.Not(this)

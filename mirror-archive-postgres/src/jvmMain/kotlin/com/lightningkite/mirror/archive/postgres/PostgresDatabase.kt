@@ -405,7 +405,7 @@ class PostgresDatabase<T : Any>(
         append(";")
     }.let { values }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int = client.suspendQuery {
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int = client.suspendQuery {
         setup()
         append("UPDATE ")
         append(schemaName)
@@ -414,7 +414,19 @@ class PostgresDatabase<T : Any>(
         append(" SET ")
         appendOperation(operation)
         append(" WHERE ")
-        appendCondition(condition.simplify())
+        if (limit != null) {
+            append("ctid in (SELECT ctid FROM ")
+            append(schemaName)
+            append('.')
+            append(tableName)
+            append(" WHERE ")
+            appendCondition(condition.simplify())
+            append(" LIMIT ")
+            append(limit.toString())
+            append(")")
+        } else {
+            appendCondition(condition.simplify())
+        }
         append(";")
     }.rowCount()
 

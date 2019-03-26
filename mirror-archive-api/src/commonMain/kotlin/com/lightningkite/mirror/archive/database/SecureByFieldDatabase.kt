@@ -207,9 +207,9 @@ class SecureByFieldDatabase<T : Any>(
         return underlying.insert(values.map { it.secureInput() }).map { it.secureOutput() }
     }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int {
         operation.secure()?.let {
-            return underlying.update(condition.secure() and it.secureCondition(), it)
+            return underlying.update(condition.secure() and it.secureCondition(), it, limit)
         }
         return 0
     }

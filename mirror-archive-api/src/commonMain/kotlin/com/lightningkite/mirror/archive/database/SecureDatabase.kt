@@ -27,8 +27,8 @@ class SecureDatabase<T : Any>(
         return underlying.insert(values.filter { limitInsert(it) })
     }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
-        return underlying.update(condition and limitUpdate, operation)
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int {
+        return underlying.update(condition and limitUpdate, operation, limit)
     }
 
     override suspend fun delete(condition: Condition<T>): Int {

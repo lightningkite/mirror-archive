@@ -13,7 +13,7 @@ fun LocalRequestHandler.databases(databaseHandler: Database.Handler) {
         databaseHandler.invoke(this.databaseRequest).delete(condition)
     }
     invocation(RequestDatabaseHandler.Update::class as KClass<RequestDatabaseHandler.Update<Any>>) {
-        databaseHandler.invoke(this.databaseRequest).update(condition, operation)
+        databaseHandler.invoke(this.databaseRequest).update(condition, operation, limit)
     }
     invocation(RequestDatabaseHandler.Insert::class as KClass<RequestDatabaseHandler.Insert<Any>>) {
         databaseHandler.invoke(this.databaseRequest).insert(values)
