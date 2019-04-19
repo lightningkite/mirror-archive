@@ -1,12 +1,9 @@
 package com.lightningkite.mirror.archive.database
 
-import com.lightningkite.mirror.archive.flatmap.Breaker
 import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.model.Sort
 import com.lightningkite.mirror.archive.model.and
-import com.lightningkite.mirror.info.MirrorClass
-import com.lightningkite.mirror.info.MirrorType
 
 
 /**

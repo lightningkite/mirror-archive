@@ -93,23 +93,23 @@ sealed class Condition<in T> {
     }
 
 
-    data class LessThan<T : Comparable<T>>(val value: T) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item < value
+    data class LessThan<T : Comparable<T>?>(val value: T) : Condition<T>() {
+        override fun invoke(item: T): Boolean = value != null && item != null && item < value
     }
 
 
-    data class GreaterThan<T : Comparable<T>>(val value: T) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item > value
+    data class GreaterThan<T : Comparable<T>?>(val value: T) : Condition<T>() {
+        override fun invoke(item: T): Boolean = value != null && item != null && item > value
     }
 
 
-    data class LessThanOrEqual<T : Comparable<T>>(val value: T) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item <= value
+    data class LessThanOrEqual<T : Comparable<T>?>(val value: T) : Condition<T>() {
+        override fun invoke(item: T): Boolean = value != null && item != null && item <= value
     }
 
 
-    data class GreaterThanOrEqual<T : Comparable<T>>(val value: T) : Condition<T>() {
-        override fun invoke(item: T): Boolean = item >= value
+    data class GreaterThanOrEqual<T : Comparable<T>?>(val value: T) : Condition<T>() {
+        override fun invoke(item: T): Boolean = value != null && item != null && item >= value
     }
 
 

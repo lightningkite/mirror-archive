@@ -56,6 +56,9 @@ class PostgresDatabase<T : Any>(
     }
 
     fun QueryBuilder.appendComparison(value: Any?, comparison: String = "", name: String = "") {
+        //Skip nulls, because comparisons won't work with them and we track the null state within a boolean column
+        if (value == null) return
+
         append(name)
         append(' ')
         append(comparison)
@@ -133,6 +136,8 @@ class PostgresDatabase<T : Any>(
                                     append(field.sqlName)
                                     append(" IN (")
                                     var isFirst = true
+                                    //TODO: Handle nulls elegantly
+                                    //Right now, if this field is nullable, weird stuff is gonna happen
                                     for (brokenValue in brokenValues) {
                                         if (isFirst)
                                             isFirst = false

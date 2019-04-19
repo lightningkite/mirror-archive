@@ -1,10 +1,7 @@
 package com.lightningkite.mirror.archive.model
 
-import com.lightningkite.mirror.archive.flatmap.Breaker
+import com.lightningkite.mirror.breaker.Breaker
 import com.lightningkite.mirror.info.MirrorClass
-import com.lightningkite.mirror.info.MirrorType
-import kotlinx.serialization.Mapper
-import kotlinx.serialization.StructureKind
 
 interface Operation<T> {
 
