@@ -5,13 +5,6 @@ import com.lightningkite.mirror.info.MirrorClass
 
 interface Operation<T> {
 
-    companion object {
-        fun <T : Any, F> SetField(field: MirrorClass.Field<T, F>, value: F) = Operation.Field(
-                field = field,
-                operation = Operation.Set(value)
-        )
-    }
-
     operator fun invoke(item: T): T
 
     data class Set<T>(var value: T) : Operation<T> {
@@ -79,6 +72,13 @@ interface Operation<T> {
                 operations.fold(item) { acc, op -> op.invoke(acc) }
             }
         }
+    }
+
+    companion object {
+        fun <T : Any, F> SetField(field: MirrorClass.Field<T, F>, value: F) = Operation.Field(
+                field = field,
+                operation = Operation.Set(value)
+        )
     }
 
 
