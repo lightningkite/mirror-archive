@@ -7,13 +7,16 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
-class ConditionGreaterThanOrEqualMirror<T: Comparable<T>?>(
+data class ConditionGreaterThanOrEqualMirror<T: Comparable<T>?>(
     val TMirror: MirrorType<T>
 ) : MirrorClass<Condition.GreaterThanOrEqual<T>>() {
     
-    companion object {
-        val minimal = ConditionGreaterThanOrEqualMirror(ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable).nullable).nullable).nullable)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = ConditionGreaterThanOrEqualMirror(TypeArgumentMirrorType("T", ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable).nullable).nullable).nullable))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionGreaterThanOrEqualMirror(typeArguments[0] as MirrorType<Comparable<Comparable<Comparable<Comparable<*>?>?>?>?>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)

@@ -7,13 +7,16 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
-class OperationMirror<T: Any?>(
+data class OperationMirror<T: Any?>(
     val TMirror: MirrorType<T>
 ) : PolymorphicMirror<Operation<T>>() {
     
-    companion object {
-        val minimal = OperationMirror(AnyMirror.nullable)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = OperationMirror(TypeArgumentMirrorType("T", AnyMirror.nullable))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = OperationMirror(typeArguments[0] as MirrorType<Any?>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)

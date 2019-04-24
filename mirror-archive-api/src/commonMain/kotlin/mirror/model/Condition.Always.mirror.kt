@@ -7,6 +7,7 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
 object ConditionAlwaysMirror : MirrorObject<Condition.Always>(Condition.Always) {
     @Suppress("UNCHECKED_CAST")

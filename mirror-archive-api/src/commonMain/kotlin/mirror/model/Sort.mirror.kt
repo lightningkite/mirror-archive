@@ -6,15 +6,18 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 import com.lightningkite.mirror.info.MirrorClassFieldMirror
 
-class SortMirror<T: Any, V: Comparable<V>>(
+data class SortMirror<T: Any, V: Comparable<V>>(
     val TMirror: MirrorType<T>,
     val VMirror: MirrorType<V>
 ) : MirrorClass<Sort<T,V>>() {
     
-    companion object {
-        val minimal = SortMirror(AnyMirror, ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable))))
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = SortMirror(TypeArgumentMirrorType("T", AnyMirror), TypeArgumentMirrorType("V", ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable)))))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = SortMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Comparable<Comparable<Comparable<Comparable<*>>>>>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror, VMirror)

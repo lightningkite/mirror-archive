@@ -5,6 +5,7 @@ package com.lightningkite.mirror.archive.model
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
 object HasIdMirror : PolymorphicMirror<HasId>() {
     @Suppress("UNCHECKED_CAST")

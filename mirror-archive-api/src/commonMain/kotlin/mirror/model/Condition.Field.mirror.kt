@@ -7,15 +7,18 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 import com.lightningkite.mirror.info.MirrorClassFieldMirror
 
-class ConditionFieldMirror<T: Any, V: Any?>(
+data class ConditionFieldMirror<T: Any, V: Any?>(
     val TMirror: MirrorType<T>,
     val VMirror: MirrorType<V>
 ) : MirrorClass<Condition.Field<T,V>>() {
     
-    companion object {
-        val minimal = ConditionFieldMirror(AnyMirror, AnyMirror.nullable)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = ConditionFieldMirror(TypeArgumentMirrorType("T", AnyMirror), TypeArgumentMirrorType("V", AnyMirror.nullable))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionFieldMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Any?>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror, VMirror)

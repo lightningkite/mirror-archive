@@ -7,6 +7,7 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
 object OperationAddLongMirror : MirrorClass<Operation.AddLong>() {
     @Suppress("UNCHECKED_CAST")

@@ -7,13 +7,16 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
-class ConditionEqualToOneMirror<T: Any?>(
+data class ConditionEqualToOneMirror<T: Any?>(
     val TMirror: MirrorType<T>
 ) : MirrorClass<Condition.EqualToOne<T>>() {
     
-    companion object {
-        val minimal = ConditionEqualToOneMirror(AnyMirror.nullable)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = ConditionEqualToOneMirror(TypeArgumentMirrorType("T", AnyMirror.nullable))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionEqualToOneMirror(typeArguments[0] as MirrorType<Any?>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)

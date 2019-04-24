@@ -7,6 +7,7 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
 object OperationAddDoubleMirror : MirrorClass<Operation.AddDouble>() {
     @Suppress("UNCHECKED_CAST")

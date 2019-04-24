@@ -5,13 +5,16 @@ package com.lightningkite.mirror.archive.model
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
-class ReferenceMirror<MODEL: HasId>(
+data class ReferenceMirror<MODEL: HasId>(
     val MODELMirror: MirrorType<MODEL>
 ) : MirrorClass<Reference<MODEL>>() {
     
-    companion object {
-        val minimal = ReferenceMirror(HasIdMirror)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = ReferenceMirror(TypeArgumentMirrorType("MODEL", HasIdMirror))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ReferenceMirror(typeArguments[0] as MirrorType<HasId>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(MODELMirror)

@@ -5,14 +5,17 @@ package com.lightningkite.mirror.archive.model
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
-class LinkMirror<A: HasId, B: HasId>(
+data class LinkMirror<A: HasId, B: HasId>(
     val AMirror: MirrorType<A>,
     val BMirror: MirrorType<B>
 ) : PolymorphicMirror<Link<A,B>>() {
     
-    companion object {
-        val minimal = LinkMirror(HasIdMirror, HasIdMirror)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = LinkMirror(TypeArgumentMirrorType("A", HasIdMirror), TypeArgumentMirrorType("B", HasIdMirror))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = LinkMirror(typeArguments[0] as MirrorType<HasId>, typeArguments[1] as MirrorType<HasId>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(AMirror, BMirror)

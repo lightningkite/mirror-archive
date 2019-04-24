@@ -7,13 +7,16 @@ import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
-class ConditionNotEqualMirror<T: Any?>(
+data class ConditionNotEqualMirror<T: Any?>(
     val TMirror: MirrorType<T>
 ) : MirrorClass<Condition.NotEqual<T>>() {
     
-    companion object {
-        val minimal = ConditionNotEqualMirror(AnyMirror.nullable)
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        override val minimal = ConditionNotEqualMirror(TypeArgumentMirrorType("T", AnyMirror.nullable))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionNotEqualMirror(typeArguments[0] as MirrorType<Any?>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)

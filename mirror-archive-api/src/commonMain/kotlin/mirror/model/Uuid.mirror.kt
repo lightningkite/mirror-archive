@@ -6,6 +6,7 @@ import kotlin.random.Random
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
+import mirror.kotlin.*
 
 object UuidMirror : MirrorClass<Uuid>() {
     @Suppress("UNCHECKED_CAST")
