@@ -15,7 +15,9 @@ data class OperationMirror<T: Any?>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = OperationMirror(TypeArgumentMirrorType("T", AnyMirror.nullable))
+        val TMirrorMinimal get() = AnyMirror.nullable
+        
+        override val minimal = OperationMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = OperationMirror(typeArguments[0] as MirrorType<Any?>)
     }
     
@@ -26,5 +28,4 @@ data class OperationMirror<T: Any?>(
     override val implements: Array<MirrorClass<*>> get() = arrayOf()
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"
     override val localName: String get() = "Operation"
-    override val companion: Any? get() = Operation.Companion
 }

@@ -15,7 +15,9 @@ data class ConditionGreaterThanOrEqualMirror<T: Comparable<T>?>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = ConditionGreaterThanOrEqualMirror(TypeArgumentMirrorType("T", ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable).nullable).nullable).nullable))
+        val TMirrorMinimal get() = ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable).nullable).nullable).nullable
+        
+        override val minimal = ConditionGreaterThanOrEqualMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionGreaterThanOrEqualMirror(typeArguments[0] as MirrorType<Comparable<Comparable<Comparable<Comparable<*>?>?>?>?>)
     }
     

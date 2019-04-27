@@ -15,7 +15,9 @@ data class ConditionNotMirror<T: Any?>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = ConditionNotMirror(TypeArgumentMirrorType("T", AnyMirror.nullable))
+        val TMirrorMinimal get() = AnyMirror.nullable
+        
+        override val minimal = ConditionNotMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionNotMirror(typeArguments[0] as MirrorType<Any?>)
     }
     

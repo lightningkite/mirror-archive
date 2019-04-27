@@ -16,7 +16,10 @@ data class SortMirror<T: Any, V: Comparable<V>>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = SortMirror(TypeArgumentMirrorType("T", AnyMirror), TypeArgumentMirrorType("V", ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable)))))
+        val TMirrorMinimal get() = AnyMirror
+        val VMirrorMinimal get() = ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable)))
+        
+        override val minimal = SortMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = SortMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Comparable<Comparable<Comparable<Comparable<*>>>>>)
     }
     

@@ -17,7 +17,10 @@ data class OperationFieldMirror<T: Any, V: Any?>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = OperationFieldMirror(TypeArgumentMirrorType("T", AnyMirror), TypeArgumentMirrorType("V", AnyMirror.nullable))
+        val TMirrorMinimal get() = AnyMirror
+        val VMirrorMinimal get() = AnyMirror.nullable
+        
+        override val minimal = OperationFieldMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = OperationFieldMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Any?>)
     }
     

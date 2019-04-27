@@ -13,7 +13,9 @@ data class ReferenceMirror<MODEL: HasId>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = ReferenceMirror(TypeArgumentMirrorType("MODEL", HasIdMirror))
+        val MODELMirrorMinimal get() = HasIdMirror
+        
+        override val minimal = ReferenceMirror(TypeArgumentMirrorType("MODEL", Variance.INVARIANT, MODELMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ReferenceMirror(typeArguments[0] as MirrorType<HasId>)
     }
     

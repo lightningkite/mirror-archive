@@ -15,7 +15,9 @@ data class OperationMultipleMirror<T: Any?>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = OperationMultipleMirror(TypeArgumentMirrorType("T", AnyMirror.nullable))
+        val TMirrorMinimal get() = AnyMirror.nullable
+        
+        override val minimal = OperationMultipleMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = OperationMultipleMirror(typeArguments[0] as MirrorType<Any?>)
     }
     

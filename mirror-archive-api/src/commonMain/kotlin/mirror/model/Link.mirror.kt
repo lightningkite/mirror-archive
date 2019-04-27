@@ -14,7 +14,10 @@ data class LinkMirror<A: HasId, B: HasId>(
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        override val minimal = LinkMirror(TypeArgumentMirrorType("A", HasIdMirror), TypeArgumentMirrorType("B", HasIdMirror))
+        val AMirrorMinimal get() = HasIdMirror
+        val BMirrorMinimal get() = HasIdMirror
+        
+        override val minimal = LinkMirror(TypeArgumentMirrorType("A", Variance.INVARIANT, AMirrorMinimal), TypeArgumentMirrorType("B", Variance.INVARIANT, BMirrorMinimal))
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = LinkMirror(typeArguments[0] as MirrorType<HasId>, typeArguments[1] as MirrorType<HasId>)
     }
     
