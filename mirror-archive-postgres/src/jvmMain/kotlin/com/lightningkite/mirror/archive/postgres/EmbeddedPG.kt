@@ -146,7 +146,13 @@ object EmbeddedPG {
     }
 
     //Pool layer
-    class PoolProvider(val cache: File, val version: String, val storeFiles: File, val clearBeforeStarting: Boolean = false, val port: Int = 5432) {
+    class PoolProvider(
+            val cache: File = File("/pgcache"),
+            val version: String = Versions.VERSION_10,
+            val storeFiles: File = File("./build/pg"),
+            val clearBeforeStarting: Boolean = false,
+            val port: Int = 5432
+    ) {
         val base = File(cache, version)
         fun start(): PgPool {
             println("Base: $base")
