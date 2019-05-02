@@ -1,6 +1,6 @@
 package com.lightningkite.mirror.archive.model
 
-interface Link<A : HasId, B : HasId> {
+interface Link<A : HasUuid, B : HasUuid> {
     val a: Reference<A>
     val b: Reference<B>
 }

@@ -1,8 +1,5 @@
 package com.lightningkite.mirror.archive.flatarray
 
-import com.lightningkite.kommon.atomic.AtomicReference
-import com.lightningkite.mirror.archive.model.Condition
-import com.lightningkite.mirror.info.MirrorType
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.BooleanDescriptor
 

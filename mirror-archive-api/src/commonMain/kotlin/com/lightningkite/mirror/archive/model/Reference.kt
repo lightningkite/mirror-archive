@@ -1,6 +1,6 @@
 package com.lightningkite.mirror.archive.model
 
 @Suppress("unused")
-inline class Reference<MODEL : HasId>(val key: Uuid)
+inline class Reference<MODEL : HasUuid>(val key: Uuid)
 
-fun <MODEL: HasId> MODEL.reference() = Reference<MODEL>(this.id)
+fun <MODEL: HasUuid> MODEL.reference() = Reference<MODEL>(this.id)

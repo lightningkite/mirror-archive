@@ -10,3 +10,5 @@ com.lightningkite.mirror.test.Zoo
 com.lightningkite.mirror.test.Attitude
 com.lightningkite.mirror.test.IntData
 com.lightningkite.mirror.test.Tree
+com.lightningkite.lokalize.time.TimeStamp
+com.lightningkite.recktangle.Point

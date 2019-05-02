@@ -7,18 +7,18 @@ import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import mirror.kotlin.*
 
-data class LinkMirror<A: HasId, B: HasId>(
+data class LinkMirror<A: HasUuid, B: HasUuid>(
     val AMirror: MirrorType<A>,
     val BMirror: MirrorType<B>
 ) : PolymorphicMirror<Link<A,B>>() {
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        val AMirrorMinimal get() = HasIdMirror
-        val BMirrorMinimal get() = HasIdMirror
+        val AMirrorMinimal get() = HasUuidMirror
+        val BMirrorMinimal get() = HasUuidMirror
         
         override val minimal = LinkMirror(TypeArgumentMirrorType("A", Variance.INVARIANT, AMirrorMinimal), TypeArgumentMirrorType("B", Variance.INVARIANT, BMirrorMinimal))
-        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = LinkMirror(typeArguments[0] as MirrorType<HasId>, typeArguments[1] as MirrorType<HasId>)
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = LinkMirror(typeArguments[0] as MirrorType<HasUuid>, typeArguments[1] as MirrorType<HasUuid>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(AMirror, BMirror)

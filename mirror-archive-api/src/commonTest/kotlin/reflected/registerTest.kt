@@ -6,6 +6,8 @@ import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 
 fun registerTest() = MirrorRegistry.register(
+    com.lightningkite.recktangle.PointMirror,
+    com.lightningkite.lokalize.time.TimeStampMirror,
     com.lightningkite.mirror.test.TreeMirror,
     com.lightningkite.mirror.test.IntDataMirror,
     com.lightningkite.mirror.test.AttitudeMirror,

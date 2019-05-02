@@ -1,4 +1,0 @@
-name = com.lightningkite.kotlinx.db.redis.TestRegistry
-
-com.lightningkite.kotlinx.db.redis.Post
-com.lightningkite.mirror.archive.model.Id

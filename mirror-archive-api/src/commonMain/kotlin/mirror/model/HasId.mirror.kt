@@ -7,9 +7,21 @@ import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import mirror.kotlin.*
 
-object HasIdMirror : PolymorphicMirror<HasId>() {
+data class HasIdMirror<ID: Any?>(
+    val IDMirror: MirrorType<ID>
+) : PolymorphicMirror<HasId<ID>>() {
+    
+    override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
+    companion object : MirrorClassCompanion {
+        val IDMirrorMinimal get() = AnyMirror.nullable
+        
+        override val minimal = HasIdMirror(TypeArgumentMirrorType("ID", Variance.INVARIANT, IDMirrorMinimal))
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = HasIdMirror(typeArguments[0] as MirrorType<Any?>)
+    }
+    
+    override val typeParameters: Array<MirrorType<*>> get() = arrayOf(IDMirror)
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<HasId> get() = HasId::class as KClass<HasId>
+    override val kClass: KClass<HasId<ID>> get() = HasId::class as KClass<HasId<ID>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Interface)
     override val implements: Array<MirrorClass<*>> get() = arrayOf()
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"

@@ -7,16 +7,16 @@ import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import mirror.kotlin.*
 
-data class ReferenceMirror<MODEL: HasId>(
+data class ReferenceMirror<MODEL: HasUuid>(
     val MODELMirror: MirrorType<MODEL>
 ) : MirrorClass<Reference<MODEL>>() {
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        val MODELMirrorMinimal get() = HasIdMirror
+        val MODELMirrorMinimal get() = HasUuidMirror
         
         override val minimal = ReferenceMirror(TypeArgumentMirrorType("MODEL", Variance.INVARIANT, MODELMirrorMinimal))
-        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ReferenceMirror(typeArguments[0] as MirrorType<HasId>)
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ReferenceMirror(typeArguments[0] as MirrorType<HasUuid>)
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(MODELMirror)

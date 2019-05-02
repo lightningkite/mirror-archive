@@ -1,6 +1,7 @@
 package com.lightningkite.mirror.archive.postgres
 
 import com.lightningkite.kommon.atomic.AtomicReference
+import com.lightningkite.kommon.atomic.AtomicValue
 import com.lightningkite.kommon.collection.forEachBetween
 import com.lightningkite.mirror.archive.database.Database
 import com.lightningkite.mirror.archive.database.MigrationHandler
@@ -29,7 +30,7 @@ class PostgresDatabase<T : Any>(
     val schema = FlatArrayFormat.columns(mirror)
     val schemaByIndexPath = schema.associate { it.indexPath to it }
     val typeByName = schema.associate { it.sqlName.toLowerCase() to it.type }
-    val isSetUp = AtomicReference(false)
+    val isSetUp = AtomicValue(false)
 
     val FlatArrayFormat.Column.sqlName: String get() = if (name.toUpperCase() in PostgresReservedKeywords) "row_$name" else name
 

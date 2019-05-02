@@ -8,4 +8,5 @@ com.lightningkite.mirror.archive.model.Link
 com.lightningkite.mirror.archive.model.Sort
 com.lightningkite.mirror.archive.model.Uuid
 com.lightningkite.mirror.archive.model.Reference
+com.lightningkite.mirror.archive.model.HasUuid
 com.lightningkite.mirror.archive.model.HasId

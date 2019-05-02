@@ -1,7 +1,5 @@
 package com.lightningkite.mirror.archive.model
 
-
-interface HasId {
-    val id: Uuid
+interface HasId<ID> {
+    val id: ID
 }
-
