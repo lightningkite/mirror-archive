@@ -1,3 +1,0 @@
-name = com.lightningkite.kotlinx.db.influxdb.TestRegistry
-
-com.lightningkite.kotlinx.db.influxdb.CPUUsage

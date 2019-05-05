@@ -1,17 +1,16 @@
 package com.lightningkite.mirror.archive.flatarray
 
-import com.lightningkite.kommon.bytes.toStringHex
 import kotlinx.io.ByteArrayInputStream
-import kotlinx.io.ByteArrayOutputStream
 import kotlinx.serialization.*
-import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.context.SerialContext
 import kotlinx.serialization.internal.EnumDescriptor
+import kotlinx.serialization.modules.SerialModule
 
-class FlatArrayDecoder(
-        override val context: SerialContext,
+class BinaryFlatArrayDecoder(
+        override val context: SerialModule,
+        val binaryFormat: BinaryFormat,
         val input: List<Any?>,
-        var currentIndex: Int = 0
+        var currentIndex: Int = 0,
+        val terminateAt: (SerialDescriptor)->Boolean
 ) : Decoder, CompositeDecoder {
     override val updateMode: UpdateMode get() = UpdateMode.UPDATE
 
@@ -50,7 +49,8 @@ class FlatArrayDecoder(
     override fun decodeUnitElement(desc: SerialDescriptor, index: Int) {}
 
     fun skipSerializableValue(desc: SerialDescriptor) {
-        when (desc.kind) {
+        if(terminateAt(desc)) currentIndex++
+        else when (desc.kind) {
             PrimitiveKind.UNIT -> {
             }
             is PrimitiveKind, UnionKind.ENUM_KIND -> currentIndex++
@@ -80,7 +80,9 @@ class FlatArrayDecoder(
     }
 
     override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T {
-        return when (deserializer.descriptor.kind) {
+        @Suppress("UNCHECKED_CAST")
+        return if(terminateAt(deserializer.descriptor)) input[currentIndex++] as T
+        else when (deserializer.descriptor.kind) {
             PrimitiveKind.UNIT,
             PrimitiveKind.INT,
             PrimitiveKind.BOOLEAN,
@@ -100,7 +102,7 @@ class FlatArrayDecoder(
                     deserializer.deserialize(this)
                 } else if (desc.name in seen) {
                     val binary = input[currentIndex++] as ByteArray
-                    Cbor.load(deserializer, binary)
+                    binaryFormat.load(deserializer, binary)
                 } else {
                     seen.add(desc.name)
                     val result = deserializer.deserialize(this)
@@ -110,7 +112,7 @@ class FlatArrayDecoder(
             }
             else -> {
                 val binary = input[currentIndex++] as ByteArray
-                Cbor.load(deserializer, binary)
+                binaryFormat.load(deserializer, binary)
             }
         }
     }
@@ -124,13 +126,7 @@ class FlatArrayDecoder(
                 beginStructureIndexStack[beginStructureIndexStackIndex] = currentIndex
                 this
             }
-            else -> {
-                val binary = input[currentIndex++] as ByteArray
-                val stream = ByteArrayInputStream(binary)
-                val decoder = CborCopy.CborDecoder(stream)
-                val reader = CborCopy.plain.CborReader(decoder)
-                return reader.beginStructure(desc, *typeParams)
-            }
+            else -> throw IllegalArgumentException()
         }
     }
 

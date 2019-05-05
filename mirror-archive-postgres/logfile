@@ -2720,3 +2720,129 @@
 2019-03-22 11:23:16.260 MDT [1680] LOG:  worker process: logical replication launcher (PID 7904) exited with exit code 1
 2019-03-22 11:23:16.275 MDT [12972] LOG:  shutting down
 2019-03-22 11:23:16.462 MDT [1680] LOG:  database system is shut down
+2019-05-04 16:14:29.117 MDT [16988] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 16:14:29.118 MDT [16988] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 16:14:29.193 MDT [1872] LOG:  database system was shut down at 2019-05-04 16:14:27 MDT
+2019-05-04 16:14:29.243 MDT [16988] LOG:  database system is ready to accept connections
+2019-05-04 16:14:30.501 MDT [18388] ERROR:  syntax error at or near "$2" at character 577
+2019-05-04 16:14:30.501 MDT [18388] STATEMENT:  SELECT row_boolean, byte, short, row_int, long, row_float, row_double, row_char, string, row_enum, intData_intV, unitN_null, booleanN_null, booleanN, byteN_null, byteN, shortN_null, shortN, intN_null, intN, longN_null, longN, floatN_null, floatN, doubleN_null, doubleN, charN_null, charN, stringN_null, stringN, enumN_null, enumN, intDataN_null, intDataN_intV, listInt, listIntN, listListEnumN, listIntData, listIntDataN, tree_name, tree_left_null, tree_left, tree_right_null, tree_right, mapStringInt, mapIntStringN, defaultIfNotPresent FROM mySchema.Zoo WHERE row_int IN ($1$2$3) ORDER BY row_int ASC LIMIT 100;
+2019-05-04 16:14:30.634 MDT [18516] ERROR:  syntax error at or near "$2" at character 46
+2019-05-04 16:14:30.634 MDT [18516] STATEMENT:  DELETE FROM mySchema.Zoo WHERE row_int IN ($1$2$3);
+2019-05-04 16:14:30.705 MDT [16988] LOG:  received fast shutdown request
+2019-05-04 16:14:30.709 MDT [16988] LOG:  aborting any active transactions
+2019-05-04 16:14:30.710 MDT [18516] FATAL:  terminating connection due to administrator command
+2019-05-04 16:14:30.710 MDT [2564] FATAL:  terminating connection due to administrator command
+2019-05-04 16:14:30.710 MDT [18388] FATAL:  terminating connection due to administrator command
+2019-05-04 16:14:30.711 MDT [1400] FATAL:  terminating connection due to administrator command
+2019-05-04 16:14:30.734 MDT [16988] LOG:  worker process: logical replication launcher (PID 3356) exited with exit code 1
+2019-05-04 16:14:30.740 MDT [1160] LOG:  shutting down
+2019-05-04 16:14:30.974 MDT [16988] LOG:  database system is shut down
+2019-05-04 16:31:47.497 MDT [12028] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 16:31:47.497 MDT [12028] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 16:31:47.547 MDT [448] LOG:  database system was shut down at 2019-05-04 16:31:46 MDT
+2019-05-04 16:31:47.583 MDT [12028] LOG:  database system is ready to accept connections
+2019-05-04 16:31:48.769 MDT [8336] ERROR:  syntax error at or near "$2" at character 577
+2019-05-04 16:31:48.769 MDT [8336] STATEMENT:  SELECT row_boolean, byte, short, row_int, long, row_float, row_double, row_char, string, row_enum, intData_intV, unitN_null, booleanN_null, booleanN, byteN_null, byteN, shortN_null, shortN, intN_null, intN, longN_null, longN, floatN_null, floatN, doubleN_null, doubleN, charN_null, charN, stringN_null, stringN, enumN_null, enumN, intDataN_null, intDataN_intV, listInt, listIntN, listListEnumN, listIntData, listIntDataN, tree_name, tree_left_null, tree_left, tree_right_null, tree_right, mapStringInt, mapIntStringN, defaultIfNotPresent FROM mySchema.Zoo WHERE row_int IN ($1$2$3) ORDER BY row_int ASC LIMIT 100;
+2019-05-04 16:31:48.907 MDT [1288] ERROR:  syntax error at or near "$2" at character 46
+2019-05-04 16:31:48.907 MDT [1288] STATEMENT:  DELETE FROM mySchema.Zoo WHERE row_int IN ($1$2$3);
+2019-05-04 16:31:48.976 MDT [12028] LOG:  received fast shutdown request
+2019-05-04 16:31:48.981 MDT [12028] LOG:  aborting any active transactions
+2019-05-04 16:31:48.981 MDT [8336] FATAL:  terminating connection due to administrator command
+2019-05-04 16:31:48.981 MDT [3896] FATAL:  terminating connection due to administrator command
+2019-05-04 16:31:48.982 MDT [1288] FATAL:  terminating connection due to administrator command
+2019-05-04 16:31:48.982 MDT [9332] FATAL:  terminating connection due to administrator command
+2019-05-04 16:31:49.002 MDT [12028] LOG:  worker process: logical replication launcher (PID 11620) exited with exit code 1
+2019-05-04 16:31:49.010 MDT [15148] LOG:  shutting down
+2019-05-04 16:31:49.233 MDT [12028] LOG:  database system is shut down
+2019-05-04 16:35:09.697 MDT [18876] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 16:35:09.697 MDT [18876] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 16:35:09.743 MDT [15860] LOG:  database system was shut down at 2019-05-04 16:35:08 MDT
+2019-05-04 16:35:09.771 MDT [18876] LOG:  database system is ready to accept connections
+2019-05-04 16:35:10.966 MDT [12880] ERROR:  syntax error at or near "$2" at character 578
+2019-05-04 16:35:10.966 MDT [12880] STATEMENT:  SELECT row_boolean, byte, short, row_int, long, row_float, row_double, row_char, string, row_enum, intData_intV, unitN_null, booleanN_null, booleanN, byteN_null, byteN, shortN_null, shortN, intN_null, intN, longN_null, longN, floatN_null, floatN, doubleN_null, doubleN, charN_null, charN, stringN_null, stringN, enumN_null, enumN, intDataN_null, intDataN_intV, listInt, listIntN, listListEnumN, listIntData, listIntDataN, tree_name, tree_left_null, tree_left, tree_right_null, tree_right, mapStringInt, mapIntStringN, defaultIfNotPresent FROM mySchema.Zoo WHERE row_int IN ($1 $2 $3) ORDER BY row_int ASC LIMIT 100;
+2019-05-04 16:35:11.134 MDT [15784] ERROR:  syntax error at or near "$2" at character 47
+2019-05-04 16:35:11.134 MDT [15784] STATEMENT:  DELETE FROM mySchema.Zoo WHERE row_int IN ($1 $2 $3);
+2019-05-04 16:35:11.238 MDT [18876] LOG:  received fast shutdown request
+2019-05-04 16:35:11.246 MDT [18876] LOG:  aborting any active transactions
+2019-05-04 16:35:11.247 MDT [15784] FATAL:  terminating connection due to administrator command
+2019-05-04 16:35:11.247 MDT [16256] FATAL:  terminating connection due to administrator command
+2019-05-04 16:35:11.248 MDT [12880] FATAL:  terminating connection due to administrator command
+2019-05-04 16:35:11.250 MDT [7384] FATAL:  terminating connection due to administrator command
+2019-05-04 16:35:11.277 MDT [18876] LOG:  worker process: logical replication launcher (PID 13308) exited with exit code 1
+2019-05-04 16:35:11.289 MDT [15660] LOG:  shutting down
+2019-05-04 16:35:11.561 MDT [18876] LOG:  database system is shut down
+2019-05-04 16:46:32.527 MDT [9224] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 16:46:32.527 MDT [9224] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 16:46:32.578 MDT [12088] LOG:  database system was shut down at 2019-05-04 16:46:31 MDT
+2019-05-04 16:46:32.640 MDT [9224] LOG:  database system is ready to accept connections
+2019-05-04 16:46:33.783 MDT [18604] ERROR:  syntax error at or near "$2" at character 578
+2019-05-04 16:46:33.783 MDT [18604] STATEMENT:  SELECT row_boolean, byte, short, row_int, long, row_float, row_double, row_char, string, row_enum, intData_intV, unitN_null, booleanN_null, booleanN, byteN_null, byteN, shortN_null, shortN, intN_null, intN, longN_null, longN, floatN_null, floatN, doubleN_null, doubleN, charN_null, charN, stringN_null, stringN, enumN_null, enumN, intDataN_null, intDataN_intV, listInt, listIntN, listListEnumN, listIntData, listIntDataN, tree_name, tree_left_null, tree_left, tree_right_null, tree_right, mapStringInt, mapIntStringN, defaultIfNotPresent FROM mySchema.Zoo WHERE row_int IN ($1 $2 $3) ORDER BY row_int ASC LIMIT 100;
+2019-05-04 16:46:33.929 MDT [18636] ERROR:  syntax error at or near "$2" at character 47
+2019-05-04 16:46:33.929 MDT [18636] STATEMENT:  DELETE FROM mySchema.Zoo WHERE row_int IN ($1 $2 $3);
+2019-05-04 16:46:34.003 MDT [9224] LOG:  received fast shutdown request
+2019-05-04 16:46:34.007 MDT [9224] LOG:  aborting any active transactions
+2019-05-04 16:46:34.007 MDT [18604] FATAL:  terminating connection due to administrator command
+2019-05-04 16:46:34.008 MDT [3944] FATAL:  terminating connection due to administrator command
+2019-05-04 16:46:34.008 MDT [18636] FATAL:  terminating connection due to administrator command
+2019-05-04 16:46:34.008 MDT [11256] FATAL:  terminating connection due to administrator command
+2019-05-04 16:46:34.028 MDT [9224] LOG:  worker process: logical replication launcher (PID 17124) exited with exit code 1
+2019-05-04 16:46:34.035 MDT [17888] LOG:  shutting down
+2019-05-04 16:46:34.264 MDT [9224] LOG:  database system is shut down
+2019-05-04 17:09:34.115 MDT [17608] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 17:09:34.116 MDT [17608] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 17:09:34.167 MDT [5272] LOG:  database system was shut down at 2019-05-04 17:09:32 MDT
+2019-05-04 17:09:34.204 MDT [17608] LOG:  database system is ready to accept connections
+2019-05-04 17:09:35.384 MDT [17872] ERROR:  syntax error at or near "$2" at character 578
+2019-05-04 17:09:35.384 MDT [17872] STATEMENT:  SELECT row_boolean, byte, short, row_int, long, row_float, row_double, row_char, string, row_enum, intData_intV, unitN_null, booleanN_null, booleanN, byteN_null, byteN, shortN_null, shortN, intN_null, intN, longN_null, longN, floatN_null, floatN, doubleN_null, doubleN, charN_null, charN, stringN_null, stringN, enumN_null, enumN, intDataN_null, intDataN_intV, listInt, listIntN, listListEnumN, listIntData, listIntDataN, tree_name, tree_left_null, tree_left, tree_right_null, tree_right, mapStringInt, mapIntStringN, defaultIfNotPresent FROM mySchema.Zoo WHERE row_int IN ($1 $2 $3) ORDER BY row_int ASC LIMIT 100;
+2019-05-04 17:09:35.527 MDT [14408] ERROR:  syntax error at or near "$2" at character 47
+2019-05-04 17:09:35.527 MDT [14408] STATEMENT:  DELETE FROM mySchema.Zoo WHERE row_int IN ($1 $2 $3);
+2019-05-04 17:09:35.611 MDT [11824] ERROR:  syntax error at or near "$4" at character 72
+2019-05-04 17:09:35.611 MDT [11824] STATEMENT:  UPDATE mySchema.Zoo SET intN_null = $1, intN = $2 WHERE row_int IN ($3 $4 $5);
+2019-05-04 17:09:35.642 MDT [17608] LOG:  received fast shutdown request
+2019-05-04 17:09:35.647 MDT [17608] LOG:  aborting any active transactions
+2019-05-04 17:09:35.647 MDT [11824] FATAL:  terminating connection due to administrator command
+2019-05-04 17:09:35.647 MDT [14408] FATAL:  terminating connection due to administrator command
+2019-05-04 17:09:35.647 MDT [17872] FATAL:  terminating connection due to administrator command
+2019-05-04 17:09:35.648 MDT [14392] FATAL:  terminating connection due to administrator command
+2019-05-04 17:09:35.657 MDT [17608] LOG:  worker process: logical replication launcher (PID 10144) exited with exit code 1
+2019-05-04 17:09:35.672 MDT [16916] LOG:  shutting down
+2019-05-04 17:09:35.931 MDT [17608] LOG:  database system is shut down
+2019-05-04 17:11:31.750 MDT [9900] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 17:11:31.750 MDT [9900] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 17:11:31.798 MDT [6024] LOG:  database system was shut down at 2019-05-04 17:11:30 MDT
+2019-05-04 17:11:31.838 MDT [9900] LOG:  database system is ready to accept connections
+2019-05-04 17:11:33.488 MDT [9900] LOG:  received fast shutdown request
+2019-05-04 17:11:33.494 MDT [9900] LOG:  aborting any active transactions
+2019-05-04 17:11:33.494 MDT [7048] FATAL:  terminating connection due to administrator command
+2019-05-04 17:11:33.494 MDT [16752] FATAL:  terminating connection due to administrator command
+2019-05-04 17:11:33.494 MDT [7680] FATAL:  terminating connection due to administrator command
+2019-05-04 17:11:33.495 MDT [16088] FATAL:  terminating connection due to administrator command
+2019-05-04 17:11:33.517 MDT [9900] LOG:  worker process: logical replication launcher (PID 18996) exited with exit code 1
+2019-05-04 17:11:33.531 MDT [19072] LOG:  shutting down
+2019-05-04 17:11:33.739 MDT [9900] LOG:  database system is shut down
+2019-05-04 17:15:06.153 MDT [5848] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 17:15:06.153 MDT [5848] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 17:15:06.209 MDT [5312] LOG:  database system was shut down at 2019-05-04 17:15:04 MDT
+2019-05-04 17:15:06.261 MDT [5848] LOG:  database system is ready to accept connections
+2019-05-04 17:15:08.050 MDT [5848] LOG:  received fast shutdown request
+2019-05-04 17:15:08.054 MDT [5848] LOG:  aborting any active transactions
+2019-05-04 17:15:08.054 MDT [11936] FATAL:  terminating connection due to administrator command
+2019-05-04 17:15:08.054 MDT [6964] FATAL:  terminating connection due to administrator command
+2019-05-04 17:15:08.055 MDT [18848] FATAL:  terminating connection due to administrator command
+2019-05-04 17:15:08.055 MDT [5548] FATAL:  terminating connection due to administrator command
+2019-05-04 17:15:08.072 MDT [5848] LOG:  worker process: logical replication launcher (PID 11768) exited with exit code 1
+2019-05-04 17:15:08.079 MDT [19172] LOG:  shutting down
+2019-05-04 17:15:08.290 MDT [5848] LOG:  database system is shut down
+2019-05-04 17:17:07.560 MDT [18068] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-04 17:17:07.561 MDT [18068] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-04 17:17:07.607 MDT [19392] LOG:  database system was shut down at 2019-05-04 17:17:06 MDT
+2019-05-04 17:17:07.646 MDT [18068] LOG:  database system is ready to accept connections
+2019-05-04 17:17:09.210 MDT [18068] LOG:  received fast shutdown request
+2019-05-04 17:17:09.214 MDT [18068] LOG:  aborting any active transactions
+2019-05-04 17:17:09.214 MDT [12028] FATAL:  terminating connection due to administrator command
+2019-05-04 17:17:09.214 MDT [9284] FATAL:  terminating connection due to administrator command
+2019-05-04 17:17:09.214 MDT [10560] FATAL:  terminating connection due to administrator command
+2019-05-04 17:17:09.215 MDT [9340] FATAL:  terminating connection due to administrator command
+2019-05-04 17:17:09.233 MDT [18068] LOG:  worker process: logical replication launcher (PID 10144) exited with exit code 1
+2019-05-04 17:17:09.253 MDT [7952] LOG:  shutting down
+2019-05-04 17:17:09.431 MDT [18068] LOG:  database system is shut down

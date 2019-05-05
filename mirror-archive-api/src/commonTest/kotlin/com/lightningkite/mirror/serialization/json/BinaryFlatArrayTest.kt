@@ -3,8 +3,8 @@ package com.lightningkite.mirror.serialization.json
 import com.lightningkite.kommon.bytes.toStringHex
 import com.lightningkite.lokalize.time.TimeStamp
 import com.lightningkite.lokalize.time.TimeStampMirror
-import com.lightningkite.mirror.archive.flatarray.FlatArrayDecoder
-import com.lightningkite.mirror.archive.flatarray.FlatArrayFormat
+import com.lightningkite.mirror.archive.flatarray.BinaryFlatArrayDecoder
+import com.lightningkite.mirror.archive.flatarray.BinaryFlatArrayFormat
 import com.lightningkite.mirror.archive.flatarray.IndexPath
 import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.registerTest
@@ -14,15 +14,15 @@ import com.lightningkite.recktangle.PointMirror
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FlatArrayTest {
+class BinaryFlatArrayTest {
 
     init {
         registerTest()
     }
 
     fun <T> test(value: T, type: MirrorType<T>): T {
-        val result = FlatArrayFormat.toArray(type, value)
-        val schema = FlatArrayFormat.columns(type)
+        val result = BinaryFlatArrayFormat.toArray(type, value)
+        val schema = BinaryFlatArrayFormat.columns(type)
         schema.indices
                 .asSequence()
                 .map { schema.getOrNull(it) to result.getOrNull(it) }
@@ -31,9 +31,8 @@ class FlatArrayTest {
                         it.toStringHex()
                     } else it.toString()}")
                 }
-//        val back = FlatArrayFormat.fromArray(type, result)
-        val decoder = FlatArrayDecoder(FlatArrayFormat.context, result)
-        val back = type.deserialize(decoder)
+        val decoder = BinaryFlatArrayDecoder(BinaryFlatArrayFormat.context, BinaryFlatArrayFormat.binaryFormat, result){false}
+        val back = decoder.decodeSerializableValue(type)
         assertEquals(schema.size, result.size)
         assertEquals(decoder.currentIndex, result.size)
         assertEquals(value, back)
@@ -43,9 +42,9 @@ class FlatArrayTest {
     @Test
     fun listString() {
         println("TEST - listString")
-        val map = FlatArrayFormat.toArray(IntMirror.list, listOf(1, 2, 3, 4))
+        val map = BinaryFlatArrayFormat.toArray(IntMirror.list, listOf(1, 2, 3, 4))
         println((map[0] as ByteArray).toStringHex())
-        val back = FlatArrayFormat.fromArray(IntMirror.list, map)
+        val back = BinaryFlatArrayFormat.fromArray(IntMirror.list, map)
         println(back)
     }
 
@@ -78,6 +77,32 @@ class FlatArrayTest {
         println("TEST - reflective")
         test(Post(0, 42, "hello"), PostMirror)
         test(Zoo.instance(), ZooMirror)
+        test(Zoo.zero(), ZooMirror)
+    }
+
+    @Test
+    fun reflectiveWithSkip() {
+        println("TEST - reflective")
+        val value = Zoo.zero()
+        val type = ZooMirror
+        val schema = BinaryFlatArrayFormat.columns(type)
+        val result = BinaryFlatArrayFormat.toArray(type, value)
+
+        println("First: ${result.joinToString()}")
+        val resultWithNulls = result.mapIndexed { index, any ->
+            val col = schema[index]
+            val otherName = col.name + "_null"
+            val otherIndex = schema.indexOfFirst { it.name == otherName }
+            if(otherIndex != -1 && result[otherIndex] == true) {
+                null
+            } else any
+        }
+        println("With nulls: ${resultWithNulls.joinToString()}")
+
+        val decoder = BinaryFlatArrayDecoder(BinaryFlatArrayFormat.context, BinaryFlatArrayFormat.binaryFormat, resultWithNulls){false}
+        val back = decoder.decodeSerializableValue(type)
+        assertEquals(decoder.currentIndex, resultWithNulls.size)
+        assertEquals(value, back)
     }
 
     @Test
@@ -85,7 +110,7 @@ class FlatArrayTest {
         println("TEST - reflectivePartialShallow")
         val default = Zoo.instance()
         val path = IndexPath(intArrayOf(ZooMirror.fieldInt.index))
-        val encoded = FlatArrayFormat.toArrayPartial(ZooMirror, default, 333, path)
+        val encoded = BinaryFlatArrayFormat.toArrayPartial(ZooMirror, default, 333, path)
         println("Encoded int to $encoded")
         assertEquals(333, encoded[0])
     }
@@ -95,7 +120,7 @@ class FlatArrayTest {
         println("TEST - reflectivePartialMultivalue")
         val default = Zoo.instance()
         val path = IndexPath(intArrayOf(ZooMirror.fieldIntData.index))
-        val encoded = FlatArrayFormat.toArrayPartial(ZooMirror, default, IntData(333), path)
+        val encoded = BinaryFlatArrayFormat.toArrayPartial(ZooMirror, default, IntData(333), path)
         println("Encoded intData to $encoded")
         assertEquals(333, encoded[0])
     }
@@ -105,7 +130,7 @@ class FlatArrayTest {
         println("TEST - reflectivePartialDeep")
         val default = Zoo.instance()
         val path = IndexPath(intArrayOf(ZooMirror.fieldIntData.index, IntDataMirror.fieldIntV.index))
-        val encoded = FlatArrayFormat.toArrayPartial(ZooMirror, default, 333, path)
+        val encoded = BinaryFlatArrayFormat.toArrayPartial(ZooMirror, default, 333, path)
         println("Encoded intData.intV to $encoded")
         assertEquals(333, encoded[0])
     }

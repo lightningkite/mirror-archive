@@ -1,5 +1,8 @@
 package com.lightningkite.mirror.test
 
+import com.lightningkite.lokalize.time.TimeStamp
+import com.lightningkite.lokalize.time.now
+import com.lightningkite.mirror.archive.model.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -36,7 +39,9 @@ data class Zoo(
         val tree: Tree,
         val mapStringInt: Map<String, Int>,
         val mapIntStringN: Map<Int, String?>,
-        val defaultIfNotPresent: Int = 42
+        val defaultIfNotPresent: Int = 42,
+        val id: Uuid = Uuid.randomUUID4(),
+        val timeStamp: TimeStamp = TimeStamp.now()
 ) {
     companion object {
         fun instance() = Zoo(
@@ -51,6 +56,7 @@ data class Zoo(
                 mapOf("one" to 1, "two" to 2, "three" to 3),
                 mapOf(0 to null, 1 to "first", 2 to "second")
         )
+
         fun zero(): Zoo = Zoo(
                 Unit, false, 0, 0, 0, 0, 0f, 0.0, ' ', "", Attitude.NEUTRAL, IntData(0),
                 null, null, null, null, null, null, null, null, null, null, null, null,

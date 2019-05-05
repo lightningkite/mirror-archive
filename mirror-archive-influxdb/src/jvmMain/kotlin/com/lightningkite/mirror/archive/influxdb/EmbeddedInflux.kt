@@ -1,7 +1,5 @@
 package com.lightningkite.mirror.archive.influxdb
 
-import com.lightningkite.kommunicate.ConnectionException
-import com.lightningkite.kommunicate.HttpClient
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import org.influxdb.InfluxDB
@@ -9,9 +7,9 @@ import org.influxdb.InfluxDBFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import kotlin.IllegalStateException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -66,14 +64,14 @@ object EmbeddedInflux {
                 .get()
                 .build()
 
-        HttpClient.okClient.newCall(request).enqueue(object : Callback {
+        OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
-                callback.resumeWithException(ConnectionException(e.message ?: "", e))
+                callback.resumeWithException(IllegalStateException(e.message ?: "", e))
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if(response.code() / 100 != 2) callback.resumeWithException(ConnectionException(""))
+                if(response.code() / 100 != 2) callback.resumeWithException(IllegalStateException(""))
                 response.body()!!.byteStream().use {
                     val buffer = ByteArray(1024)
                     val zipIs = ZipInputStream(it)

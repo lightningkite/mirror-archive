@@ -33,6 +33,8 @@ fun registerArchive() = MirrorRegistry.register(
     com.lightningkite.mirror.archive.model.ConditionAndMirror.minimal,
     com.lightningkite.mirror.archive.model.ConditionAlwaysMirror,
     com.lightningkite.mirror.archive.model.ConditionNeverMirror,
+    com.lightningkite.lokalize.location.GeohashMirror,
+    com.lightningkite.lokalize.time.TimeStampMirror,
     com.lightningkite.mirror.archive.model.HasIdMirror.minimal,
     com.lightningkite.mirror.archive.model.HasUuidMirror,
     com.lightningkite.mirror.archive.model.ReferenceMirror.minimal,

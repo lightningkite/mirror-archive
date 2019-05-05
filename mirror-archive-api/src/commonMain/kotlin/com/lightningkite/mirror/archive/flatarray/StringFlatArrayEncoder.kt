@@ -1,33 +1,20 @@
 package com.lightningkite.mirror.archive.flatarray
 
-import com.lightningkite.kommon.bytes.toStringHex
-import com.lightningkite.kommon.exception.stackTraceString
-import kotlinx.io.ByteArrayOutputStream
 import kotlinx.serialization.*
 import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.context.SerialContext
 import kotlinx.serialization.internal.EnumDescriptor
+import kotlinx.serialization.modules.SerialModule
 
-open class FlatArrayEncoder(
-        override val context: SerialContext,
-        val output: ArrayList<Any?>
+open class StringFlatArrayEncoder(
+        override val context: SerialModule,
+        val stringFormat: StringFormat,
+        val output: ArrayList<Any?>,
+        val terminateAt: (SerialDescriptor)->Boolean
 ) : Encoder, CompositeEncoder {
     override fun beginStructure(desc: SerialDescriptor, vararg typeParams: KSerializer<*>): CompositeEncoder {
         return when (desc.kind) {
             StructureKind.CLASS -> this
-            else -> {
-                val outputStream = ByteArrayOutputStream()
-                val encoder = CborCopy.CborEncoder(outputStream)
-                val writer = CborCopy.plain.CborWriter(encoder)
-                val underlying = writer.beginStructure(desc, *typeParams)
-                return object : CompositeEncoder by underlying {
-                    override fun endStructure(desc: SerialDescriptor) {
-                        underlying.endStructure(desc)
-                        val binary = outputStream.toByteArray()
-                        write(binary)
-                    }
-                }
-            }
+            else -> throw IllegalArgumentException()
         }
     }
 
@@ -38,7 +25,8 @@ open class FlatArrayEncoder(
     val seen = ArrayList<String>()
 
     fun skipSerializableValue(desc: SerialDescriptor) {
-        when (desc.kind) {
+        if(terminateAt(desc)) write("")
+        else when (desc.kind) {
             PrimitiveKind.UNIT -> {
             }
             PrimitiveKind.INT -> write(0)
@@ -53,7 +41,7 @@ open class FlatArrayEncoder(
             UnionKind.ENUM_KIND -> write("")
             StructureKind.CLASS -> {
                 if (desc.name in seen) {
-                    write(ByteArray(0))
+                    write("")
                 } else {
                     seen.add(desc.name)
                     for (index in 0 until desc.elementsCount) {
@@ -62,12 +50,13 @@ open class FlatArrayEncoder(
                     seen.removeAt(seen.lastIndex)
                 }
             }
-            else -> write(ByteArray(0))
+            else -> write("")
         }
     }
 
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
-        when (serializer.descriptor.kind) {
+        if(terminateAt(serializer.descriptor)) write(value)
+        else when (serializer.descriptor.kind) {
             PrimitiveKind.UNIT,
             PrimitiveKind.INT,
             PrimitiveKind.BOOLEAN,
@@ -86,8 +75,8 @@ open class FlatArrayEncoder(
                 if (desc.isNullable) {
                     serializer.serialize(this, value)
                 } else if (desc.name in seen) {
-                    val binary = Cbor.dump(serializer, value)
-                    write(binary)
+                    val text = stringFormat.stringify(serializer, value)
+                    write(text)
                 } else {
                     seen.add(desc.name)
                     serializer.serialize(this, value)
@@ -95,7 +84,7 @@ open class FlatArrayEncoder(
                 }
             }
             else -> {
-                val binary = Cbor.dump(serializer, value)
+                val binary = stringFormat.stringify(serializer, value)
                 write(binary)
             }
         }
@@ -216,11 +205,13 @@ open class FlatArrayEncoder(
     }
 
     class Partial(
-            context: SerialContext,
+            context: SerialModule,
+            stringFormat: StringFormat,
             output: ArrayList<Any?>,
+            terminateAt: (SerialDescriptor)->Boolean,
             val selectedIndicies: IndexPath,
             val overridingValue: Any?
-    ) : FlatArrayEncoder(context, output) {
+    ) : StringFlatArrayEncoder(context, stringFormat, output, terminateAt) {
 
         var position: Int = 0
 
@@ -288,7 +279,7 @@ open class FlatArrayEncoder(
         override fun beginStructure(desc: SerialDescriptor, vararg typeParams: KSerializer<*>): CompositeEncoder {
             super.beginStructure(desc, *typeParams)
             return if (position >= selectedIndicies.size)
-                FlatArrayEncoder(context, output)
+                StringFlatArrayEncoder(context, stringFormat, output, terminateAt)
             else
                 this
         }
