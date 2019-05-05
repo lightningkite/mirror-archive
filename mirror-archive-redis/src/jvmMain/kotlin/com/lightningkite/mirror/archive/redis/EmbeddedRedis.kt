@@ -70,6 +70,14 @@ object EmbeddedRedis {
         process = null
     }
 
+    fun startWithAutoShutdown(port: Int = 6379, folder: File = File("./build/redis"), clearAtStart: Boolean = true): RedisClient {
+        val result = start(port, folder, clearAtStart)
+        Runtime.getRuntime().addShutdownHook(Thread {
+            stop()
+        })
+        return result
+    }
+
     val originalConfig = """
 # Redis configuration file example.
 #

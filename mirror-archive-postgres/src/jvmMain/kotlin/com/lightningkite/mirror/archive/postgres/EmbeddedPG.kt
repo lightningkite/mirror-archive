@@ -181,5 +181,13 @@ object EmbeddedPG {
         fun stop() {
             EmbeddedPG.stop(base, storeFiles)
         }
+
+        fun startWithAutoShutdown(): PgPool {
+            val result = start()
+            Runtime.getRuntime().addShutdownHook(Thread {
+                stop()
+            })
+            return result
+        }
     }
 }

@@ -12,6 +12,21 @@ interface Database<T : Any> {
         suspend fun <T : Any> invoke(request: Request<T>): Database<T>
     }
 
+    interface Provider {
+        fun <T : Any> get(
+                mirrorClass: MirrorClass<T>,
+                default: T,
+                name: String = mirrorClass.localName
+        ): Database<T>
+
+        interface FromConfiguration {
+            val name: String
+            val requiredArguments: Array<String> get() = arrayOf()
+            val optionalArguments: Array<String> get() = arrayOf()
+            operator fun invoke(arguments: Map<String, String>): Provider
+        }
+    }
+
     suspend fun get(
             condition: Condition<T> = Condition.Always,
             sort: List<Sort<T, *>> = listOf(),  //Always implied final sort is by PK

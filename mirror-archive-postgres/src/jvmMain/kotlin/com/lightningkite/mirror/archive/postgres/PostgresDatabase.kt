@@ -8,22 +8,97 @@ import com.lightningkite.mirror.archive.flatarray.BinaryFlatArrayFormat
 import com.lightningkite.mirror.archive.flatarray.FlatArrayFormat
 import com.lightningkite.mirror.archive.flatarray.IndexPath
 import com.lightningkite.mirror.archive.model.*
+import com.lightningkite.mirror.archive.property.RamSuspendProperty
+import com.lightningkite.mirror.archive.property.SuspendProperty
 import com.lightningkite.mirror.info.MirrorClass
 import io.reactiverse.pgclient.PgClient
+import io.reactiverse.pgclient.PgConnectOptions
+import io.reactiverse.pgclient.PgPoolOptions
 import io.reactiverse.pgclient.Row
 import io.vertx.core.buffer.Buffer
 import kotlinx.serialization.PrimitiveKind
 import kotlinx.serialization.UnionKind
+import java.io.File
 
 class PostgresDatabase<T : Any>(
         val mirror: MirrorClass<T>,
         val default: T,
-        val primaryKey: MirrorClass.Field<T, *>,
         val schemaName: String = "mySchema",
         val tableName: String = mirror.localName,
-        val migrationHandler: MigrationHandler<T> = { _, _, _ -> },
         val client: PgClient
 ) : Database<T> {
+    val primaryKey = mirror.findPrimaryKey()
+    val singleFieldIndices = mirror.fields.filter { it.shouldBeIndexed }
+    val multiFieldIndices = mirror.multiIndexSequence().toList()
+
+    /**
+     * Available options:
+     *
+     * If source is not present OR is "embedded":
+     * - cache - Where Postgres should be found/stored, defaults to '/pgcache'
+     * - version - The version of Postgres to use, defaults to version 10
+     * - files - Where the database should go, defaults to './build/pg'
+     * - clear - If set to `true`, it will clear the files before starting
+     * - port - The port to use, defaults to 5432
+     *
+     * Otherwise, the source should be the hostname or IP address of the Postgres instance:
+     * - port - Defaults to 5432
+     * - user - Defaults to 'postgres'
+     * - password - Defaults to 'postgres'
+     * - database - Defaults to 'postgres'
+     *
+     * */
+    companion object FromConfiguration : Database.Provider.FromConfiguration {
+        override val name: String get() = "Postgres"
+        override val requiredArguments = arrayOf("source")
+        override val optionalArguments = arrayOf(
+                "cache",
+                "version",
+                "files",
+                "clear",
+                "port",
+                "user",
+                "password",
+                "database"
+        )
+
+        override fun invoke(arguments: Map<String, String>) = Provider(
+                schemaName = arguments["schema"] ?: "mySchema",
+                client = {
+                    val source = arguments["source"]
+                    if (source == null || source == "embedded") {
+                        EmbeddedPG.PoolProvider(
+                                cache = arguments["cache"]?.let { File(it) } ?: File("/pgcache"),
+                                version = arguments["version"] ?: EmbeddedPG.Versions.VERSION_10,
+                                storeFiles = arguments["files"]?.let { File(it) } ?: File("./build/pg"),
+                                clearBeforeStarting = arguments["clear"] == "true",
+                                port = arguments["port"]?.toInt() ?: 5432
+                        ).startWithAutoShutdown()
+                    } else {
+                        PgClient.pool(PgPoolOptions(PgConnectOptions().also {
+                            it.host = source
+                            it.port = arguments["port"]?.toInt() ?: 5432
+                            it.user = arguments["user"] ?: "postgres"
+                            it.password = arguments["password"] ?: "postgres"
+                            it.database = arguments["database"] ?: "postgres"
+                        }))
+                    }
+                }()
+        )
+    }
+
+    class Provider(val schemaName: String, val client: PgClient) : Database.Provider {
+
+        override fun <T : Any> get(mirrorClass: MirrorClass<T>, default: T, name: String): Database<T> {
+            return PostgresDatabase(
+                    mirror = mirrorClass,
+                    default = default,
+                    schemaName = schemaName,
+                    tableName = name,
+                    client = client
+            )
+        }
+    }
 
     val defaultSort = Sort(primaryKey as MirrorClass.Field<T, Comparable<Comparable<*>>>)
     val schema = PostgresFlatArrayFormat.schema(mirror, default).let {
@@ -273,8 +348,7 @@ class PostgresDatabase<T : Any>(
                 client.suspendQuery("ALTER TABLE $schemaName.$tableName ADD COLUMN ${column.first} ${column.second}")
             }
 
-            //TODO: Figure out how this works in detail
-            migrationHandler(this, listOf(), listOf())
+            //TODO: Custom migrations?
 
             for (column in oldColumns) {
                 client.suspendQuery("ALTER TABLE $schemaName.$tableName DROP COLUMN ${column.first} ${column.second}")
@@ -283,10 +357,8 @@ class PostgresDatabase<T : Any>(
             //TODO: Migrate PK?
             //TODO: Migrate field type changes?
         }
-        //Check record of which fields are present
-        //Add new fields
-        //Run migrations
-        //Remove old fields
+
+        //TODO: Indicies
     }
 
     override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> = client.suspendQuery {

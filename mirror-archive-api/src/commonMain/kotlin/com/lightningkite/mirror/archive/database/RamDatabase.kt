@@ -4,8 +4,20 @@ import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.model.Sort
 import com.lightningkite.mirror.archive.model.comparator
+import com.lightningkite.mirror.info.MirrorClass
 
 class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()) : Database<T> {
+
+    companion object FromConfiguration : Database.Provider.FromConfiguration {
+        override val name: String get() = "RAM"
+        override fun invoke(arguments: Map<String, String>) = Provider
+    }
+
+    object Provider : Database.Provider {
+        override fun <T : Any> get(mirrorClass: MirrorClass<T>, default: T, name: String): Database<T> {
+            return RamDatabase()
+        }
+    }
 
     override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> {
         return backingData.asSequence()
