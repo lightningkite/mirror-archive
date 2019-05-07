@@ -2,6 +2,8 @@ package com.lightningkite.mirror.archive.postgres
 
 import com.lightningkite.kommon.atomic.AtomicValue
 import com.lightningkite.kommon.collection.forEachBetween
+import com.lightningkite.lokalize.time.TimeStamp
+import com.lightningkite.lokalize.time.TimeStampMirror
 import com.lightningkite.mirror.archive.database.Database
 import com.lightningkite.mirror.archive.database.MigrationHandler
 import com.lightningkite.mirror.archive.flatarray.BinaryFlatArrayFormat
@@ -17,8 +19,13 @@ import io.reactiverse.pgclient.PgPoolOptions
 import io.reactiverse.pgclient.Row
 import io.vertx.core.buffer.Buffer
 import kotlinx.serialization.PrimitiveKind
+import kotlinx.serialization.StructureKind
 import kotlinx.serialization.UnionKind
 import java.io.File
+import java.lang.IllegalArgumentException
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.*
 
 class PostgresDatabase<T : Any>(
         val mirror: MirrorClass<T>,
@@ -126,25 +133,15 @@ class PostgresDatabase<T : Any>(
             PrimitiveKind.DOUBLE,
             PrimitiveKind.STRING -> raw
             is UnionKind.ENUM_KIND -> raw as String
-            else -> (raw as Buffer).bytes
+            else -> when(raw){
+                is Buffer -> raw.bytes
+                is UUID -> Uuid(raw.mostSignificantBits, raw.leastSignificantBits)
+                is LocalDateTime -> TimeStamp(raw.toInstant(ZoneOffset.UTC).toEpochMilli())
+                else -> throw IllegalArgumentException("")
+            }
         }
         value
     }
-
-    /*  val value = when (type.kind) {
-            PrimitiveKind.UNIT -> Unit
-            PrimitiveKind.BYTE -> (raw as? Short)?.toByte() ?: 0.toByte()
-            PrimitiveKind.CHAR -> (raw as? String)?.first() ?: ' '
-            PrimitiveKind.INT -> (raw as? Int) ?: 0
-            PrimitiveKind.BOOLEAN -> (raw as? Boolean) ?: false
-            PrimitiveKind.SHORT -> (raw as? Short) ?: 0.toShort()
-            PrimitiveKind.LONG -> (raw as? Long) ?: 0L
-            PrimitiveKind.FLOAT -> (raw as? Float) ?: 0f
-            PrimitiveKind.DOUBLE -> (raw as? Double) ?: 0.0
-            PrimitiveKind.STRING -> (raw as? String) ?: ""
-            is UnionKind.ENUM_KIND -> raw as String
-            else -> (raw as Buffer).bytes
-        }*/
 
     fun QueryBuilder.appendConditionFull(condition: Condition<T>) {
         schema.conditionStream(
@@ -299,7 +296,11 @@ class PostgresDatabase<T : Any>(
             PrimitiveKind.CHAR -> "character(1)"
             PrimitiveKind.STRING -> "text"
             UnionKind.ENUM_KIND -> "text"
-            else -> "bytea"
+            else -> when(type){
+                UuidMirror.descriptor -> "uuid"
+                TimeStampMirror.descriptor -> "timestamp"
+                else -> "bytea"
+            }
         }
         return name.toLowerCase() to sqlType
     }

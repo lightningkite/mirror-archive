@@ -3,8 +3,8 @@ package com.lightningkite.mirror.archive.server
 import com.lightningkite.mirror.archive.database.Database
 import com.lightningkite.mirror.info.MirrorClass
 
-object Databases : Database.Provider {
-    fun configure(type: String, arguments: Map<String, String>, vararg options: Database.Provider.FromConfiguration) {
+class ConfiguredDatabaseProvider(vararg val options: Database.Provider.FromConfiguration) : Database.Provider {
+    fun configure(type: String, arguments: Map<String, String>) {
         for (option in options) {
             if (option.name.toLowerCase() == type) {
                 provider = option.invoke(arguments)//config.map("database", *(option.requiredArguments + option.optionalArguments)))

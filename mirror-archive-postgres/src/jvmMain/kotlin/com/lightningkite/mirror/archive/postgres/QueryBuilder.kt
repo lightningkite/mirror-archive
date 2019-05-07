@@ -1,9 +1,15 @@
 package com.lightningkite.mirror.archive.postgres
 
+import com.lightningkite.lokalize.time.TimeStamp
+import com.lightningkite.mirror.archive.model.Uuid
 import io.reactiverse.pgclient.Tuple
 import io.vertx.core.buffer.Buffer
 import java.lang.Appendable
 import java.lang.IllegalArgumentException
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.*
 
 
 class QueryBuilder(val builder: StringBuilder = StringBuilder(), val arguments: Tuple = Tuple.tuple()) : Appendable by builder {
@@ -21,6 +27,8 @@ class QueryBuilder(val builder: StringBuilder = StringBuilder(), val arguments: 
             is Char -> arguments.addString(it.toString())
             is String -> arguments.addString(it)
             is ByteArray -> arguments.addBuffer(Buffer.buffer(it))
+            is TimeStamp -> arguments.addLocalDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(it.millisecondsSinceEpoch), ZoneOffset.UTC))
+            is Uuid -> arguments.addUUID(UUID(it.mostSignificantBits, it.leastSignificantBits))
             else -> throw IllegalArgumentException()
         }
         builder.append('$')

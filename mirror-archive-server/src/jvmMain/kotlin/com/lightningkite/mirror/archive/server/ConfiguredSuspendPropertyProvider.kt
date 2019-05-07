@@ -3,8 +3,8 @@ package com.lightningkite.mirror.archive.server
 import com.lightningkite.mirror.archive.property.SuspendProperty
 import com.lightningkite.mirror.info.MirrorClass
 
-object SuspendProperties : SuspendProperty.Provider {
-    fun configure(type: String, arguments: Map<String, String>, vararg options: SuspendProperty.Provider.FromConfiguration) {
+class ConfiguredSuspendPropertyProvider(vararg val options: SuspendProperty.Provider.FromConfiguration) : SuspendProperty.Provider {
+    fun configure(type: String, arguments: Map<String, String>) {
         for (option in options) {
             if (option.name.toLowerCase() == type) {
                 provider = option.invoke(arguments)//config.map("database", *(option.requiredArguments + option.optionalArguments)))
