@@ -6,6 +6,7 @@ import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import mirror.kotlin.*
+import com.lightningkite.lokalize.time.TimeStampMirror
 
 object TimeStampMirror : MirrorClass<TimeStamp>() {
     @Suppress("UNCHECKED_CAST")

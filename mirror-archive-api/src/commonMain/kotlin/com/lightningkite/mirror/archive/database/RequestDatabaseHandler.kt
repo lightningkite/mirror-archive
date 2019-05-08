@@ -32,7 +32,7 @@ class RequestDatabaseHandler(val handler: Request.Handler) : Database.Handler {
             val condition: Condition<T>
     ) : Request<Int>
 
-    override suspend fun <T : Any> invoke(request: Database.Request<T>): Database<T> = object : Database<T> {
+    override fun <T : Any> invoke(request: Database.Request<T>): Database<T> = object : Database<T> {
         override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> {
             return handler.invoke(Get(
                     databaseRequest = request,

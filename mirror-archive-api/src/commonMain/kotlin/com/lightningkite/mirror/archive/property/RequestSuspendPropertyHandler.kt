@@ -19,7 +19,7 @@ class RequestSuspendPropertyHandler(val handler: Request.Handler) : SuspendPrope
             val value: T
     ) : Request<Boolean>
 
-    override suspend fun <T> invoke(request: SuspendProperty.Request<T>): SuspendProperty<T> = object : SuspendProperty<T> {
+    override fun <T> invoke(request: SuspendProperty.Request<T>): SuspendProperty<T> = object : SuspendProperty<T> {
         override suspend fun get(): T {
             return handler.invoke(Get(request))
         }

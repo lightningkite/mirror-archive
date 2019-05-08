@@ -9,7 +9,7 @@ interface Database<T : Any> {
 
     interface Request<T : Any>
     interface Handler {
-        suspend fun <T : Any> invoke(request: Request<T>): Database<T>
+        fun <T : Any> invoke(request: Request<T>): Database<T>
     }
 
     interface Provider {

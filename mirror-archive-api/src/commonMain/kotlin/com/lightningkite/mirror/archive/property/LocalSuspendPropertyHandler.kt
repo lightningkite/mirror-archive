@@ -20,7 +20,7 @@ class LocalSuspendPropertyHandler : SuspendProperty.Handler {
 
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <T> invoke(request: SuspendProperty.Request<T>): SuspendProperty<T> {
+    override fun <T> invoke(request: SuspendProperty.Request<T>): SuspendProperty<T> {
         val invocation = invocations[request::class] ?: defaultInvocation
         val result = invocation.invoke(request)
         return result as SuspendProperty<T>
