@@ -45,6 +45,7 @@ kotlin {
             dependency(serialization(versions.getProperty("kotlinx_serialization")).type(KDependencyType.Api))
             dependency(ktorClient(versions.getProperty("ktor")).type(KDependencyType.Api))
             dependency(projectOrMavenDashPlatform("com.lightningkite", "kommon", versions.getProperty("kommon")))
+            dependency(projectOrMavenDashPlatform("com.lightningkite", "lokalize", versions.getProperty("lokalize")))
             dependency(projectOrMavenDashPlatform("com.lightningkite", "mirror-runtime", versions.getProperty("mirror")))
             dependency(projectOrMavenDashPlatform("com.lightningkite", "mirror-archive-api", versions.getProperty("mirror")))
         }

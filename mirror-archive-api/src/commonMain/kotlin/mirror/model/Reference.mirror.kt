@@ -16,7 +16,15 @@ data class ReferenceMirror<MODEL: HasUuid>(
         val MODELMirrorMinimal get() = HasUuidMirror
         
         override val minimal = ReferenceMirror(TypeArgumentMirrorType("MODEL", Variance.INVARIANT, MODELMirrorMinimal))
+        @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ReferenceMirror(typeArguments[0] as MirrorType<HasUuid>)
+
+        @Suppress("UNCHECKED_CAST")
+        fun make(
+                MODELMirror: MirrorType<*>? = null
+        ) = ReferenceMirror<HasUuid>(
+                MODELMirror = (MODELMirror ?: MODELMirrorMinimal) as MirrorType<HasUuid>
+        )
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(MODELMirror)

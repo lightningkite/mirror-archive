@@ -15,3 +15,4 @@ com.lightningkite.lokalize.location.Geohash
 com.lightningkite.mirror.archive.model.PrimaryKey
 com.lightningkite.mirror.archive.model.Indexed
 com.lightningkite.mirror.archive.model.MultiIndex
+com.lightningkite.mirror.archive.database.RequestDatabase.*

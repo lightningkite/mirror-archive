@@ -6,6 +6,11 @@ import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 
 fun registerArchive() = MirrorRegistry.register(
+        com.lightningkite.mirror.archive.database.RequestDatabaseDeleteMirror.minimal,
+        com.lightningkite.mirror.archive.database.DatabaseRequestMirror.minimal,
+        com.lightningkite.mirror.archive.database.RequestDatabaseUpdateMirror.minimal,
+        com.lightningkite.mirror.archive.database.RequestDatabaseInsertMirror.minimal,
+        com.lightningkite.mirror.archive.database.RequestDatabaseGetMirror.minimal,
     com.lightningkite.mirror.archive.model.OperationMultipleMirror.minimal,
     com.lightningkite.mirror.archive.model.OperationFieldMirror.minimal,
     com.lightningkite.mirror.archive.model.OperationAppendMirror,

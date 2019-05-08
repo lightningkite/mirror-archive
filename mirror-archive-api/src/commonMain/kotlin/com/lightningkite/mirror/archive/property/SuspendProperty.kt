@@ -10,7 +10,7 @@ interface SuspendProperty<T> {
 
     interface Request<T>
     interface Handler {
-        fun <T> invoke(request: Request<T>): SuspendProperty<T>
+        suspend fun <T> invoke(request: Request<T>): SuspendProperty<T>
     }
 
     interface Provider {

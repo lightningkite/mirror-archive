@@ -18,7 +18,16 @@ data class ConditionGreaterThanOrEqualMirror<T: Comparable<T>?>(
         val TMirrorMinimal get() = ComparableMirror(ComparableMirror(ComparableMirror(AnyMirror.nullable).nullable).nullable).nullable
         
         override val minimal = ConditionGreaterThanOrEqualMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
+        @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionGreaterThanOrEqualMirror(typeArguments[0] as MirrorType<Comparable<Comparable<Comparable<Comparable<*>?>?>?>?>)
+
+        @Suppress("UNCHECKED_CAST")
+        fun make(
+                TMirror: MirrorType<*>? = null
+        ) = ConditionGreaterThanOrEqualMirror<Comparable<Comparable<Comparable<Comparable<*>?>?>?>?>(
+                TMirror = (TMirror
+                        ?: TMirrorMinimal) as MirrorType<Comparable<Comparable<Comparable<Comparable<*>?>?>?>?>
+        )
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)

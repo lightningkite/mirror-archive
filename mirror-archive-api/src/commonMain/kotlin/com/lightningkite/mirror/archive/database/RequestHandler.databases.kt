@@ -6,16 +6,16 @@ import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
 fun LocalRequestHandler.databases(databaseHandler: Database.Handler) {
-    invocation(RequestDatabaseHandler.Get::class as KClass<RequestDatabaseHandler.Get<Any>>) {
+    invocation(RequestDatabase.Get::class as KClass<RequestDatabase.Get<Any>>) {
         databaseHandler.invoke(this.databaseRequest).get(condition, sort, count, after)
     }
-    invocation(RequestDatabaseHandler.Delete::class as KClass<RequestDatabaseHandler.Delete<Any>>) {
+    invocation(RequestDatabase.Delete::class as KClass<RequestDatabase.Delete<Any>>) {
         databaseHandler.invoke(this.databaseRequest).delete(condition)
     }
-    invocation(RequestDatabaseHandler.Update::class as KClass<RequestDatabaseHandler.Update<Any>>) {
+    invocation(RequestDatabase.Update::class as KClass<RequestDatabase.Update<Any>>) {
         databaseHandler.invoke(this.databaseRequest).update(condition, operation, limit)
     }
-    invocation(RequestDatabaseHandler.Insert::class as KClass<RequestDatabaseHandler.Insert<Any>>) {
+    invocation(RequestDatabase.Insert::class as KClass<RequestDatabase.Insert<Any>>) {
         databaseHandler.invoke(this.databaseRequest).insert(values)
     }
 }

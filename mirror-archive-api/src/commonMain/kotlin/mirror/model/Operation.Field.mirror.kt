@@ -21,7 +21,17 @@ data class OperationFieldMirror<T: Any, V: Any?>(
         val VMirrorMinimal get() = AnyMirror.nullable
         
         override val minimal = OperationFieldMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
+        @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = OperationFieldMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Any?>)
+
+        @Suppress("UNCHECKED_CAST")
+        fun make(
+                TMirror: MirrorType<*>? = null,
+                VMirror: MirrorType<*>? = null
+        ) = OperationFieldMirror<Any, Any?>(
+                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>,
+                VMirror = (VMirror ?: VMirrorMinimal) as MirrorType<Any?>
+        )
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror, VMirror)
@@ -32,8 +42,8 @@ data class OperationFieldMirror<T: Any, V: Any?>(
     override val localName: String get() = "Operation.Field"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(OperationMirror(TMirror))
     override val owningClass: KClass<*>? get() = Operation::class
-    
-    val fieldField: Field<Operation.Field<T,V>,MirrorClass.Field<T,V>> = Field(
+
+    val fieldField: Field<Operation.Field<T, V>, MirrorClass.Field<T, V>> = Field(
         owner = this,
         index = 0,
         name = "field",
@@ -57,7 +67,7 @@ data class OperationFieldMirror<T: Any, V: Any?>(
     
     override fun deserialize(decoder: Decoder): Operation.Field<T,V> {
         var fieldSet = false
-        var fieldField: MirrorClass.Field<T,V>? = null
+        var fieldField: MirrorClass.Field<T, V>? = null
         var operationSet = false
         var fieldOperation: Operation<V>? = null
         val decoderStructure = decoder.beginStructure(this, TMirror, VMirror)
@@ -90,7 +100,7 @@ data class OperationFieldMirror<T: Any, V: Any?>(
             throw MissingFieldException("operation")
         }
         return Operation.Field<T,V>(
-            field = fieldField as MirrorClass.Field<T,V>,
+                field = fieldField as MirrorClass.Field<T, V>,
             operation = fieldOperation as Operation<V>
         )
     }

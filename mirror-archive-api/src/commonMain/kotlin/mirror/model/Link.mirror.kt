@@ -18,7 +18,17 @@ data class LinkMirror<A: HasUuid, B: HasUuid>(
         val BMirrorMinimal get() = HasUuidMirror
         
         override val minimal = LinkMirror(TypeArgumentMirrorType("A", Variance.INVARIANT, AMirrorMinimal), TypeArgumentMirrorType("B", Variance.INVARIANT, BMirrorMinimal))
+        @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = LinkMirror(typeArguments[0] as MirrorType<HasUuid>, typeArguments[1] as MirrorType<HasUuid>)
+
+        @Suppress("UNCHECKED_CAST")
+        fun make(
+                AMirror: MirrorType<*>? = null,
+                BMirror: MirrorType<*>? = null
+        ) = LinkMirror<HasUuid, HasUuid>(
+                AMirror = (AMirror ?: AMirrorMinimal) as MirrorType<HasUuid>,
+                BMirror = (BMirror ?: BMirrorMinimal) as MirrorType<HasUuid>
+        )
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(AMirror, BMirror)

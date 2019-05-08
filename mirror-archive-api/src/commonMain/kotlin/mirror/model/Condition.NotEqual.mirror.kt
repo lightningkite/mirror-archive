@@ -18,7 +18,15 @@ data class ConditionNotEqualMirror<T: Any?>(
         val TMirrorMinimal get() = AnyMirror.nullable
         
         override val minimal = ConditionNotEqualMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
+        @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionNotEqualMirror(typeArguments[0] as MirrorType<Any?>)
+
+        @Suppress("UNCHECKED_CAST")
+        fun make(
+                TMirror: MirrorType<*>? = null
+        ) = ConditionNotEqualMirror<Any?>(
+                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any?>
+        )
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)

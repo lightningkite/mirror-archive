@@ -318,8 +318,8 @@ object ZooMirror : MirrorClass<Zoo>() {
         get = { it.tree },
         annotations = listOf<Annotation>()
     )
-    
-    val fieldMapStringInt: Field<Zoo,Map<String,Int>> = Field(
+
+    val fieldMapStringInt: Field<Zoo, Map<String, Int>> = Field(
         owner = this,
         index = 30,
         name = "mapStringInt",
@@ -328,8 +328,8 @@ object ZooMirror : MirrorClass<Zoo>() {
         get = { it.mapStringInt },
         annotations = listOf<Annotation>()
     )
-    
-    val fieldMapIntStringN: Field<Zoo,Map<Int,String?>> = Field(
+
+    val fieldMapIntStringN: Field<Zoo, Map<Int, String?>> = Field(
         owner = this,
         index = 31,
         name = "mapIntStringN",
@@ -413,9 +413,9 @@ object ZooMirror : MirrorClass<Zoo>() {
         var treeSet = false
         var fieldTree: Tree? = null
         var mapStringIntSet = false
-        var fieldMapStringInt: Map<String,Int>? = null
+        var fieldMapStringInt: Map<String, Int>? = null
         var mapIntStringNSet = false
-        var fieldMapIntStringN: Map<Int,String?>? = null
+        var fieldMapIntStringN: Map<Int, String?>? = null
         var defaultIfNotPresentSet = false
         var fieldDefaultIfNotPresent: Int? = null
         val decoderStructure = decoder.beginStructure(this)
@@ -721,8 +721,8 @@ object ZooMirror : MirrorClass<Zoo>() {
             listIntData = fieldListIntData as List<IntData>,
             listIntDataN = fieldListIntDataN as List<IntData?>,
             tree = fieldTree as Tree,
-            mapStringInt = fieldMapStringInt as Map<String,Int>,
-            mapIntStringN = fieldMapIntStringN as Map<Int,String?>,
+                mapStringInt = fieldMapStringInt as Map<String, Int>,
+                mapIntStringN = fieldMapIntStringN as Map<Int, String?>,
             defaultIfNotPresent = fieldDefaultIfNotPresent as Int
         )
     }
