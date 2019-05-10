@@ -1,5 +1,7 @@
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.mirror.info.MirrorClass
+
 @Suppress("unused")
 inline class Reference<MODEL : HasUuid>(val key: Uuid)
 

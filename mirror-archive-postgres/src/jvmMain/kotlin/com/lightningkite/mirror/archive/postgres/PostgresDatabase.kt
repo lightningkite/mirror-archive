@@ -34,7 +34,7 @@ class PostgresDatabase<T : Any>(
         val tableName: String = mirror.localName,
         val client: PgClient
 ) : Database<T> {
-    val primaryKey = mirror.findPrimaryKey()
+    val primaryKey: List<MirrorClass.Field<T, *>> = mirror.findPrimaryKey()
     val singleFieldIndices = mirror.fields.filter { it.shouldBeIndexed }
     val multiFieldIndices = mirror.multiIndexSequence().toList()
 
@@ -325,7 +325,7 @@ class PostgresDatabase<T : Any>(
                 )
                 append(", PRIMARY KEY (")
                 schema.columns.asSequence()
-                        .filter { it.indexPath[0] == primaryKey.index }
+                        .filter { primaryKey.any { key -> key.index == it.indexPath[0] } }
                         .asIterable()
                         .forEachBetween(
                                 forItem = {

@@ -6,11 +6,11 @@ import com.lightningkite.mirror.info.MirrorClass
 @Target(AnnotationTarget.FIELD)
 annotation class PrimaryKey()
 
-fun <T : Any> MirrorClass<T>.findPrimaryKey(): MirrorClass.Field<T, *> {
-    return fields.find {
+fun <T : Any> MirrorClass<T>.findPrimaryKey(): List<MirrorClass.Field<T, *>> {
+    return fields.filter {
         //Try for explicit annotation first
         it.annotations.any { it is PrimaryKeyMirror }
-    } ?: fields.find {
+    }.takeUnless { it.isEmpty() } ?: fields.find {
         //Try for certain names next
         when (it.name) {
             "id",
@@ -18,7 +18,7 @@ fun <T : Any> MirrorClass<T>.findPrimaryKey(): MirrorClass.Field<T, *> {
             "uuid" -> true
             else -> false
         }
-    } ?: fields.first()
+    }?.let{ listOf(it) } ?: listOf(fields.first())
 }
 
 
