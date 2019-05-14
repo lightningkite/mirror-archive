@@ -40,8 +40,14 @@ interface Database<T : Any> {
 
     suspend fun update(
             condition: Condition<T>,
+            operation: Operation<T>
+    ): Int
+
+    suspend fun limitedUpdate(
+            condition: Condition<T>,
             operation: Operation<T>,
-            limit: Int? = null
+            sort: List<Sort<T, *>> = listOf(),
+            limit: Int
     ): Int
 
     suspend fun delete(

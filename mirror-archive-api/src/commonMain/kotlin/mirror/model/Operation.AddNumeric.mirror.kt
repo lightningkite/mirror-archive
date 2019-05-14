@@ -20,12 +20,12 @@ data class OperationAddNumericMirror<T: Any?>(
         override val minimal = OperationAddNumericMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = OperationAddNumericMirror(typeArguments[0] as MirrorType<Any?>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null
         ) = OperationAddNumericMirror<Any?>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any?>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any?>
         )
     }
     

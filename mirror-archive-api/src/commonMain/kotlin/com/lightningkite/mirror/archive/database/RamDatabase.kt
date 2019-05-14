@@ -45,16 +45,33 @@ class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()
         return values
     }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int {
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
         val iter = backingData.listIterator()
         var modifications = 0
-        val max = limit ?: Int.MAX_VALUE
         while(iter.hasNext()){
             val item = iter.next()
             if(condition.invoke(item)){
                 iter.set(operation.invoke(item))
                 modifications++
-                if (modifications >= max) break
+            }
+        }
+        return modifications
+    }
+
+    override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int {
+        val indices = backingData.asSequence().mapIndexed { index, t -> index to t }.sortedWith(object : Comparator<Pair<Int, T>> {
+            val backing = sort.comparator()
+            override fun compare(a: Pair<Int, T>, b: Pair<Int, T>): Int {
+                return backing.compare(a.second, b.second)
+            }
+        }).map { it.first }
+        var modifications = 0
+        for(index in indices){
+            val item = this.backingData[index]
+            if(condition.invoke(item)){
+                this.backingData[index] = operation.invoke(item)
+                modifications++
+                if (modifications >= limit) break
             }
         }
         return modifications

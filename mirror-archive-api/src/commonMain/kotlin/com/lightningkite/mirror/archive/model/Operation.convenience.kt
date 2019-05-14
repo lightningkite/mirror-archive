@@ -7,4 +7,6 @@ infix fun <T : Any> MirrorClass.Field<T, Int>.addTo(value: Int) = Operation.Fiel
 infix fun <T : Any> MirrorClass.Field<T, Long>.addTo(value: Long) = Operation.Field(this, Operation.AddLong(value))
 infix fun <T : Any> MirrorClass.Field<T, Float>.addTo(value: Float) = Operation.Field(this, Operation.AddFloat(value))
 infix fun <T : Any> MirrorClass.Field<T, Double>.addTo(value: Double) = Operation.Field(this, Operation.AddDouble(value))
+infix fun <T : Any> MirrorClass.Field<T, String>.append(value: String) = Operation.Field(this, Operation.Append(value))
 infix fun <T> Operation<T>.and(other: Operation<T>) = Operation.Multiple(listOf(this, other))
+infix fun <T : Any, V> MirrorClass.Field<T, V>.sub(operation: Operation<V>) = Operation.Field(this, operation)

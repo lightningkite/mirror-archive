@@ -133,7 +133,7 @@ class PostgresDatabase<T : Any>(
             PrimitiveKind.DOUBLE,
             PrimitiveKind.STRING -> raw
             is UnionKind.ENUM_KIND -> raw as String
-            else -> when(raw){
+            else -> when (raw) {
                 is Buffer -> raw.bytes
                 is UUID -> Uuid(raw.mostSignificantBits, raw.leastSignificantBits)
                 is LocalDateTime -> TimeStamp(raw.toInstant(ZoneOffset.UTC).toEpochMilli())
@@ -296,7 +296,7 @@ class PostgresDatabase<T : Any>(
             PrimitiveKind.CHAR -> "character(1)"
             PrimitiveKind.STRING -> "text"
             UnionKind.ENUM_KIND -> "text"
-            else -> when(type){
+            else -> when (type) {
                 UuidMirror.descriptor -> "uuid"
                 TimeStampMirror.descriptor -> "timestamp"
                 else -> "bytea"
@@ -427,7 +427,7 @@ class PostgresDatabase<T : Any>(
         append(";")
     }.let { values }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int = client.suspendQuery {
+    override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int = client.suspendQuery {
         setup()
         append("UPDATE ")
         append(schemaName)
@@ -436,19 +436,46 @@ class PostgresDatabase<T : Any>(
         append(" SET ")
         appendOperationFull(operation)
         append(" WHERE ")
-        if (limit != null) {
-            append("ctid in (SELECT ctid FROM ")
-            append(schemaName)
-            append('.')
-            append(tableName)
-            append(" WHERE ")
-            appendConditionFull(condition.simplify())
-            append(" LIMIT ")
-            append(limit.toString())
-            append(")")
-        } else {
-            appendConditionFull(condition.simplify())
+        append("ctid in (SELECT ctid FROM ")
+        append(schemaName)
+        append('.')
+        append(tableName)
+        append(" WHERE ")
+        appendConditionFull(condition.simplify())
+        if (sort.isNotEmpty()) {
+            append(" ORDER BY ")
+            sort.forEachBetween(
+                    forItem = { sort ->
+                        val name = schema.columns
+                                .asSequence()
+                                .filter { it.indexPath[0] == sort.field.index }
+                                .first().name
+                        append(name)
+                        append(" ")
+                        if (sort.ascending)
+                            append("ASC")
+                        else
+                            append("DESC")
+                    },
+                    between = { append(", ") }
+            )
         }
+        append(" LIMIT ")
+        append(limit.toString())
+        append(")")
+        append(";")
+    }.rowCount()
+
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int = client.suspendQuery {
+        setup()
+        append("UPDATE ")
+        append(schemaName)
+        append('.')
+        append(tableName)
+        append(" SET ")
+        appendOperationFull(operation)
+        append(" WHERE ")
+        appendConditionFull(condition.simplify())
         append(";")
     }.rowCount()
 

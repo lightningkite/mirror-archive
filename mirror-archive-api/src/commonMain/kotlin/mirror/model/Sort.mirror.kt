@@ -22,14 +22,14 @@ data class SortMirror<T: Any, V: Comparable<V>>(
         override val minimal = SortMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = SortMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Comparable<Comparable<Comparable<Comparable<*>>>>>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null,
-                VMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null,
+            VMirror: MirrorType<*>? = null
         ) = SortMirror<Any, Comparable<Comparable<Comparable<Comparable<*>>>>>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>,
-                VMirror = (VMirror ?: VMirrorMinimal) as MirrorType<Comparable<Comparable<Comparable<Comparable<*>>>>>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>,
+            VMirror = (VMirror ?: VMirrorMinimal) as MirrorType<Comparable<Comparable<Comparable<Comparable<*>>>>>
         )
     }
     
@@ -40,8 +40,8 @@ data class SortMirror<T: Any, V: Comparable<V>>(
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"
     override val localName: String get() = "Sort"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(ComparatorMirror(TMirror))
-
-    val fieldField: Field<Sort<T, V>, MirrorClass.Field<T, V>> = Field(
+    
+    val fieldField: Field<Sort<T,V>,MirrorClass.Field<T, V>> = Field(
         owner = this,
         index = 0,
         name = "field",
@@ -98,7 +98,7 @@ data class SortMirror<T: Any, V: Comparable<V>>(
             fieldAscending = true
         }
         return Sort<T,V>(
-                field = fieldField as MirrorClass.Field<T, V>,
+            field = fieldField as MirrorClass.Field<T, V>,
             ascending = fieldAscending as Boolean
         )
     }

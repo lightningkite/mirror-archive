@@ -20,12 +20,12 @@ data class ConditionAndMirror<T: Any?>(
         override val minimal = ConditionAndMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionAndMirror(typeArguments[0] as MirrorType<Any?>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null
         ) = ConditionAndMirror<Any?>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any?>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any?>
         )
     }
     

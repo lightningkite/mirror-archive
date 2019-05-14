@@ -10,6 +10,8 @@ infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.lessThanOrEqual(v
 infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.greaterThanOrEqual(value: V) = Condition.Field(this, Condition.GreaterThanOrEqual(value))
 infix fun <T : Any, V> MirrorClass.Field<T, V>.equalToOne(values: List<V>) = Condition.Field(this, Condition.EqualToOne(values))
 
+infix fun <T : Any, V> MirrorClass.Field<T, V>.sub(condition: Condition<V>) = Condition.Field(this, condition)
+
 infix fun <T : Any> MirrorClass.Field<T, String>.textSearch(value: String) = Condition.Field(this, Condition.TextSearch(value))
 infix fun <T : Any> MirrorClass.Field<T, String>.startsWith(value: String) = Condition.Field(this, Condition.StartsWith(value))
 infix fun <T : Any> MirrorClass.Field<T, String>.endsWith(value: String) = Condition.Field(this, Condition.EndsWith(value))

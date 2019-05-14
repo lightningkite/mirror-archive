@@ -58,11 +58,15 @@ kotlin {
 
         KTarget.jvm.sources {
             main {
+                apiSingle(projectOrMaven("com.lightningkite", "koolui-jvmvirtual", versions.getProperty("koolui"), ":koolui"))
                 dependencies {
                     api("io.ktor:ktor-server-core:${versions.getProperty("ktor")}")
                     api("io.ktor:ktor-auth:${versions.getProperty("ktor")}")
                     api("io.ktor:ktor-websockets:${versions.getProperty("ktor")}")
                     api("io.ktor:ktor-metrics:${versions.getProperty("ktor")}")
+                    api("com.google.firebase:firebase-admin:6.8.1")
+
+
                 }
             }
             test {
@@ -76,6 +80,9 @@ kotlin {
         }
     }
     jvm {
+        attributes { 
+            attribute(KTarget.attributeUI, "jvmVirtual")
+        }
         compilations.getByName("main") {
             kotlinOptions {
                 jvmTarget = "1.8"

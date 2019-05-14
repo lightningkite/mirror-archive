@@ -18,12 +18,12 @@ data class HasIdMirror<ID: Any?>(
         override val minimal = HasIdMirror(TypeArgumentMirrorType("ID", Variance.INVARIANT, IDMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = HasIdMirror(typeArguments[0] as MirrorType<Any?>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                IDMirror: MirrorType<*>? = null
+            IDMirror: MirrorType<*>? = null
         ) = HasIdMirror<Any?>(
-                IDMirror = (IDMirror ?: IDMirrorMinimal) as MirrorType<Any?>
+            IDMirror = (IDMirror ?: IDMirrorMinimal) as MirrorType<Any?>
         )
     }
     

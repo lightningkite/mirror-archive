@@ -23,14 +23,14 @@ data class ConditionFieldMirror<T: Any, V: Any?>(
         override val minimal = ConditionFieldMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionFieldMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Any?>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null,
-                VMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null,
+            VMirror: MirrorType<*>? = null
         ) = ConditionFieldMirror<Any, Any?>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>,
-                VMirror = (VMirror ?: VMirrorMinimal) as MirrorType<Any?>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>,
+            VMirror = (VMirror ?: VMirrorMinimal) as MirrorType<Any?>
         )
     }
     
@@ -42,8 +42,8 @@ data class ConditionFieldMirror<T: Any, V: Any?>(
     override val localName: String get() = "Condition.Field"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(ConditionMirror(TMirror))
     override val owningClass: KClass<*>? get() = Condition::class
-
-    val fieldField: Field<Condition.Field<T, V>, MirrorClass.Field<T, V>> = Field(
+    
+    val fieldField: Field<Condition.Field<T,V>,MirrorClass.Field<T, V>> = Field(
         owner = this,
         index = 0,
         name = "field",
@@ -100,7 +100,7 @@ data class ConditionFieldMirror<T: Any, V: Any?>(
             throw MissingFieldException("condition")
         }
         return Condition.Field<T,V>(
-                field = fieldField as MirrorClass.Field<T, V>,
+            field = fieldField as MirrorClass.Field<T, V>,
             condition = fieldCondition as Condition<V>
         )
     }

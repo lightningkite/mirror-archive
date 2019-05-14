@@ -23,8 +23,15 @@ class RequestDatabase<T : Any>(val handler: Request.Handler, val request: Databa
     data class Update<T : Any>(
             val databaseRequest: Database.Request<T>,
             val condition: Condition<T>,
+            val operation: Operation<T>
+    ) : Request<Int>
+
+    data class LimitedUpdate<T : Any>(
+            val databaseRequest: Database.Request<T>,
+            val condition: Condition<T>,
             val operation: Operation<T>,
-            val limit: Int? = null
+            val sort: List<Sort<T, *>> = listOf(),
+            val limit: Int
     ) : Request<Int>
 
     data class Delete<T : Any>(
@@ -49,11 +56,20 @@ class RequestDatabase<T : Any>(val handler: Request.Handler, val request: Databa
         ))
     }
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int {
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
         return handler.invoke(Update(
                 databaseRequest = request,
                 condition = condition,
+                operation = operation
+        ))
+    }
+
+    override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int {
+        return handler.invoke(LimitedUpdate(
+                databaseRequest = request,
+                condition = condition,
                 operation = operation,
+                sort = sort,
                 limit = limit
         ))
     }

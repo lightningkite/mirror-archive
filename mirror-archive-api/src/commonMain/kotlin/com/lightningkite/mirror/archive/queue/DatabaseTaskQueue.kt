@@ -28,7 +28,7 @@ class DatabaseTaskQueue<T : Task>(
     override suspend fun request(condition: Condition<T>): T? {
         val now = TimeStamp.now()
         val tooOld = now - timeout
-        val modified = database.update(
+        val modified = database.limitedUpdate(
                 condition = condition and (claimedAtField lessThan tooOld),
                 operation = (claimedAtField setTo now) and (claimedByField setTo myIdentifier),
                 limit = 1

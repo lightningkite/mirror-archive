@@ -2,6 +2,7 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.mirror.info.MirrorClass
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
@@ -18,12 +19,12 @@ data class ReferenceMirror<MODEL: HasUuid>(
         override val minimal = ReferenceMirror(TypeArgumentMirrorType("MODEL", Variance.INVARIANT, MODELMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ReferenceMirror(typeArguments[0] as MirrorType<HasUuid>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                MODELMirror: MirrorType<*>? = null
+            MODELMirror: MirrorType<*>? = null
         ) = ReferenceMirror<HasUuid>(
-                MODELMirror = (MODELMirror ?: MODELMirrorMinimal) as MirrorType<HasUuid>
+            MODELMirror = (MODELMirror ?: MODELMirrorMinimal) as MirrorType<HasUuid>
         )
     }
     

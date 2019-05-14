@@ -23,8 +23,13 @@ class DatabaseWithMetrics<T: Any>(val underlying: Database<T>, val name: String,
     }
 
     val updateTimer = metrics.timer(name + ".update")
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>, limit: Int?): Int = updateTimer.timeInline {
-        underlying.update(condition, operation, limit)
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int = updateTimer.timeInline {
+        underlying.update(condition, operation)
+    }
+
+    val limitedUpdateTimer = metrics.timer(name + ".limitedUpdate")
+    override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int = limitedUpdateTimer.timeInline {
+        underlying.limitedUpdate(condition, operation, sort, limit)
     }
 
     val deleteTimer = metrics.timer(name + ".delete")
