@@ -1,5 +1,8 @@
 package com.lightningkite.mirror.archive.model
 
+import com.lightningkite.lokalize.location.Geohash
+import com.lightningkite.lokalize.location.GeohashCoverage
+import com.lightningkite.lokalize.location.GeohashMirror
 import com.lightningkite.mirror.info.MirrorClass
 
 infix fun <T : Any, V> MirrorClass.Field<T, V>.equal(value: V) = Condition.Field(this, Condition.Equal(value))
@@ -19,3 +22,17 @@ infix fun <T : Any> MirrorClass.Field<T, String>.endsWith(value: String) = Condi
 infix fun <T> Condition<T>.and(other: Condition<T>): Condition<T> = Condition.And(listOf(this, other)).simplify()
 infix fun <T> Condition<T>.or(other: Condition<T>): Condition<T> = Condition.Or(listOf(this, other)).simplify()
 operator fun <T> Condition<T>.not() = Condition.Not(this)
+
+
+fun <T : Any> MirrorClass.Field<T, Geohash>.within(km: Double, of: Geohash): Condition<T> {
+    val coverage = GeohashCoverage.coverRadiusRatio(
+            center = of,
+            radiusKm = km
+    )
+    return Condition.Or(coverage.ranges.map {
+        Condition.And(listOf(
+                this.sub(GeohashMirror.fieldBits greaterThanOrEqual it.start),
+                this.sub(GeohashMirror.fieldBits lessThanOrEqual it.endInclusive)
+        ))
+    })
+}
