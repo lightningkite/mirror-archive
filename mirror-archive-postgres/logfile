@@ -2846,3 +2846,109 @@
 2019-05-04 17:17:09.233 MDT [18068] LOG:  worker process: logical replication launcher (PID 10144) exited with exit code 1
 2019-05-04 17:17:09.253 MDT [7952] LOG:  shutting down
 2019-05-04 17:17:09.431 MDT [18068] LOG:  database system is shut down
+2019-05-17 13:14:28.330 MDT [15468] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-17 13:14:28.331 MDT [15468] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-17 13:14:28.416 MDT [1488] LOG:  database system was shut down at 2019-05-17 13:14:26 MDT
+2019-05-17 13:14:28.461 MDT [15468] LOG:  database system is ready to accept connections
+2019-05-17 13:14:29.622 MDT [4260] ERROR:  syntax error at or near ")" at character 903
+2019-05-17 13:14:29.622 MDT [4260] STATEMENT:  CREATE TABLE IF NOT EXISTS mySchema.Zoo (row_boolean boolean, byte int2, short int2, row_int int4, long int8, row_float float4, row_double float8, row_char character(1), string text, row_enum text, intdata_intv int4, unitn_null boolean, booleann_null boolean, booleann boolean, byten_null boolean, byten int2, shortn_null boolean, shortn int2, intn_null boolean, intn int4, longn_null boolean, longn int8, floatn_null boolean, floatn float4, doublen_null boolean, doublen float8, charn_null boolean, charn character(1), stringn_null boolean, stringn text, enumn_null boolean, enumn text, intdatan_null boolean, intdatan_intv int4, listint bytea, listintn bytea, listlistenumn bytea, listintdata bytea, listintdatan bytea, tree_name text, tree_left_null boolean, tree_left bytea, tree_right_null boolean, tree_right bytea, mapstringint bytea, mapintstringn bytea, defaultifnotpresent int4, PRIMARY KEY ())
+2019-05-17 13:14:29.639 MDT [10588] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.639 MDT [10588] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.643 MDT [10872] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.643 MDT [10872] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.647 MDT [18228] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.647 MDT [18228] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.649 MDT [4260] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.649 MDT [4260] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.651 MDT [10588] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.651 MDT [10588] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.653 MDT [10872] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.653 MDT [10872] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.655 MDT [18228] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.655 MDT [18228] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.661 MDT [4260] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:14:29.661 MDT [4260] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:14:29.714 MDT [15468] LOG:  received fast shutdown request
+2019-05-17 13:14:29.718 MDT [15468] LOG:  aborting any active transactions
+2019-05-17 13:14:29.718 MDT [10872] FATAL:  terminating connection due to administrator command
+2019-05-17 13:14:29.718 MDT [10588] FATAL:  terminating connection due to administrator command
+2019-05-17 13:14:29.719 MDT [4260] FATAL:  terminating connection due to administrator command
+2019-05-17 13:14:29.719 MDT [18228] FATAL:  terminating connection due to administrator command
+2019-05-17 13:14:29.730 MDT [15468] LOG:  worker process: logical replication launcher (PID 5364) exited with exit code 1
+2019-05-17 13:14:29.737 MDT [15564] LOG:  shutting down
+2019-05-17 13:14:29.815 MDT [15468] LOG:  database system is shut down
+2019-05-17 13:16:44.867 MDT [5492] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-17 13:16:44.867 MDT [5492] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-17 13:16:45.046 MDT [15120] LOG:  database system was shut down at 2019-05-17 13:16:43 MDT
+2019-05-17 13:16:45.116 MDT [5492] LOG:  database system is ready to accept connections
+2019-05-17 13:17:11.263 MDT [18344] ERROR:  syntax error at or near ")" at character 903
+2019-05-17 13:17:11.263 MDT [18344] STATEMENT:  CREATE TABLE IF NOT EXISTS mySchema.Zoo (row_boolean boolean, byte int2, short int2, row_int int4, long int8, row_float float4, row_double float8, row_char character(1), string text, row_enum text, intdata_intv int4, unitn_null boolean, booleann_null boolean, booleann boolean, byten_null boolean, byten int2, shortn_null boolean, shortn int2, intn_null boolean, intn int4, longn_null boolean, longn int8, floatn_null boolean, floatn float4, doublen_null boolean, doublen float8, charn_null boolean, charn character(1), stringn_null boolean, stringn text, enumn_null boolean, enumn text, intdatan_null boolean, intdatan_intv int4, listint bytea, listintn bytea, listlistenumn bytea, listintdata bytea, listintdatan bytea, tree_name text, tree_left_null boolean, tree_left bytea, tree_right_null boolean, tree_right bytea, mapstringint bytea, mapintstringn bytea, defaultifnotpresent int4, PRIMARY KEY ())
+2019-05-17 13:17:11.347 MDT [6708] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.347 MDT [6708] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.356 MDT [10700] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.356 MDT [10700] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.374 MDT [2044] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.374 MDT [2044] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.390 MDT [18344] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.390 MDT [18344] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.406 MDT [6708] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.406 MDT [6708] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.422 MDT [10700] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.422 MDT [10700] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.433 MDT [2044] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.433 MDT [2044] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.445 MDT [18344] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:17:11.445 MDT [18344] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:17:11.515 MDT [5492] LOG:  received fast shutdown request
+2019-05-17 13:17:11.524 MDT [5492] LOG:  aborting any active transactions
+2019-05-17 13:17:11.525 MDT [18344] FATAL:  terminating connection due to administrator command
+2019-05-17 13:17:11.525 MDT [10700] FATAL:  terminating connection due to administrator command
+2019-05-17 13:17:11.525 MDT [2044] FATAL:  terminating connection due to administrator command
+2019-05-17 13:17:11.526 MDT [6708] FATAL:  terminating connection due to administrator command
+2019-05-17 13:17:11.543 MDT [5492] LOG:  worker process: logical replication launcher (PID 13940) exited with exit code 1
+2019-05-17 13:17:11.551 MDT [13972] LOG:  shutting down
+2019-05-17 13:17:11.640 MDT [5492] LOG:  database system is shut down
+2019-05-17 13:17:56.424 MDT [17184] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-17 13:17:56.424 MDT [17184] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-17 13:17:56.498 MDT [380] LOG:  database system was shut down at 2019-05-17 13:17:54 MDT
+2019-05-17 13:17:56.546 MDT [17184] LOG:  database system is ready to accept connections
+2019-05-17 13:20:25.385 MDT [12728] ERROR:  syntax error at or near ")" at character 903
+2019-05-17 13:20:25.385 MDT [12728] STATEMENT:  CREATE TABLE IF NOT EXISTS mySchema.Zoo (row_boolean boolean, byte int2, short int2, row_int int4, long int8, row_float float4, row_double float8, row_char character(1), string text, row_enum text, intdata_intv int4, unitn_null boolean, booleann_null boolean, booleann boolean, byten_null boolean, byten int2, shortn_null boolean, shortn int2, intn_null boolean, intn int4, longn_null boolean, longn int8, floatn_null boolean, floatn float4, doublen_null boolean, doublen float8, charn_null boolean, charn character(1), stringn_null boolean, stringn text, enumn_null boolean, enumn text, intdatan_null boolean, intdatan_intv int4, listint bytea, listintn bytea, listlistenumn bytea, listintdata bytea, listintdatan bytea, tree_name text, tree_left_null boolean, tree_left bytea, tree_right_null boolean, tree_right bytea, mapstringint bytea, mapintstringn bytea, defaultifnotpresent int4, PRIMARY KEY ())
+2019-05-17 13:20:25.402 MDT [13640] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.402 MDT [13640] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.406 MDT [5828] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.406 MDT [5828] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.409 MDT [2072] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.409 MDT [2072] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.414 MDT [12728] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.414 MDT [12728] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.417 MDT [13640] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.417 MDT [13640] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.420 MDT [5828] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.420 MDT [5828] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.422 MDT [2072] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.422 MDT [2072] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.425 MDT [12728] ERROR:  relation "myschema.zoo" does not exist at character 13
+2019-05-17 13:20:25.425 MDT [12728] STATEMENT:  DELETE FROM mySchema.Zoo WHERE TRUE;
+2019-05-17 13:20:25.493 MDT [17184] LOG:  received fast shutdown request
+2019-05-17 13:20:25.504 MDT [17184] LOG:  aborting any active transactions
+2019-05-17 13:20:25.504 MDT [5828] FATAL:  terminating connection due to administrator command
+2019-05-17 13:20:25.505 MDT [13640] FATAL:  terminating connection due to administrator command
+2019-05-17 13:20:25.505 MDT [12728] FATAL:  terminating connection due to administrator command
+2019-05-17 13:20:25.506 MDT [2072] FATAL:  terminating connection due to administrator command
+2019-05-17 13:20:25.520 MDT [17184] LOG:  worker process: logical replication launcher (PID 4540) exited with exit code 1
+2019-05-17 13:20:25.526 MDT [18212] LOG:  shutting down
+2019-05-17 13:20:25.622 MDT [17184] LOG:  database system is shut down
+2019-05-17 13:22:04.777 MDT [18172] LOG:  listening on IPv6 address "::1", port 5432
+2019-05-17 13:22:04.778 MDT [18172] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-05-17 13:22:04.831 MDT [7616] LOG:  database system was shut down at 2019-05-17 13:22:03 MDT
+2019-05-17 13:22:04.883 MDT [18172] LOG:  database system is ready to accept connections
+2019-05-17 13:22:06.789 MDT [18172] LOG:  received fast shutdown request
+2019-05-17 13:22:06.793 MDT [18172] LOG:  aborting any active transactions
+2019-05-17 13:22:06.794 MDT [2384] FATAL:  terminating connection due to administrator command
+2019-05-17 13:22:06.794 MDT [5012] FATAL:  terminating connection due to administrator command
+2019-05-17 13:22:06.794 MDT [17404] FATAL:  terminating connection due to administrator command
+2019-05-17 13:22:06.794 MDT [12148] FATAL:  terminating connection due to administrator command
+2019-05-17 13:22:06.806 MDT [18172] LOG:  worker process: logical replication launcher (PID 12964) exited with exit code 1
+2019-05-17 13:22:06.823 MDT [10480] LOG:  shutting down
+2019-05-17 13:22:07.055 MDT [18172] LOG:  database system is shut down

@@ -85,6 +85,10 @@ sealed class Condition<in T> {
 
     data class EqualToOne<T>(val values: List<T>) : Condition<T>() {
         override fun invoke(item: T): Boolean = item in values
+        override fun simplify(): Condition<T> {
+            return if (values.isEmpty()) Condition.Never
+            else this
+        }
     }
 
 

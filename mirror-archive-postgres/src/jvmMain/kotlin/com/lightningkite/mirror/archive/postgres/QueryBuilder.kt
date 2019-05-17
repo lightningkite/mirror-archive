@@ -27,7 +27,7 @@ class QueryBuilder(val builder: StringBuilder = StringBuilder(), val arguments: 
             is Char -> arguments.addString(it.toString())
             is String -> arguments.addString(it)
             is ByteArray -> arguments.addBuffer(Buffer.buffer(it))
-            is TimeStamp -> arguments.addLocalDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(it.millisecondsSinceEpoch), ZoneOffset.UTC))
+            is TimeStamp -> throw IllegalArgumentException("Hey!  You're supposed to be broken up!")//arguments.addLocalDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(it.millisecondsSinceEpoch), ZoneOffset.UTC))
             is Uuid -> arguments.addUUID(UUID(it.mostSignificantBits, it.leastSignificantBits))
             else -> throw IllegalArgumentException()
         }

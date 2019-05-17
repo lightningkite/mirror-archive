@@ -11,6 +11,7 @@ class ConfiguredSuspendPropertyProvider(vararg val options: SuspendProperty.Prov
                 return
             }
         }
+        println("No matching provider type $type")
     }
 
     lateinit var provider: SuspendProperty.Provider

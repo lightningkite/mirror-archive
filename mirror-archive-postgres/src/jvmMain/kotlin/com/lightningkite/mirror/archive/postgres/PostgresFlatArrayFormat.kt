@@ -7,7 +7,6 @@ import com.lightningkite.mirror.archive.model.UuidMirror
 object PostgresFlatArrayFormat : BinaryFlatArrayFormat(
         terminateAt = {
             when(it){
-                TimeStampMirror.descriptor,
                 UuidMirror.descriptor -> true
                 else -> false
             }

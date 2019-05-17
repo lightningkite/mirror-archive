@@ -3,6 +3,7 @@ package com.lightningkite.mirror.archive.flatarray
 import com.lightningkite.kommon.collection.forEachBetween
 import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
+import com.lightningkite.mirror.info.MirrorClass
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.BooleanDescriptor
 import kotlinx.serialization.modules.EmptyModule
@@ -224,32 +225,36 @@ abstract class FlatArrayFormat(
                     }
                 }
                 is Condition.EqualToOne -> {
-                    val col = byIndexPath[indexPath]
-                    if (col == null) {
-                        val brokens = cond.values.map {
-                            format.toArrayPartial(overallType, default, it, indexPath)
-                        }
-
-                        startGroup(ConditionMode.OR)
-                        for (broken in brokens) {
-                            startGroup(ConditionMode.AND)
-                            var index = 0
-                            columns
-                                    .asSequence()
-                                    .filter { it.indexPath.startsWith(indexPath) }
-                                    .asIterable()
-                                    .forEachBetween(
-                                            forItem = {
-                                                val part = broken[index++]
-                                                action(Condition.Equal(part), it)
-                                            },
-                                            between = { groupDivider(ConditionMode.AND) }
-                                    )
-                            endGroup(ConditionMode.AND)
-                        }
-                        endGroup(ConditionMode.OR)
+                    if (cond.values.isEmpty()) {
+                        action(Condition.Never, null)
                     } else {
-                        action(cond, col)
+                        val col = byIndexPath[indexPath]
+                        if (col == null) {
+                            val brokens = cond.values.map {
+                                format.toArrayPartial(overallType, default, it, indexPath)
+                            }
+
+                            startGroup(ConditionMode.OR)
+                            for (broken in brokens) {
+                                startGroup(ConditionMode.AND)
+                                var index = 0
+                                columns
+                                        .asSequence()
+                                        .filter { it.indexPath.startsWith(indexPath) }
+                                        .asIterable()
+                                        .forEachBetween(
+                                                forItem = {
+                                                    val part = broken[index++]
+                                                    action(Condition.Equal(part), it)
+                                                },
+                                                between = { groupDivider(ConditionMode.AND) }
+                                        )
+                                endGroup(ConditionMode.AND)
+                            }
+                            endGroup(ConditionMode.OR)
+                        } else {
+                            action(cond, col)
+                        }
                     }
                 }
                 is Condition.NotEqual -> {
@@ -275,16 +280,55 @@ abstract class FlatArrayFormat(
                         action(cond, col)
                     }
                 }
-                is Condition.LessThan,
-                is Condition.GreaterThan,
-                is Condition.LessThanOrEqual,
-                is Condition.GreaterThanOrEqual,
+                is Condition.LessThan -> attemptSingleColumn(cond, { it.value }, { Condition.LessThan(it as Comparable<Comparable<*>>) }, indexPath, action)
+                is Condition.GreaterThan -> attemptSingleColumn(cond, { it.value }, { Condition.GreaterThan(it as Comparable<Comparable<*>>) }, indexPath, action)
+                is Condition.LessThanOrEqual -> attemptSingleColumn(cond, { it.value }, { Condition.LessThanOrEqual(it as Comparable<Comparable<*>>) }, indexPath, action)
+                is Condition.GreaterThanOrEqual -> attemptSingleColumn(cond, { it.value }, { Condition.GreaterThanOrEqual(it as Comparable<Comparable<*>>) }, indexPath, action)
                 is Condition.TextSearch,
                 is Condition.StartsWith,
                 is Condition.EndsWith,
-                is Condition.RegexTextSearch -> {
-                    action(cond, byIndexPath[indexPath]!!)
-                }
+                is Condition.RegexTextSearch -> action(cond, byIndexPath[indexPath]!!)
+            }
+        }
+
+        inline fun <T : Condition<*>> attemptSingleColumn(
+                cond: T,
+                getValue: (T) -> Any?,
+                fromValue: (Any?) -> T,
+                indexPath: IndexPath,
+                action: (condition: Condition<*>, column: Column?) -> Unit
+        ) {
+            val col = byIndexPath[indexPath]
+            if (col == null) {
+                val broken = format.toArrayPartial(overallType, default, cond.let(getValue), indexPath)
+
+                var index = 0
+                columns
+                        .asSequence()
+                        .filter { it.indexPath.startsWith(indexPath) }
+                        .map { it to broken[index++] }
+                        .filter { !it.first.name.endsWith("_null") }
+                        .firstOrNull()
+                        ?.let {
+                            action(fromValue(it.second), it.first)
+                        }
+                        ?: throw IllegalArgumentException("""Not sure how to translate $cond, as there are no columns for the index path.  ${run {
+                            var current = overallType.descriptor
+                            indexPath.map {
+                                val n = current
+                                current = current.getElementDescriptor(it)
+                                n.getElementName(it)
+                            }.joinToString()
+                        }}, matching columns: ${run {
+                            index = 0
+                            columns
+                                    .asSequence()
+                                    .filter { it.indexPath.startsWith(indexPath) }
+                                    .map { it to broken[index++] }
+                                    .joinToString { it.first.name + " = " + it.second.toString() }
+                        }}""")
+            } else {
+                action(cond, col)
             }
         }
     }

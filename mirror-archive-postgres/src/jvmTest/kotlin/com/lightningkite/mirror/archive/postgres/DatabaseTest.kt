@@ -37,7 +37,7 @@ class DatabaseTest {
             database = PostgresDatabase<Zoo>(
                     mirror = ZooMirror,
                     default = Zoo.zero(),
-                    primaryKey = ZooMirror.fieldInt,
+                    primaryKey = listOf(ZooMirror.fieldInt),
                     client = provider!!.start()
             )
         }

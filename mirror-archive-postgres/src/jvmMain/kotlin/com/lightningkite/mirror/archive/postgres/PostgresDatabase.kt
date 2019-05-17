@@ -30,11 +30,21 @@ import java.util.*
 class PostgresDatabase<T : Any>(
         val mirror: MirrorClass<T>,
         val default: T,
-        val schemaName: String = "mySchema",
-        val tableName: String = mirror.localName,
+        schemaName: String = "mySchema",
+        tableName: String = mirror.localName,
+        val primaryKey: List<MirrorClass.Field<T, *>> = mirror.findPrimaryKey(),
         val client: PgClient
 ) : Database<T> {
-    val primaryKey: List<MirrorClass.Field<T, *>> = mirror.findPrimaryKey()
+    val schemaName = schemaName.filter { it in 'a'..'z' || it in 'A'..'Z' }.let {
+        if (it in PostgresReservedKeywords) {
+            "mirrorschema_$it"
+        } else it
+    }
+    val tableName = tableName.filter { it in 'a'..'z' || it in 'A'..'Z' }.let {
+        if (it in PostgresReservedKeywords) {
+            "mirrortable_$it"
+        } else it
+    }
     val singleFieldIndices = mirror.fields.filter { it.shouldBeIndexed }
     val multiFieldIndices = mirror.multiIndexSequence().toList()
 
@@ -107,11 +117,11 @@ class PostgresDatabase<T : Any>(
         }
     }
 
-    val defaultSort = Sort(primaryKey as MirrorClass.Field<T, Comparable<Comparable<*>>>)
+    val defaultSort = primaryKey.map { Sort(it as MirrorClass.Field<T, Comparable<Comparable<*>>>) }
     val schema = PostgresFlatArrayFormat.schema(mirror, default).let {
         it.copy(columns = it.columns.map {
             val name = it.name
-            it.copy(name = if (name.toUpperCase() in PostgresReservedKeywords) "row_$name" else name)
+            it.copy(name = if (name.toUpperCase() in PostgresReservedKeywords) "field_$name" else name)
         })
     }
     val isSetUp = AtomicValue(false)
@@ -298,7 +308,6 @@ class PostgresDatabase<T : Any>(
             UnionKind.ENUM_KIND -> "text"
             else -> when (type) {
                 UuidMirror.descriptor -> "uuid"
-                TimeStampMirror.descriptor -> "timestamp"
                 else -> "bytea"
             }
         }
@@ -362,7 +371,7 @@ class PostgresDatabase<T : Any>(
         //TODO: Indicies
     }
 
-    override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> = client.suspendQuery {
+    override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> = if (condition.simplify() == Condition.Never) listOf() else client.suspendQuery {
         setup()
         append("SELECT ")
         schema.columns.forEachBetween(
@@ -374,8 +383,8 @@ class PostgresDatabase<T : Any>(
         append('.')
         append(tableName)
         append(" WHERE ")
-        val fullSort = sort + Sort(primaryKey as MirrorClass.Field<T, Comparable<Comparable<*>>>)
-        val fullCondition = if (after == null) condition else condition and sort.after(after, defaultSort)
+        val fullSort = sort + defaultSort
+        val fullCondition = if (after == null) condition else condition and (fullSort).after(after)
         appendConditionFull(fullCondition.simplify())
         append(" ORDER BY ")
         fullSort.forEachBetween(
@@ -396,11 +405,10 @@ class PostgresDatabase<T : Any>(
         append(" LIMIT $count;")
     }.map {
         val rowAsList = rowToArray(it)
-        println("We got result: ${rowAsList.joinToString()}")
         PostgresFlatArrayFormat.fromArray(mirror, rowAsList)
     }
 
-    override suspend fun insert(values: List<T>): List<T> = client.suspendQuery {
+    override suspend fun insert(values: List<T>): List<T> = if (values.isEmpty()) values else client.suspendQuery {
         setup()
         append("INSERT INTO ")
         append(schemaName)
@@ -427,7 +435,7 @@ class PostgresDatabase<T : Any>(
         append(";")
     }.let { values }
 
-    override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int = client.suspendQuery {
+    override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int = if (condition.simplify() == Condition.Never) 0 else client.suspendQuery {
         setup()
         append("UPDATE ")
         append(schemaName)
@@ -466,7 +474,7 @@ class PostgresDatabase<T : Any>(
         append(";")
     }.rowCount()
 
-    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int = client.suspendQuery {
+    override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int = if (condition.simplify() == Condition.Never) 0 else client.suspendQuery {
         setup()
         append("UPDATE ")
         append(schemaName)
@@ -479,7 +487,7 @@ class PostgresDatabase<T : Any>(
         append(";")
     }.rowCount()
 
-    override suspend fun delete(condition: Condition<T>): Int = client.suspendQuery {
+    override suspend fun delete(condition: Condition<T>): Int = if (condition.simplify() == Condition.Never) 0 else client.suspendQuery {
         setup()
         append("DELETE FROM ")
         append(schemaName)
