@@ -9,8 +9,7 @@ import mirror.kotlin.*
 
 object HasUuidMirror : PolymorphicMirror<HasUuid>() {
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<HasUuid>
-        get() = HasUuid::class as KClass<HasUuid>
+    override val kClass: KClass<HasUuid> get() = HasUuid::class as KClass<HasUuid>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Interface)
     override val implements: Array<MirrorClass<*>> get() = arrayOf(HasIdMirror(UuidMirror))
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"

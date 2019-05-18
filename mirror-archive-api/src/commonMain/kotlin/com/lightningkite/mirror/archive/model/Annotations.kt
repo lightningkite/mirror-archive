@@ -21,6 +21,13 @@ fun <T : Any> MirrorClass<T>.findPrimaryKey(): List<MirrorClass.Field<T, *>> {
     }?.let{ listOf(it) } ?: listOf(fields.first())
 }
 
+@Suppress("UNCHECKED_CAST")
+fun <T : Any> List<MirrorClass.Field<T, *>>.sort(): List<Sort<T, *>> {
+    return map {
+        Sort(it as MirrorClass.Field<T, Comparable<Comparable<*>>>)
+    }
+}
+
 
 @Target(AnnotationTarget.FIELD)
 annotation class Indexed()

@@ -10,26 +10,25 @@ import com.lightningkite.lokalize.location.GeohashMirror
 
 object GeohashMirror : MirrorClass<Geohash>() {
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<Geohash>
-        get() = Geohash::class as KClass<Geohash>
+    override val kClass: KClass<Geohash> get() = Geohash::class as KClass<Geohash>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Inline)
     override val packageName: String get() = "com.lightningkite.lokalize.location"
     override val localName: String get() = "Geohash"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(ComparableMirror(com.lightningkite.lokalize.location.GeohashMirror))
     override val companion: Any? get() = Geohash.Companion
-
-    val fieldBits: Field<Geohash, kotlin.Long> = Field(
-            owner = this,
-            index = 0,
-            name = "bits",
-            type = LongMirror,
-            optional = false,
-            get = { it.bits },
-            annotations = listOf<Annotation>()
+    
+    val fieldBits: Field<Geohash,kotlin.Long> = Field(
+        owner = this,
+        index = 0,
+        name = "bits",
+        type = LongMirror,
+        optional = false,
+        get = { it.bits },
+        annotations = listOf<Annotation>()
     )
-
+    
     override val fields: Array<Field<Geohash, *>> = arrayOf(fieldBits)
-
+    
     override fun deserialize(decoder: Decoder): Geohash {
         var bitsSet = false
         var fieldBits: kotlin.Long? = null
@@ -46,19 +45,18 @@ object GeohashMirror : MirrorClass<Geohash>() {
                     fieldBits = decoderStructure.decodeLongElement(this, 0)
                     bitsSet = true
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
         decoderStructure.endStructure(this)
-        if (!bitsSet) {
+        if(!bitsSet) {
             throw MissingFieldException("bits")
         }
         return Geohash(
-                bits = fieldBits as kotlin.Long
+            bits = fieldBits as kotlin.Long
         )
     }
-
+    
     override fun serialize(encoder: Encoder, obj: Geohash) {
         val encoderStructure = encoder.beginStructure(this)
         encoderStructure.encodeLongElement(this, 0, obj.bits)

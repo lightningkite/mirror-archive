@@ -11,31 +11,29 @@ import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import mirror.kotlin.*
 
-data class DatabaseRequestMirror<T : Any>(
-        val TMirror: MirrorType<T>
+data class DatabaseRequestMirror<T: Any>(
+    val TMirror: MirrorType<T>
 ) : PolymorphicMirror<Database.Request<T>>() {
-
+    
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
-
     companion object : MirrorClassCompanion {
         val TMirrorMinimal get() = AnyMirror
-
+        
         override val minimal = DatabaseRequestMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = DatabaseRequestMirror(typeArguments[0] as MirrorType<Any>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null
         ) = DatabaseRequestMirror<Any>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
         )
     }
-
+    
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<Database.Request<T>>
-        get() = Database.Request::class as KClass<Database.Request<T>>
+    override val kClass: KClass<Database.Request<T>> get() = Database.Request::class as KClass<Database.Request<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Interface)
     override val implements: Array<MirrorClass<*>> get() = arrayOf()
     override val packageName: String get() = "com.lightningkite.mirror.archive.database"

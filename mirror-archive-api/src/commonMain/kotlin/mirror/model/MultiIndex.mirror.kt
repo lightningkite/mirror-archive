@@ -10,10 +10,10 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 data class MultiIndexMirror(
-        val fields: Array<String>
-) : MirrorAnnotation {
+    val fields: Array<String>
+): MirrorAnnotation {
     override val annotationType: KClass<out Annotation> get() = MultiIndex::class
     override fun asMap(): Map<String, Any?> = mapOf(
-            "fields" to fields
+        "fields" to fields
     )
 }

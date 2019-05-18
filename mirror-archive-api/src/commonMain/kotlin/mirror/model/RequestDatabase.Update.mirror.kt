@@ -14,69 +14,67 @@ import com.lightningkite.mirror.archive.model.ConditionMirror
 import com.lightningkite.mirror.request.RequestMirror
 import com.lightningkite.mirror.archive.model.OperationMirror
 
-data class RequestDatabaseUpdateMirror<T : Any>(
-        val TMirror: MirrorType<T>
+data class RequestDatabaseUpdateMirror<T: Any>(
+    val TMirror: MirrorType<T>
 ) : MirrorClass<RequestDatabase.Update<T>>() {
-
+    
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
-
     companion object : MirrorClassCompanion {
         val TMirrorMinimal get() = AnyMirror
-
+        
         override val minimal = RequestDatabaseUpdateMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = RequestDatabaseUpdateMirror(typeArguments[0] as MirrorType<Any>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null
         ) = RequestDatabaseUpdateMirror<Any>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
         )
     }
-
+    
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<RequestDatabase.Update<T>>
-        get() = RequestDatabase.Update::class as KClass<RequestDatabase.Update<T>>
+    override val kClass: KClass<RequestDatabase.Update<T>> get() = RequestDatabase.Update::class as KClass<RequestDatabase.Update<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
     override val packageName: String get() = "com.lightningkite.mirror.archive.database"
     override val localName: String get() = "RequestDatabase.Update"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(RequestMirror(IntMirror))
     override val owningClass: KClass<*>? get() = RequestDatabase::class
-
-    val fieldDatabaseRequest: Field<RequestDatabase.Update<T>, Database.Request<T>> = Field(
-            owner = this,
-            index = 0,
-            name = "databaseRequest",
-            type = DatabaseRequestMirror(TMirror),
-            optional = false,
-            get = { it.databaseRequest },
-            annotations = listOf<Annotation>()
+    
+    val fieldDatabaseRequest: Field<RequestDatabase.Update<T>,Database.Request<T>> = Field(
+        owner = this,
+        index = 0,
+        name = "databaseRequest",
+        type = DatabaseRequestMirror(TMirror),
+        optional = false,
+        get = { it.databaseRequest },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldCondition: Field<RequestDatabase.Update<T>, Condition<T>> = Field(
-            owner = this,
-            index = 1,
-            name = "condition",
-            type = ConditionMirror(TMirror),
-            optional = false,
-            get = { it.condition },
-            annotations = listOf<Annotation>()
+    
+    val fieldCondition: Field<RequestDatabase.Update<T>,Condition<T>> = Field(
+        owner = this,
+        index = 1,
+        name = "condition",
+        type = ConditionMirror(TMirror),
+        optional = false,
+        get = { it.condition },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldOperation: Field<RequestDatabase.Update<T>, Operation<T>> = Field(
-            owner = this,
-            index = 2,
-            name = "operation",
-            type = OperationMirror(TMirror),
-            optional = false,
-            get = { it.operation },
-            annotations = listOf<Annotation>()
+    
+    val fieldOperation: Field<RequestDatabase.Update<T>,Operation<T>> = Field(
+        owner = this,
+        index = 2,
+        name = "operation",
+        type = OperationMirror(TMirror),
+        optional = false,
+        get = { it.operation },
+        annotations = listOf<Annotation>()
     )
-
+    
     override val fields: Array<Field<RequestDatabase.Update<T>, *>> = arrayOf(fieldDatabaseRequest, fieldCondition, fieldOperation)
-
+    
     override fun deserialize(decoder: Decoder): RequestDatabase.Update<T> {
         var databaseRequestSet = false
         var fieldDatabaseRequest: Database.Request<T>? = null
@@ -109,27 +107,26 @@ data class RequestDatabaseUpdateMirror<T : Any>(
                     fieldOperation = decoderStructure.decodeSerializableElement(this, 2, OperationMirror(TMirror))
                     operationSet = true
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
         decoderStructure.endStructure(this)
-        if (!databaseRequestSet) {
+        if(!databaseRequestSet) {
             throw MissingFieldException("databaseRequest")
         }
-        if (!conditionSet) {
+        if(!conditionSet) {
             throw MissingFieldException("condition")
         }
-        if (!operationSet) {
+        if(!operationSet) {
             throw MissingFieldException("operation")
         }
         return RequestDatabase.Update<T>(
-                databaseRequest = fieldDatabaseRequest as Database.Request<T>,
-                condition = fieldCondition as Condition<T>,
-                operation = fieldOperation as Operation<T>
+            databaseRequest = fieldDatabaseRequest as Database.Request<T>,
+            condition = fieldCondition as Condition<T>,
+            operation = fieldOperation as Operation<T>
         )
     }
-
+    
     override fun serialize(encoder: Encoder, obj: RequestDatabase.Update<T>) {
         val encoderStructure = encoder.beginStructure(this, TMirror)
         encoderStructure.encodeSerializableElement(this, 0, DatabaseRequestMirror(TMirror), obj.databaseRequest)

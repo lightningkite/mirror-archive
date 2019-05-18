@@ -16,20 +16,20 @@ fun ApplicationConfig.map(path: String, vararg expected: String): Map<String, St
 }
 
 @KtorExperimentalAPI
-fun ConfiguredDatabaseProvider.configure(config: ApplicationConfig) {
+fun ConfiguredDatabaseProvider.configure(name: String = "database", config: ApplicationConfig) {
     configure(
-            type = config.property("database.type").getString(),
-            arguments = config.map("database", *(options.flatMap { option ->
+            type = config.property("$name.type").getString(),
+            arguments = config.map(name, *(options.flatMap { option ->
                 (option.requiredArguments + option.optionalArguments).toList()
             }.toTypedArray()))
     )
 }
 
 @KtorExperimentalAPI
-fun ConfiguredSuspendPropertyProvider.configure(config: ApplicationConfig) {
+fun ConfiguredSuspendPropertyProvider.configure(name: String = "suspendProperty", config: ApplicationConfig) {
     configure(
-            type = config.property("suspendProperty.type").getString(),
-            arguments = config.map("suspendProperty", *(options.flatMap { option ->
+            type = config.property("$name.type").getString(),
+            arguments = config.map(name, *(options.flatMap { option ->
                 (option.requiredArguments + option.optionalArguments).toList()
             }.toTypedArray()))
     )

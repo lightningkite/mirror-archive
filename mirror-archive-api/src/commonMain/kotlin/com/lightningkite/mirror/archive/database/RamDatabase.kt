@@ -1,12 +1,16 @@
 package com.lightningkite.mirror.archive.database
 
-import com.lightningkite.mirror.archive.model.Condition
-import com.lightningkite.mirror.archive.model.Operation
-import com.lightningkite.mirror.archive.model.Sort
-import com.lightningkite.mirror.archive.model.comparator
+import com.lightningkite.kommon.collection.contentEquals
+import com.lightningkite.mirror.archive.model.*
 import com.lightningkite.mirror.info.MirrorClass
 
-class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()) : Database<T> {
+class RamDatabase<T : Any>(
+        val type: MirrorClass<T>,
+        val primaryKey: List<MirrorClass.Field<T, *>> = type.findPrimaryKey(),
+        private val backingData: MutableList<T> = ArrayList()
+) : Database<T> {
+
+    val pkSort = primaryKey.sort()
 
     companion object FromConfiguration : Database.Provider.FromConfiguration {
         override val name: String get() = "RAM"
@@ -15,21 +19,29 @@ class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()
 
     object Provider : Database.Provider {
         override fun <T : Any> get(mirrorClass: MirrorClass<T>, default: T, name: String): Database<T> {
-            return RamDatabase()
+            return RamDatabase(type = mirrorClass)
         }
     }
 
     override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> {
         return backingData.asSequence()
                 .filter { condition.invoke(it) }
-                .sortedWith(sort.comparator())
+                .let {
+                    if (sort.isEmpty()) {
+                        it.sortedWith(pkSort.comparator())
+                    } else {
+                        it.sortedWith(sort.comparator())
+                    }
+                }
                 .let {
                     if (after == null)
                         it
                     else {
                         var pass = false
+                        val afterParts = primaryKey.map { it.get(after) }
                         it.dropWhile { x ->
-                            if (x == after) {
+                            val xParts = primaryKey.map { it.get(x) }
+                            if (afterParts.contentEquals(xParts)) {
                                 pass = true
                                 true
                             } else !pass
@@ -48,9 +60,9 @@ class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()
     override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int {
         val iter = backingData.listIterator()
         var modifications = 0
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             val item = iter.next()
-            if(condition.invoke(item)){
+            if (condition.invoke(item)) {
                 iter.set(operation.invoke(item))
                 modifications++
             }
@@ -66,9 +78,9 @@ class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()
             }
         }).map { it.first }
         var modifications = 0
-        for(index in indices){
+        for (index in indices) {
             val item = this.backingData[index]
-            if(condition.invoke(item)){
+            if (condition.invoke(item)) {
                 this.backingData[index] = operation.invoke(item)
                 modifications++
                 if (modifications >= limit) break
@@ -80,9 +92,9 @@ class RamDatabase<T : Any>(private val backingData: MutableList<T> = ArrayList()
     override suspend fun delete(condition: Condition<T>): Int {
         val iter = backingData.listIterator()
         var modifications = 0
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             val item = iter.next()
-            if(condition.invoke(item)){
+            if (condition.invoke(item)) {
                 iter.remove()
                 modifications++
             }

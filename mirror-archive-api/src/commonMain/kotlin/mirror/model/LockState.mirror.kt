@@ -12,26 +12,25 @@ import mirror.kotlin.*
 
 object LockStateMirror : MirrorClass<LockState>() {
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<LockState>
-        get() = LockState::class as KClass<LockState>
+    override val kClass: KClass<LockState> get() = LockState::class as KClass<LockState>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Inline)
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"
     override val localName: String get() = "LockState"
     override val implements: Array<MirrorClass<*>> get() = arrayOf()
     override val companion: Any? get() = LockState.Companion
-
-    val fieldValue: Field<LockState, Long> = Field(
-            owner = this,
-            index = 0,
-            name = "value",
-            type = LongMirror,
-            optional = false,
-            get = { it.value },
-            annotations = listOf<Annotation>()
+    
+    val fieldValue: Field<LockState,Long> = Field(
+        owner = this,
+        index = 0,
+        name = "value",
+        type = LongMirror,
+        optional = false,
+        get = { it.value },
+        annotations = listOf<Annotation>()
     )
-
+    
     override val fields: Array<Field<LockState, *>> = arrayOf(fieldValue)
-
+    
     override fun deserialize(decoder: Decoder): LockState {
         var valueSet = false
         var fieldValue: Long? = null
@@ -48,19 +47,18 @@ object LockStateMirror : MirrorClass<LockState>() {
                     fieldValue = decoderStructure.decodeLongElement(this, 0)
                     valueSet = true
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
         decoderStructure.endStructure(this)
-        if (!valueSet) {
+        if(!valueSet) {
             throw MissingFieldException("value")
         }
         return LockState(
-                value = fieldValue as Long
+            value = fieldValue as Long
         )
     }
-
+    
     override fun serialize(encoder: Encoder, obj: LockState) {
         val encoderStructure = encoder.beginStructure(this)
         encoderStructure.encodeLongElement(this, 0, obj.value)

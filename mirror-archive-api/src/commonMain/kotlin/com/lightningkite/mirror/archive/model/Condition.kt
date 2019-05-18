@@ -39,6 +39,7 @@ sealed class Condition<in T> {
                     else -> result.add(innerSimp)
                 }
             }
+            if(result.size == 0) return Condition.Always
             if(result.size == 1) return result.first()
             return Condition.And(result)
         }
@@ -60,6 +61,7 @@ sealed class Condition<in T> {
                     else -> result.add(innerSimp)
                 }
             }
+            if(result.size == 0) return Condition.Never
             if(result.size == 1) return result.first()
             return Condition.Or(result)
         }

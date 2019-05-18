@@ -93,27 +93,35 @@ data class SecurityRules<T : Any>(
 
     //Secure functions
 
-    fun T.secureOutput(): T = Breaker.modify(type, this) {
-        for (index in it.indices) {
-            val readable = fieldRead[index]?.invoke(this)
-            if (readable != true) {
-                it[index] = fieldMasks[index]
+    val anyMaskings: Boolean by lazy { fieldRead.any { it != null } }
+    fun T.secureOutput(): T {
+        if(!anyMaskings) return this
+        return Breaker.modify(type, this) {
+            for (index in it.indices) {
+                val readable = fieldRead[index]?.invoke(this)
+                if (readable == false) {
+                    it[index] = fieldMasks[index]
+                }
             }
         }
     }
 
-    fun T.secureInsert(): T = Breaker.modify(type, this) {
-        for (index in it.indices) {
-            val tweak = fieldTweaks[index]
-            if (tweak != null) {
-                it[index] = tweak.invoke(it[index])
+    val anyTweaks: Boolean by lazy { fieldTweaks.any { it != null } }
+    fun T.secureInsert(): T {
+        if(!anyTweaks) return this
+        return Breaker.modify(type, this) {
+            for (index in it.indices) {
+                val tweak = fieldTweaks[index]
+                if (tweak != null) {
+                    it[index] = tweak.invoke(it[index])
+                }
             }
         }
     }
 
     fun List<Sort<T, *>>.secureCondition(): Condition<T> {
         return Condition.And(this.map {
-            fieldRead[it.field.index] ?: Condition.Never
+            fieldRead[it.field.index] ?: Condition.Always
         })
 //        val conditions = this.iterable().
 //        return if (conditions.isEmpty()) Condition.Always

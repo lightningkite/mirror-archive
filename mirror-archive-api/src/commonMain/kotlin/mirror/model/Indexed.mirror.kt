@@ -10,7 +10,7 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 class IndexedMirror(
-) : MirrorAnnotation {
+): MirrorAnnotation {
     override val annotationType: KClass<out Annotation> get() = Indexed::class
     override fun asMap(): Map<String, Any?> = mapOf(
     )

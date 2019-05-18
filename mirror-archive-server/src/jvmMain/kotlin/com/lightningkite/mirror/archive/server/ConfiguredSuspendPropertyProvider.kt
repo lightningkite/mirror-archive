@@ -6,7 +6,7 @@ import com.lightningkite.mirror.info.MirrorClass
 class ConfiguredSuspendPropertyProvider(vararg val options: SuspendProperty.Provider.FromConfiguration) : SuspendProperty.Provider {
     fun configure(type: String, arguments: Map<String, String>) {
         for (option in options) {
-            if (option.name.toLowerCase() == type) {
+            if (option.name.toLowerCase() == type.toLowerCase()) {
                 provider = option.invoke(arguments)//config.map("database", *(option.requiredArguments + option.optionalArguments)))
                 return
             }

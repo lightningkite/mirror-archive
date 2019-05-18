@@ -10,7 +10,7 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 class PrimaryKeyMirror(
-) : MirrorAnnotation {
+): MirrorAnnotation {
     override val annotationType: KClass<out Annotation> get() = PrimaryKey::class
     override fun asMap(): Map<String, Any?> = mapOf(
     )

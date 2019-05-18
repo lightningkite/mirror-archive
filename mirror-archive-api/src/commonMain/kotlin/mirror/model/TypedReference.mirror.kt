@@ -11,35 +11,34 @@ import com.lightningkite.mirror.info.MirrorClassMirror
 
 object TypedReferenceMirror : MirrorClass<TypedReference>() {
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<TypedReference>
-        get() = TypedReference::class as KClass<TypedReference>
+    override val kClass: KClass<TypedReference> get() = TypedReference::class as KClass<TypedReference>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"
     override val localName: String get() = "TypedReference"
     override val implements: Array<MirrorClass<*>> get() = arrayOf()
-
-    val fieldType: Field<TypedReference, MirrorClass<*>> = Field(
-            owner = this,
-            index = 0,
-            name = "type",
-            type = (MirrorClassMirror.make(null) as MirrorType<MirrorClass<*>>),
-            optional = false,
-            get = { it.type },
-            annotations = listOf<Annotation>()
+    
+    val fieldType: Field<TypedReference,MirrorClass<*>> = Field(
+        owner = this,
+        index = 0,
+        name = "type",
+        type = (MirrorClassMirror.make(null) as MirrorType<MirrorClass<*>>),
+        optional = false,
+        get = { it.type },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldKey: Field<TypedReference, Uuid> = Field(
-            owner = this,
-            index = 1,
-            name = "key",
-            type = UuidMirror,
-            optional = false,
-            get = { it.key },
-            annotations = listOf<Annotation>()
+    
+    val fieldKey: Field<TypedReference,Uuid> = Field(
+        owner = this,
+        index = 1,
+        name = "key",
+        type = UuidMirror,
+        optional = false,
+        get = { it.key },
+        annotations = listOf<Annotation>()
     )
-
+    
     override val fields: Array<Field<TypedReference, *>> = arrayOf(fieldType, fieldKey)
-
+    
     override fun deserialize(decoder: Decoder): TypedReference {
         var typeSet = false
         var fieldType: MirrorClass<*>? = null
@@ -64,23 +63,22 @@ object TypedReferenceMirror : MirrorClass<TypedReference>() {
                     fieldKey = decoderStructure.decodeSerializableElement(this, 1, UuidMirror)
                     keySet = true
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
         decoderStructure.endStructure(this)
-        if (!typeSet) {
+        if(!typeSet) {
             throw MissingFieldException("type")
         }
-        if (!keySet) {
+        if(!keySet) {
             throw MissingFieldException("key")
         }
         return TypedReference(
-                type = fieldType as MirrorClass<*>,
-                key = fieldKey as Uuid
+            type = fieldType as MirrorClass<*>,
+            key = fieldKey as Uuid
         )
     }
-
+    
     override fun serialize(encoder: Encoder, obj: TypedReference) {
         val encoderStructure = encoder.beginStructure(this)
         encoderStructure.encodeSerializableElement(this, 0, (MirrorClassMirror.make(null) as MirrorType<MirrorClass<*>>), obj.type)

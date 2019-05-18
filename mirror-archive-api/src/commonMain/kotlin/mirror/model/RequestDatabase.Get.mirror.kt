@@ -14,89 +14,87 @@ import com.lightningkite.mirror.archive.model.ConditionMirror
 import com.lightningkite.mirror.request.RequestMirror
 import com.lightningkite.mirror.archive.model.SortMirror
 
-data class RequestDatabaseGetMirror<T : Any>(
-        val TMirror: MirrorType<T>
+data class RequestDatabaseGetMirror<T: Any>(
+    val TMirror: MirrorType<T>
 ) : MirrorClass<RequestDatabase.Get<T>>() {
-
+    
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
-
     companion object : MirrorClassCompanion {
         val TMirrorMinimal get() = AnyMirror
-
+        
         override val minimal = RequestDatabaseGetMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = RequestDatabaseGetMirror(typeArguments[0] as MirrorType<Any>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null
         ) = RequestDatabaseGetMirror<Any>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
         )
     }
-
+    
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<RequestDatabase.Get<T>>
-        get() = RequestDatabase.Get::class as KClass<RequestDatabase.Get<T>>
+    override val kClass: KClass<RequestDatabase.Get<T>> get() = RequestDatabase.Get::class as KClass<RequestDatabase.Get<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
     override val packageName: String get() = "com.lightningkite.mirror.archive.database"
     override val localName: String get() = "RequestDatabase.Get"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(RequestMirror(ListMirror(TMirror)))
     override val owningClass: KClass<*>? get() = RequestDatabase::class
-
-    val fieldDatabaseRequest: Field<RequestDatabase.Get<T>, Database.Request<T>> = Field(
-            owner = this,
-            index = 0,
-            name = "databaseRequest",
-            type = DatabaseRequestMirror(TMirror),
-            optional = false,
-            get = { it.databaseRequest },
-            annotations = listOf<Annotation>()
+    
+    val fieldDatabaseRequest: Field<RequestDatabase.Get<T>,Database.Request<T>> = Field(
+        owner = this,
+        index = 0,
+        name = "databaseRequest",
+        type = DatabaseRequestMirror(TMirror),
+        optional = false,
+        get = { it.databaseRequest },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldCondition: Field<RequestDatabase.Get<T>, Condition<T>> = Field(
-            owner = this,
-            index = 1,
-            name = "condition",
-            type = ConditionMirror(TMirror),
-            optional = true,
-            get = { it.condition },
-            annotations = listOf<Annotation>()
+    
+    val fieldCondition: Field<RequestDatabase.Get<T>,Condition<T>> = Field(
+        owner = this,
+        index = 1,
+        name = "condition",
+        type = ConditionMirror(TMirror),
+        optional = true,
+        get = { it.condition },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldSort: Field<RequestDatabase.Get<T>, List<Sort<T, *>>> = Field(
-            owner = this,
-            index = 2,
-            name = "sort",
-            type = ListMirror((SortMirror.make(TMirror, null) as MirrorType<Sort<T, *>>)),
-            optional = true,
-            get = { it.sort },
-            annotations = listOf<Annotation>()
+    
+    val fieldSort: Field<RequestDatabase.Get<T>,List<Sort<T, *>>> = Field(
+        owner = this,
+        index = 2,
+        name = "sort",
+        type = ListMirror((SortMirror.make(TMirror, null) as MirrorType<Sort<T, *>>)),
+        optional = true,
+        get = { it.sort },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldCount: Field<RequestDatabase.Get<T>, Int> = Field(
-            owner = this,
-            index = 3,
-            name = "count",
-            type = IntMirror,
-            optional = true,
-            get = { it.count },
-            annotations = listOf<Annotation>()
+    
+    val fieldCount: Field<RequestDatabase.Get<T>,Int> = Field(
+        owner = this,
+        index = 3,
+        name = "count",
+        type = IntMirror,
+        optional = true,
+        get = { it.count },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldAfter: Field<RequestDatabase.Get<T>, T?> = Field(
-            owner = this,
-            index = 4,
-            name = "after",
-            type = TMirror.nullable,
-            optional = true,
-            get = { it.after },
-            annotations = listOf<Annotation>()
+    
+    val fieldAfter: Field<RequestDatabase.Get<T>,T?> = Field(
+        owner = this,
+        index = 4,
+        name = "after",
+        type = TMirror.nullable,
+        optional = true,
+        get = { it.after },
+        annotations = listOf<Annotation>()
     )
-
+    
     override val fields: Array<Field<RequestDatabase.Get<T>, *>> = arrayOf(fieldDatabaseRequest, fieldCondition, fieldSort, fieldCount, fieldAfter)
-
+    
     override fun deserialize(decoder: Decoder): RequestDatabase.Get<T> {
         var databaseRequestSet = false
         var fieldDatabaseRequest: Database.Request<T>? = null
@@ -145,35 +143,34 @@ data class RequestDatabaseGetMirror<T : Any>(
                     fieldAfter = decoderStructure.decodeSerializableElement(this, 4, TMirror.nullable)
                     afterSet = true
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
         decoderStructure.endStructure(this)
-        if (!databaseRequestSet) {
+        if(!databaseRequestSet) {
             throw MissingFieldException("databaseRequest")
         }
-        if (!conditionSet) {
+        if(!conditionSet) {
             fieldCondition = Condition.Always
         }
-        if (!sortSet) {
+        if(!sortSet) {
             fieldSort = listOf()
         }
-        if (!countSet) {
+        if(!countSet) {
             fieldCount = 100
         }
-        if (!afterSet) {
+        if(!afterSet) {
             fieldAfter = null
         }
         return RequestDatabase.Get<T>(
-                databaseRequest = fieldDatabaseRequest as Database.Request<T>,
-                condition = fieldCondition as Condition<T>,
-                sort = fieldSort as List<Sort<T, *>>,
-                count = fieldCount as Int,
-                after = fieldAfter as T?
+            databaseRequest = fieldDatabaseRequest as Database.Request<T>,
+            condition = fieldCondition as Condition<T>,
+            sort = fieldSort as List<Sort<T, *>>,
+            count = fieldCount as Int,
+            after = fieldAfter as T?
         )
     }
-
+    
     override fun serialize(encoder: Encoder, obj: RequestDatabase.Get<T>) {
         val encoderStructure = encoder.beginStructure(this, TMirror)
         encoderStructure.encodeSerializableElement(this, 0, DatabaseRequestMirror(TMirror), obj.databaseRequest)

@@ -35,6 +35,8 @@ class PostgresDatabase<T : Any>(
         val primaryKey: List<MirrorClass.Field<T, *>> = mirror.findPrimaryKey(),
         val client: PgClient
 ) : Database<T> {
+
+
     val schemaName = schemaName.filter { it in 'a'..'z' || it in 'A'..'Z' }.let {
         if (it in PostgresReservedKeywords) {
             "mirrorschema_$it"
@@ -124,7 +126,6 @@ class PostgresDatabase<T : Any>(
             it.copy(name = if (name.toUpperCase() in PostgresReservedKeywords) "field_$name" else name)
         })
     }
-    val isSetUp = AtomicValue(false)
 
     fun rowToArray(row: Row) = (0 until row.size()).map {
         val raw = row.getValue(it)
@@ -314,6 +315,7 @@ class PostgresDatabase<T : Any>(
         return name.toLowerCase() to sqlType
     }
 
+    val isSetUp = AtomicValue(false)
     suspend fun setup() {
         if (!isSetUp.compareAndSet(expected = false, new = true)) return
 

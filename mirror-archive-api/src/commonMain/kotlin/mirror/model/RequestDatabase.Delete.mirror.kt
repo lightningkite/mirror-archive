@@ -13,59 +13,57 @@ import mirror.kotlin.*
 import com.lightningkite.mirror.archive.model.ConditionMirror
 import com.lightningkite.mirror.request.RequestMirror
 
-data class RequestDatabaseDeleteMirror<T : Any>(
-        val TMirror: MirrorType<T>
+data class RequestDatabaseDeleteMirror<T: Any>(
+    val TMirror: MirrorType<T>
 ) : MirrorClass<RequestDatabase.Delete<T>>() {
-
+    
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
-
     companion object : MirrorClassCompanion {
         val TMirrorMinimal get() = AnyMirror
-
+        
         override val minimal = RequestDatabaseDeleteMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
         override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = RequestDatabaseDeleteMirror(typeArguments[0] as MirrorType<Any>)
-
+        
         @Suppress("UNCHECKED_CAST")
         fun make(
-                TMirror: MirrorType<*>? = null
+            TMirror: MirrorType<*>? = null
         ) = RequestDatabaseDeleteMirror<Any>(
-                TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
+            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>
         )
     }
-
+    
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<RequestDatabase.Delete<T>>
-        get() = RequestDatabase.Delete::class as KClass<RequestDatabase.Delete<T>>
+    override val kClass: KClass<RequestDatabase.Delete<T>> get() = RequestDatabase.Delete::class as KClass<RequestDatabase.Delete<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
     override val packageName: String get() = "com.lightningkite.mirror.archive.database"
     override val localName: String get() = "RequestDatabase.Delete"
     override val implements: Array<MirrorClass<*>> get() = arrayOf(RequestMirror(IntMirror))
     override val owningClass: KClass<*>? get() = RequestDatabase::class
-
-    val fieldDatabaseRequest: Field<RequestDatabase.Delete<T>, Database.Request<T>> = Field(
-            owner = this,
-            index = 0,
-            name = "databaseRequest",
-            type = DatabaseRequestMirror(TMirror),
-            optional = false,
-            get = { it.databaseRequest },
-            annotations = listOf<Annotation>()
+    
+    val fieldDatabaseRequest: Field<RequestDatabase.Delete<T>,Database.Request<T>> = Field(
+        owner = this,
+        index = 0,
+        name = "databaseRequest",
+        type = DatabaseRequestMirror(TMirror),
+        optional = false,
+        get = { it.databaseRequest },
+        annotations = listOf<Annotation>()
     )
-
-    val fieldCondition: Field<RequestDatabase.Delete<T>, Condition<T>> = Field(
-            owner = this,
-            index = 1,
-            name = "condition",
-            type = ConditionMirror(TMirror),
-            optional = false,
-            get = { it.condition },
-            annotations = listOf<Annotation>()
+    
+    val fieldCondition: Field<RequestDatabase.Delete<T>,Condition<T>> = Field(
+        owner = this,
+        index = 1,
+        name = "condition",
+        type = ConditionMirror(TMirror),
+        optional = false,
+        get = { it.condition },
+        annotations = listOf<Annotation>()
     )
-
+    
     override val fields: Array<Field<RequestDatabase.Delete<T>, *>> = arrayOf(fieldDatabaseRequest, fieldCondition)
-
+    
     override fun deserialize(decoder: Decoder): RequestDatabase.Delete<T> {
         var databaseRequestSet = false
         var fieldDatabaseRequest: Database.Request<T>? = null
@@ -90,23 +88,22 @@ data class RequestDatabaseDeleteMirror<T : Any>(
                     fieldCondition = decoderStructure.decodeSerializableElement(this, 1, ConditionMirror(TMirror))
                     conditionSet = true
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
         decoderStructure.endStructure(this)
-        if (!databaseRequestSet) {
+        if(!databaseRequestSet) {
             throw MissingFieldException("databaseRequest")
         }
-        if (!conditionSet) {
+        if(!conditionSet) {
             throw MissingFieldException("condition")
         }
         return RequestDatabase.Delete<T>(
-                databaseRequest = fieldDatabaseRequest as Database.Request<T>,
-                condition = fieldCondition as Condition<T>
+            databaseRequest = fieldDatabaseRequest as Database.Request<T>,
+            condition = fieldCondition as Condition<T>
         )
     }
-
+    
     override fun serialize(encoder: Encoder, obj: RequestDatabase.Delete<T>) {
         val encoderStructure = encoder.beginStructure(this, TMirror)
         encoderStructure.encodeSerializableElement(this, 0, DatabaseRequestMirror(TMirror), obj.databaseRequest)
