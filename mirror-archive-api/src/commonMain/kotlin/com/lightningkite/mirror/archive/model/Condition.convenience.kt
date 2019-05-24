@@ -11,6 +11,7 @@ infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.lessThan(value: V
 infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.greaterThan(value: V) = Condition.Field(this, Condition.GreaterThan(value))
 infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.lessThanOrEqual(value: V) = Condition.Field(this, Condition.LessThanOrEqual(value))
 infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.greaterThanOrEqual(value: V) = Condition.Field(this, Condition.GreaterThanOrEqual(value))
+infix fun <T : Any, V : Comparable<V>> MirrorClass.Field<T, V>.between(value: ClosedRange<V>) = (this lessThanOrEqual value.endInclusive) and (this greaterThanOrEqual value.start)
 infix fun <T : Any, V> MirrorClass.Field<T, V>.equalToOne(values: List<V>) = Condition.Field(this, Condition.EqualToOne(values))
 
 infix fun <T : Any, V> MirrorClass.Field<T, V>.sub(condition: Condition<V>) = Condition.Field(this, condition)
