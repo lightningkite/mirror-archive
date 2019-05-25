@@ -1,5 +1,6 @@
 package com.lightningkite.mirror.archive.postgres
 
+import com.lightningkite.kommon.atomic.AtomicInt
 import com.lightningkite.kommon.atomic.AtomicValue
 import com.lightningkite.kommon.collection.forEachBetween
 import com.lightningkite.lokalize.time.TimeStamp
@@ -18,6 +19,7 @@ import io.reactiverse.pgclient.PgConnectOptions
 import io.reactiverse.pgclient.PgPoolOptions
 import io.reactiverse.pgclient.Row
 import io.vertx.core.buffer.Buffer
+import kotlinx.coroutines.delay
 import kotlinx.serialization.PrimitiveKind
 import kotlinx.serialization.StructureKind
 import kotlinx.serialization.UnionKind
@@ -315,62 +317,70 @@ class PostgresDatabase<T : Any>(
         return name.toLowerCase() to sqlType
     }
 
-    val isSetUp = AtomicValue(false)
+    val setupState = AtomicInt(0)
     suspend fun setup() {
-        if (!isSetUp.compareAndSet(expected = false, new = true)) return
+        if(setupState.compareAndSet(0, 1)){
+            //actual setup
 
-        val existingColumns = client.suspendQuery(PostgresMetadata.columns(tableName))
-        if (existingColumns.rowCount() == 0) {
-            //Create if it doesn't exist
-            client.suspendQuery("CREATE SCHEMA IF NOT EXISTS $schemaName")
-            client.suspendQuery {
-                append("CREATE TABLE IF NOT EXISTS $schemaName.$tableName (")
-                schema.columns.forEachBetween(
-                        forItem = {
-                            val nameAndType = it.nameAndType()
-                            append(nameAndType.first)
-                            append(' ')
-                            append(nameAndType.second)
-                        },
-                        between = { append(", ") }
-                )
-                append(", PRIMARY KEY (")
-                schema.columns.asSequence()
-                        .filter { primaryKey.any { key -> key.index == it.indexPath[0] } }
-                        .asIterable()
-                        .forEachBetween(
-                                forItem = {
-                                    append(it.name)
-                                },
-                                between = {
-                                    append(", ")
-                                }
-                        )
-                append("))")
+            val existingColumns = client.suspendQuery(PostgresMetadata.columns(tableName))
+            if (existingColumns.rowCount() == 0) {
+                //Create if it doesn't exist
+                client.suspendQuery("CREATE SCHEMA IF NOT EXISTS $schemaName")
+                client.suspendQuery {
+                    append("CREATE TABLE IF NOT EXISTS $schemaName.$tableName (")
+                    schema.columns.forEachBetween(
+                            forItem = {
+                                val nameAndType = it.nameAndType()
+                                append(nameAndType.first)
+                                append(' ')
+                                append(nameAndType.second)
+                            },
+                            between = { append(", ") }
+                    )
+                    append(", PRIMARY KEY (")
+                    schema.columns.asSequence()
+                            .filter { primaryKey.any { key -> key.index == it.indexPath[0] } }
+                            .asIterable()
+                            .forEachBetween(
+                                    forItem = {
+                                        append(it.name)
+                                    },
+                                    between = {
+                                        append(", ")
+                                    }
+                            )
+                    append("))")
+                }
+            } else {
+                val parsedExistingColumns = existingColumns.map {
+                    it.getString(PostgresMetadata.Columns.column_name).toLowerCase() to it.getString(PostgresMetadata.Columns.data_type).toLowerCase()
+                }.toSet()
+                val parsedCodeColumns = schema.columns.map { it.nameAndType() }.toSet()
+                val newColumns = parsedCodeColumns.minus(parsedExistingColumns)
+                val oldColumns = parsedExistingColumns.minus(parsedCodeColumns)
+
+                for (column in newColumns) {
+                    client.suspendQuery("ALTER TABLE $schemaName.$tableName ADD COLUMN ${column.first} ${column.second}")
+                }
+
+                //TODO: Custom migrations?
+
+                for (column in oldColumns) {
+                    client.suspendQuery("ALTER TABLE $schemaName.$tableName DROP COLUMN ${column.first} ${column.second}")
+                }
+
+                //TODO: Migrate PK?
+                //TODO: Migrate field type changes?
             }
-        } else {
-            val parsedExistingColumns = existingColumns.map {
-                it.getString(PostgresMetadata.Columns.column_name).toLowerCase() to it.getString(PostgresMetadata.Columns.data_type).toLowerCase()
-            }.toSet()
-            val parsedCodeColumns = schema.columns.map { it.nameAndType() }.toSet()
-            val newColumns = parsedCodeColumns.minus(parsedExistingColumns)
-            val oldColumns = parsedExistingColumns.minus(parsedCodeColumns)
 
-            for (column in newColumns) {
-                client.suspendQuery("ALTER TABLE $schemaName.$tableName ADD COLUMN ${column.first} ${column.second}")
+            //TODO: Indicies
+
+            setupState.value = 2
+        } else if(setupState.value == 1) {
+            while(setupState.value == 1){
+                delay(1)
             }
-
-            //TODO: Custom migrations?
-
-            for (column in oldColumns) {
-                client.suspendQuery("ALTER TABLE $schemaName.$tableName DROP COLUMN ${column.first} ${column.second}")
-            }
-
-            //TODO: Migrate PK?
-            //TODO: Migrate field type changes?
         }
-
-        //TODO: Indicies
     }
 
     override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> = if (condition.simplify() == Condition.Never) listOf() else client.suspendQuery {
