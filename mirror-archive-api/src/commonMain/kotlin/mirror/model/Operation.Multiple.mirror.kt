@@ -30,6 +30,9 @@ data class OperationMultipleMirror<T: Any?>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: Operation.Multiple<T> get() = Operation.Multiple(
+        operations = ListMirror(OperationMirror(TMirror)).empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Operation.Multiple<T>> get() = Operation.Multiple::class as KClass<Operation.Multiple<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

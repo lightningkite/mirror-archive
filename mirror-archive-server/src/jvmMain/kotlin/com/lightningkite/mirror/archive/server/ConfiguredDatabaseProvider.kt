@@ -16,5 +16,5 @@ class ConfiguredDatabaseProvider(vararg val options: Database.Provider.FromConfi
 
     lateinit var provider: Database.Provider
 
-    override fun <T : Any> get(mirrorClass: MirrorClass<T>, default: T, name: String): Database<T> = provider.get(mirrorClass, default, name)
+    override fun <T : Any> getOrNull(mirrorClass: MirrorClass<T>): Database<T>? = provider.getOrNull(mirrorClass)
 }

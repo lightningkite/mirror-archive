@@ -34,6 +34,10 @@ data class RequestDatabaseDeleteMirror<T: Any>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: RequestDatabase.Delete<T> get() = RequestDatabase.Delete(
+        databaseRequest = DatabaseRequestMirror(TMirror).empty,
+        condition = ConditionMirror(TMirror).empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<RequestDatabase.Delete<T>> get() = RequestDatabase.Delete::class as KClass<RequestDatabase.Delete<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

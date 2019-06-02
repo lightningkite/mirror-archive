@@ -30,6 +30,9 @@ data class ConditionGreaterThanMirror<T: Comparable<T>?>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: Condition.GreaterThan<T> get() = Condition.GreaterThan(
+        value = TMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Condition.GreaterThan<T>> get() = Condition.GreaterThan::class as KClass<Condition.GreaterThan<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

@@ -11,6 +11,9 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object LockStateMirror : MirrorClass<LockState>() {
+    override val empty: LockState get() = LockState(
+        value = LongMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<LockState> get() = LockState::class as KClass<LockState>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Inline)

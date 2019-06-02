@@ -9,6 +9,9 @@ import mirror.kotlin.*
 import com.lightningkite.lokalize.location.GeohashMirror
 
 object GeohashMirror : MirrorClass<Geohash>() {
+    override val empty: Geohash get() = Geohash(
+        bits = LongMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Geohash> get() = Geohash::class as KClass<Geohash>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Inline)

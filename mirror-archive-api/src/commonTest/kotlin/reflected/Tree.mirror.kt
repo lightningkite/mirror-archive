@@ -2,6 +2,7 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.test
 
+import com.lightningkite.mirror.archive.model.PrimaryKey
 import kotlinx.serialization.Serializable
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
@@ -10,6 +11,11 @@ import mirror.kotlin.*
 import kotlinx.serialization.SerializableMirror
 
 object TreeMirror : MirrorClass<Tree>() {
+    override val empty: Tree get() = Tree(
+        name = StringMirror.empty,
+        left = null,
+        right = null
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Tree> get() = Tree::class as KClass<Tree>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

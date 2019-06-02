@@ -18,7 +18,7 @@ class RamDatabase<T : Any>(
     }
 
     object Provider : Database.Provider {
-        override fun <T : Any> get(mirrorClass: MirrorClass<T>, default: T, name: String): Database<T> {
+        override fun <T : Any> getOrNull(mirrorClass: MirrorClass<T>): Database<T>? {
             return RamDatabase(type = mirrorClass)
         }
     }

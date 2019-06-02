@@ -30,6 +30,9 @@ data class ConditionLessThanOrEqualMirror<T: Comparable<T>?>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: Condition.LessThanOrEqual<T> get() = Condition.LessThanOrEqual(
+        value = TMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Condition.LessThanOrEqual<T>> get() = Condition.LessThanOrEqual::class as KClass<Condition.LessThanOrEqual<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

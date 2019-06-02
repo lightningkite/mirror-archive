@@ -6,44 +6,95 @@ import com.lightningkite.mirror.info.MirrorClass
 
 data class SecurityRules<T : Any>(
         val type: MirrorClass<T>,
-        val maskObject: T,
-        var limitRead: Condition<T> = Condition.Never,
-        var limitUpdate: Condition<T> = Condition.Never,
-        var limitInsert: Condition<T> = Condition.Never
+        val maskObject: T = type.empty,
+        val limitReadLazy: suspend () -> Condition<T> = { Condition.Never },
+        val limitUpdateLazy: suspend () -> Condition<T> = { Condition.Never },
+        val limitInsertLazy: suspend () -> Condition<T> = { Condition.Never },
+        val defaultReadProperty: suspend () -> Condition<T> = { Condition.Never },
+        val defaultUpdateProperty: suspend () -> Boolean = { false },
+        val defaultInsertProperty: suspend () -> Boolean = { false }
 ) {
 
-    private var fieldRead = Array<Condition<T>?>(type.elementsCount) { null }
-    private var fieldUpdate = Array<Condition<T>?>(type.elementsCount) { null }
+    companion object {
+        fun <T : Any> blacklist(
+                type: MirrorClass<T>,
+                maskObject: T,
+                limitReadLazy: suspend () -> Condition<T> = { Condition.Always },
+                limitUpdateLazy: suspend () -> Condition<T> = { Condition.Always },
+                limitInsertLazy: suspend () -> Condition<T> = { Condition.Always },
+                defaultReadProperty: suspend () -> Condition<T> = { Condition.Always },
+                defaultUpdateProperty: suspend () -> Boolean = { true },
+                defaultInsertProperty: suspend () -> Boolean = { true }
+        ) = SecurityRules(
+                type = type,
+                maskObject = maskObject,
+                limitReadLazy = limitReadLazy,
+                limitUpdateLazy = limitUpdateLazy,
+                limitInsertLazy = limitInsertLazy,
+                defaultReadProperty = defaultReadProperty,
+                defaultUpdateProperty = defaultUpdateProperty,
+                defaultInsertProperty = defaultInsertProperty
+        )
+    }
+
+    constructor(
+            type: MirrorClass<T>,
+            maskObject: T,
+            limitRead: Condition<T> = Condition.Never,
+            limitUpdate: Condition<T> = Condition.Never,
+            limitInsert: Condition<T> = Condition.Never
+    ) : this(
+            type = type,
+            maskObject = maskObject,
+            limitReadLazy = { limitRead },
+            limitUpdateLazy = { limitUpdate },
+            limitInsertLazy = { limitInsert }
+    )
+
+    private var fieldRead = Array<(suspend () -> Condition<T>)?>(type.elementsCount) { null }
+    private var fieldUpdate = Array<(suspend () -> Condition<T>)?>(type.elementsCount) { null }
     private var fieldIgnoresExplanation = Array<String?>(type.elementsCount) { null }
-    private var fieldIgnores = Array<((Operation<Any?>) -> Boolean)?>(type.elementsCount) { null }
+    private var fieldIgnores = Array<(suspend (Operation<Any?>) -> Boolean)?>(type.elementsCount) { null }
     private var fieldMasks = Breaker.snap(type, maskObject)
-    private var fieldTweaks = Array<((Any?) -> Any?)?>(type.elementsCount) { null }
+    private var fieldTweaks = Array<(suspend (Any?) -> Any?)?>(type.elementsCount) { null }
     private var fieldTweaksExplanation = Array<String?>(type.elementsCount) { null }
 
     /**
      * Sets the condition under which a field can be read.
      * If this field cannot be read, the value will be replaced in the output by the corresponding value in the mask object.
      */
-    fun <V> MirrorClass.Field<T, V>.read(condition: Condition<T>) {
+    fun <V> MirrorClass.Field<T, V>.read(condition: suspend () -> Condition<T>) {
         fieldRead[index] = condition
+    }
+
+    /**
+     * Sets the condition under which a field can be read.
+     * If this field cannot be read, the value will be replaced in the output by the corresponding value in the mask object.
+     */
+    fun <V> MirrorClass.Field<T, V>.read(condition: Condition<T>) = read { condition }
+
+    /**
+     * Sets the condition under which a field can be updated.
+     * If this field cannot be updated, the update is simply ignored.
+     */
+    fun <V> MirrorClass.Field<T, V>.update(condition: suspend () -> Condition<T>) {
+        fieldUpdate[index] = condition
     }
 
     /**
      * Sets the condition under which a field can be updated.
      * If this field cannot be updated, the update is simply ignored.
      */
-    fun <V> MirrorClass.Field<T, V>.update(condition: Condition<T>) {
-        fieldUpdate[index] = condition
-    }
+    fun <V> MirrorClass.Field<T, V>.update(condition: Condition<T>) = update { condition }
 
     /**
      * Sets the condition under which an update to the field is ignored.
      * This allows you to ignore certain operations, such as setting a particular field to null.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <V> MirrorClass.Field<T, V>.ignoresUpdates(explanation: String = "Updates to this field may be ignored.", operationPredicate: (Operation<V>) -> Boolean) {
+    fun <V> MirrorClass.Field<T, V>.ignoresUpdates(explanation: String = "Updates to this field may be ignored.", operationPredicate: suspend (Operation<V>) -> Boolean) {
         fieldIgnoresExplanation[index] = explanation
-        fieldIgnores[index] = operationPredicate as ((Operation<Any?>) -> Boolean)
+        fieldIgnores[index] = operationPredicate as suspend ((Operation<Any?>) -> Boolean)
     }
 
     /**
@@ -62,9 +113,9 @@ data class SecurityRules<T : Any>(
      * Useful for hashing fields.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <V> MirrorClass.Field<T, V>.tweaks(explanation: String = "Tweaks to the given value for this field may be made.", modification: (V) -> V) {
+    fun <V> MirrorClass.Field<T, V>.tweaks(explanation: String = "Tweaks to the given value for this field may be made.", modification: suspend (V) -> V) {
         fieldTweaksExplanation[index] = explanation
-        fieldTweaks[index] = modification as (Any?) -> Any?
+        fieldTweaks[index] = modification as suspend (Any?) -> Any?
     }
 
     /**
@@ -82,9 +133,9 @@ data class SecurityRules<T : Any>(
      * Returns a description of the security rules for a field.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <V> rules(field: MirrorClass.Field<T, V>) = Rules<T, V>(
-            read = fieldRead[field.index],
-            update = fieldUpdate[field.index],
+    suspend fun <V> rules(field: MirrorClass.Field<T, V>) = Rules<T, V>(
+            read = fieldRead[field.index]?.invoke(),
+            update = fieldUpdate[field.index]?.invoke(),
             ignored = fieldIgnoresExplanation[field.index],
             mask = fieldMasks[field.index] as V,
             tweaked = fieldTweaksExplanation[field.index]
@@ -94,12 +145,19 @@ data class SecurityRules<T : Any>(
     //Secure functions
 
     val anyMaskings: Boolean by lazy { fieldRead.any { it != null } }
-    fun T.secureOutput(): T {
-        if(!anyMaskings) return this
+    suspend fun T.secureOutput(): T {
+        if (!anyMaskings) {
+            if (defaultReadProperty()(this)) {
+                return this
+            } else {
+                println("Warning - securing output has empty")
+                return maskObject
+            }
+        }
         return Breaker.modify(type, this) {
             for (index in it.indices) {
-                val readable = fieldRead[index]?.invoke(this)
-                if (readable == false) {
+                val readable = (fieldRead[index]?.invoke() ?: defaultReadProperty()).invoke(this)
+                if (!readable) {
                     it[index] = fieldMasks[index]
                 }
             }
@@ -107,43 +165,45 @@ data class SecurityRules<T : Any>(
     }
 
     val anyTweaks: Boolean by lazy { fieldTweaks.any { it != null } }
-    fun T.secureInsert(): T {
-        if(!anyTweaks) return this
+    suspend fun T.secureInsert(): T {
+        if (!anyTweaks) return this
         return Breaker.modify(type, this) {
             for (index in it.indices) {
                 val tweak = fieldTweaks[index]
                 if (tweak != null) {
                     it[index] = tweak.invoke(it[index])
+                } else {
+                    if (!defaultInsertProperty())
+                        it[index] = fieldMasks[index]
                 }
             }
         }
     }
 
-    fun List<Sort<T, *>>.secureCondition(): Condition<T> {
+    suspend fun List<Sort<T, *>>.secureCondition(): Condition<T> {
         return Condition.And(this.map {
-            fieldRead[it.field.index] ?: Condition.Always
+            fieldRead[it.field.index]?.invoke() ?: Condition.Always
         })
 //        val conditions = this.iterable().
 //        return if (conditions.isEmpty()) Condition.Always
 //        else Condition.And(conditions)
     }
 
-    fun Condition<T>.secure(): Condition<T> = when (this) {
+    suspend fun Condition<T>.secure(): Condition<T> = when (this) {
         Condition.Never -> Condition.Never
         Condition.Always -> Condition.Always
         is Condition.And -> Condition.And(conditions.map { it.secure() })
         is Condition.Or -> Condition.Or(conditions.map { it.secure() })
         is Condition.Not -> Condition.Not(condition.secure())
-        is Condition.Field<*, *> -> {
-            val additional = fieldRead[field.index]
-            if (additional == null) this
-            else this and additional
+        is Condition.Field<*, *, *> -> {
+            val additional = (fieldRead[field.index] ?: defaultReadProperty).invoke()
+            this and additional
         }
         else -> this
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun Operation<T>.secure(): Operation<T>? {
+    suspend fun Operation<T>.secure(): Operation<T>? {
         return when (this) {
             is Operation.Multiple -> Operation.Multiple(operations.mapNotNull { it.secure() })
             is Operation.Field<*, *> -> {
@@ -151,7 +211,9 @@ data class SecurityRules<T : Any>(
                 val tweak = fieldTweaks[field.index]
                 val newOp = if (tweak != null && operation is Operation.Set) {
                     Operation.Set(tweak(operation.value))
-                } else operation
+                } else if (defaultUpdateProperty()) {
+                    operation
+                } else return null
                 Operation.Field(field as MirrorClass.Field<T, Any?>, newOp as Operation<Any?>)
             }
             is Operation.Set -> this.separate(type).secure()
@@ -160,10 +222,10 @@ data class SecurityRules<T : Any>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun Operation<T>.secureCondition(): Condition<T> = when (this) {
+    suspend fun Operation<T>.secureCondition(): Condition<T> = when (this) {
         is Operation.Multiple -> Condition.And(operations.map { it.secureCondition() })
         is Operation.Field<*, *> -> {
-            fieldUpdate[field.index] ?: Condition.Always
+            fieldUpdate[field.index]?.invoke() ?: (if (defaultUpdateProperty()) Condition.Always else Condition.Never)
         }
         is Operation.Set -> this.separate(type).secureCondition()
         else -> Condition.Always

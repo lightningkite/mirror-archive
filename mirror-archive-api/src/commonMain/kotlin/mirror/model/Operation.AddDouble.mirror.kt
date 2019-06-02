@@ -10,6 +10,9 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object OperationAddDoubleMirror : MirrorClass<Operation.AddDouble>() {
+    override val empty: Operation.AddDouble get() = Operation.AddDouble(
+        amount = DoubleMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Operation.AddDouble> get() = Operation.AddDouble::class as KClass<Operation.AddDouble>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

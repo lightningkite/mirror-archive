@@ -2,14 +2,51 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.test
 
+import com.lightningkite.mirror.archive.model.PrimaryKey
 import kotlinx.serialization.Serializable
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import mirror.kotlin.*
 import kotlinx.serialization.SerializableMirror
+import com.lightningkite.mirror.archive.model.PrimaryKeyMirror
 
 object ZooMirror : MirrorClass<Zoo>() {
+    override val empty: Zoo get() = Zoo(
+        unit = UnitMirror.empty,
+        boolean = BooleanMirror.empty,
+        byte = ByteMirror.empty,
+        short = ShortMirror.empty,
+        int = IntMirror.empty,
+        long = LongMirror.empty,
+        float = FloatMirror.empty,
+        double = DoubleMirror.empty,
+        char = CharMirror.empty,
+        string = StringMirror.empty,
+        enum = AttitudeMirror.empty,
+        intData = IntDataMirror.empty,
+        unitN = UnitMirror.nullable.empty,
+        booleanN = BooleanMirror.nullable.empty,
+        byteN = ByteMirror.nullable.empty,
+        shortN = ShortMirror.nullable.empty,
+        intN = IntMirror.nullable.empty,
+        longN = LongMirror.nullable.empty,
+        floatN = FloatMirror.nullable.empty,
+        doubleN = DoubleMirror.nullable.empty,
+        charN = CharMirror.nullable.empty,
+        stringN = StringMirror.nullable.empty,
+        enumN = AttitudeMirror.nullable.empty,
+        intDataN = IntDataMirror.nullable.empty,
+        listInt = ListMirror(IntMirror).empty,
+        listIntN = ListMirror(IntMirror.nullable).empty,
+        listListEnumN = ListMirror(ListMirror(AttitudeMirror.nullable)).empty,
+        listIntData = ListMirror(IntDataMirror).empty,
+        listIntDataN = ListMirror(IntDataMirror.nullable).empty,
+        tree = TreeMirror.empty,
+        mapStringInt = MapMirror(StringMirror, IntMirror).empty,
+        mapIntStringN = MapMirror(IntMirror, StringMirror.nullable).empty,
+        defaultIfNotPresent = 42
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Zoo> get() = Zoo::class as KClass<Zoo>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
@@ -66,7 +103,7 @@ object ZooMirror : MirrorClass<Zoo>() {
         type = IntMirror,
         optional = false,
         get = { it.int },
-        annotations = listOf<Annotation>()
+        annotations = listOf<Annotation>(PrimaryKeyMirror())
     )
     
     val fieldLong: Field<Zoo,Long> = Field(

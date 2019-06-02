@@ -74,8 +74,8 @@ sealed class Condition<in T> {
     }
 
 
-    data class Field<T : Any, V>(val field: MirrorClass.Field<T, V>, val condition: Condition<V>) : Condition<T>() {
-        override fun invoke(item: T): Boolean = condition.invoke(field.get(item))
+    data class Field<NullableT: Any?, NotNullT: NullableT, V>(val field: MirrorClass.Field<NotNullT, V>, val condition: Condition<V>): Condition<NullableT>() {
+        override fun invoke(item: NullableT): Boolean = item != null && condition.invoke(field.get(item as NotNullT))
         override fun iterable(): Iterable<Condition<*>> = listOf(condition)
     }
 

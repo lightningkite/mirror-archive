@@ -29,6 +29,9 @@ data class ReferenceMirror<MODEL: HasUuid>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(MODELMirror)
+    override val empty: Reference<MODEL> get() = Reference(
+        key = UuidMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Reference<MODEL>> get() = Reference::class as KClass<Reference<MODEL>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Inline)

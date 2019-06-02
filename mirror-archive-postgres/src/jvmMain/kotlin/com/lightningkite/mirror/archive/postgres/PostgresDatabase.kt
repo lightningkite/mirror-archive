@@ -31,7 +31,7 @@ import java.util.*
 
 class PostgresDatabase<T : Any>(
         val mirror: MirrorClass<T>,
-        val default: T,
+        val default: T = mirror.empty,
         schemaName: String = "mySchema",
         tableName: String = mirror.localName,
         val primaryKey: List<MirrorClass.Field<T, *>> = mirror.findPrimaryKey(),
@@ -110,12 +110,10 @@ class PostgresDatabase<T : Any>(
 
     class Provider(val schemaName: String, val client: PgClient) : Database.Provider {
 
-        override fun <T : Any> get(mirrorClass: MirrorClass<T>, default: T, name: String): Database<T> {
+        override fun <T : Any> getOrNull(mirrorClass: MirrorClass<T>): Database<T>? {
             return PostgresDatabase(
                     mirror = mirrorClass,
-                    default = default,
                     schemaName = schemaName,
-                    tableName = name,
                     client = client
             )
         }

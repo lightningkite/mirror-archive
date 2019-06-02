@@ -198,7 +198,7 @@ abstract class FlatArrayFormat(
                     conditionStream(cond.condition, indexPath, startGroup, groupDivider, endGroup, action)
                     endGroup(ConditionMode.NOT)
                 }
-                is Condition.Field<*, *> -> {
+                is Condition.Field<*, *, *> -> {
                     conditionStream(cond.condition, indexPath + cond.field.index, startGroup, groupDivider, endGroup, action)
                 }
                 is Condition.Equal -> {

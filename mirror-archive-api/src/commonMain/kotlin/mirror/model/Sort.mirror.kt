@@ -34,6 +34,10 @@ data class SortMirror<T: Any, V: Comparable<V>>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror, VMirror)
+    override val empty: Sort<T,V> get() = Sort(
+        field = MirrorClassFieldMirror(TMirror, VMirror).empty,
+        ascending = true
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Sort<T,V>> get() = Sort::class as KClass<Sort<T,V>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

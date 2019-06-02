@@ -1,5 +1,6 @@
 package com.lightningkite.mirror.test
 
+import com.lightningkite.mirror.archive.model.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,7 +9,7 @@ data class Zoo(
         val boolean: Boolean,
         val byte: Byte,
         val short: Short,
-        val int: Int,
+        @PrimaryKey val int: Int,
         val long: Long,
         val float: Float,
         val double: Double,

@@ -3,7 +3,6 @@ package com.lightningkite.mirror.archive
 import com.lightningkite.mirror.archive.database.Database
 import com.lightningkite.mirror.archive.database.RamDatabase
 import com.lightningkite.mirror.archive.database.secure
-import com.lightningkite.mirror.archive.database.secureFields
 import com.lightningkite.mirror.archive.model.Condition
 import com.lightningkite.mirror.archive.model.Operation
 import com.lightningkite.mirror.archive.model.Sort
@@ -23,7 +22,7 @@ class RamDatabaseTest {
 
     @BeforeTest
     fun before() {
-        database = RamDatabase<Zoo>()
+        database = RamDatabase<Zoo>(ZooMirror)
     }
 
     @AfterTest
@@ -64,21 +63,6 @@ class RamDatabaseTest {
             Operation.Field(ZooMirror.fieldDouble, Operation.AddDouble(1.0)),
             Operation.Field(ZooMirror.fieldIntData, Operation.Field(IntDataMirror.fieldIntV, Operation.AddInt(1)))
     )
-
-    @Test
-    fun secureSyntax() {
-        database.secure(
-                limitRead = Condition.Always,
-                limitUpdate = Condition.Never,
-                limitInsert = Condition.Never
-        ).secureFields(ZooMirror, Zoo.instance()) {
-            ZooMirror.fieldInt.apply {
-                read(Condition.Never)
-                update(Condition.Never)
-                tweaks("Adds one to given value.") { it + 1 }
-            }
-        }
-    }
 
     @Test
     fun insertOne() {

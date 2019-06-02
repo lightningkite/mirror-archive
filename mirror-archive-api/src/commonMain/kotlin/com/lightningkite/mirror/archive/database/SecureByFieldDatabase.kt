@@ -12,17 +12,17 @@ class SecureByFieldDatabase<T : Any>(
 ) : Database<T> {
 
     override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> = with(rules) {
-        val c = (condition and limitRead).secure() and sort.secureCondition()
+        val c = (condition and limitReadLazy()).secure() and sort.secureCondition()
         return underlying.get(c, sort, count, after).map { it.secureOutput() }
     }
 
     override suspend fun insert(values: List<T>): List<T> = with(rules) {
-        return underlying.insert(values.filter { limitInsert(it) }.map { it.secureInsert() }).map { it.secureOutput() }
+        return underlying.insert(values.filter { limitInsertLazy()(it) }.map { it.secureInsert() }).map { it.secureOutput() }
     }
 
     override suspend fun update(condition: Condition<T>, operation: Operation<T>): Int = with(rules) {
         operation.secure()?.let {
-            return underlying.update((condition and limitUpdate).secure() and it.secureCondition(), it)
+            return underlying.update((condition and limitUpdateLazy()).secure() and it.secureCondition(), it)
         }
         return 0
     }
@@ -30,7 +30,7 @@ class SecureByFieldDatabase<T : Any>(
     override suspend fun limitedUpdate(condition: Condition<T>, operation: Operation<T>, sort: List<Sort<T, *>>, limit: Int): Int = with(rules) {
         operation.secure()?.let {
             return underlying.limitedUpdate(
-                    condition = (condition and limitUpdate).secure() and it.secureCondition() and sort.secureCondition(),
+                    condition = (condition and limitUpdateLazy()).secure() and it.secureCondition() and sort.secureCondition(),
                     operation = it,
                     sort = sort,
                     limit = limit
@@ -40,7 +40,7 @@ class SecureByFieldDatabase<T : Any>(
     }
 
     override suspend fun delete(condition: Condition<T>): Int = with(rules) {
-        return underlying.delete((condition and limitUpdate).secure())
+        return underlying.delete((condition and limitUpdateLazy()).secure())
     }
 }
 

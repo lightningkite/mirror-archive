@@ -8,6 +8,10 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object PointMirror : MirrorClass<Point>() {
+    override val empty: Point get() = Point(
+        x = FloatMirror.empty,
+        y = FloatMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Point> get() = Point::class as KClass<Point>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

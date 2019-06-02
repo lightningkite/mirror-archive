@@ -30,6 +30,9 @@ data class ConditionAndMirror<T: Any?>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: Condition.And<T> get() = Condition.And(
+        conditions = ListMirror(ConditionMirror(TMirror)).empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Condition.And<T>> get() = Condition.And::class as KClass<Condition.And<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

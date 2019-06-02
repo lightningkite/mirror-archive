@@ -10,6 +10,9 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object OperationAppendMirror : MirrorClass<Operation.Append>() {
+    override val empty: Operation.Append get() = Operation.Append(
+        string = StringMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Operation.Append> get() = Operation.Append::class as KClass<Operation.Append>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

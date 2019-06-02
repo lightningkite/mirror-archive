@@ -9,6 +9,10 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object UuidMirror : MirrorClass<Uuid>() {
+    override val empty: Uuid get() = Uuid(
+        mostSignificantBits = LongMirror.empty,
+        leastSignificantBits = LongMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Uuid> get() = Uuid::class as KClass<Uuid>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

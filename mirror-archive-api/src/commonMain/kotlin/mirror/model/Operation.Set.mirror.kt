@@ -30,6 +30,9 @@ data class OperationSetMirror<T: Any?>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: Operation.Set<T> get() = Operation.Set(
+        value = TMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Operation.Set<T>> get() = Operation.Set::class as KClass<Operation.Set<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

@@ -9,6 +9,9 @@ import mirror.kotlin.*
 import com.lightningkite.lokalize.time.TimeStampMirror
 
 object TimeStampMirror : MirrorClass<TimeStamp>() {
+    override val empty: TimeStamp get() = TimeStamp(
+        millisecondsSinceEpoch = LongMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<TimeStamp> get() = TimeStamp::class as KClass<TimeStamp>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Inline)

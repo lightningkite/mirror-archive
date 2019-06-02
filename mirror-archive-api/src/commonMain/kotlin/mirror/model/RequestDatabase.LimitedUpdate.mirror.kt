@@ -36,6 +36,13 @@ data class RequestDatabaseLimitedUpdateMirror<T: Any>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror)
+    override val empty: RequestDatabase.LimitedUpdate<T> get() = RequestDatabase.LimitedUpdate(
+        databaseRequest = DatabaseRequestMirror(TMirror).empty,
+        condition = ConditionMirror(TMirror).empty,
+        operation = OperationMirror(TMirror).empty,
+        sort = listOf(),
+        limit = IntMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<RequestDatabase.LimitedUpdate<T>> get() = RequestDatabase.LimitedUpdate::class as KClass<RequestDatabase.LimitedUpdate<T>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

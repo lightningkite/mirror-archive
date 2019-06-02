@@ -10,6 +10,9 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object ConditionRegexTextSearchMirror : MirrorClass<Condition.RegexTextSearch>() {
+    override val empty: Condition.RegexTextSearch get() = Condition.RegexTextSearch(
+        query = StringMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Condition.RegexTextSearch> get() = Condition.RegexTextSearch::class as KClass<Condition.RegexTextSearch>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

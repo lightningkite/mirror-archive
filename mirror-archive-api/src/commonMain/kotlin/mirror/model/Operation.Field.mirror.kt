@@ -35,6 +35,10 @@ data class OperationFieldMirror<T: Any, V: Any?>(
     }
     
     override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror, VMirror)
+    override val empty: Operation.Field<T,V> get() = Operation.Field(
+        field = MirrorClassFieldMirror(TMirror, VMirror).empty,
+        operation = OperationMirror(VMirror).empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Operation.Field<T,V>> get() = Operation.Field::class as KClass<Operation.Field<T,V>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

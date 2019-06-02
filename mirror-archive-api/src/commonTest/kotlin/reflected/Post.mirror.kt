@@ -8,6 +8,12 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object PostMirror : MirrorClass<Post>() {
+    override val empty: Post get() = Post(
+        id = null,
+        userId = 0,
+        title = "",
+        body = ""
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Post> get() = Post::class as KClass<Post>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

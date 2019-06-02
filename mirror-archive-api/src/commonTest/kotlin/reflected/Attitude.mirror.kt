@@ -2,6 +2,7 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.test
 
+import com.lightningkite.mirror.archive.model.PrimaryKey
 import kotlinx.serialization.Serializable
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass

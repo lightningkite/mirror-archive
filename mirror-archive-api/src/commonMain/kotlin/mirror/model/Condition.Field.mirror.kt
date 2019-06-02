@@ -10,50 +10,58 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 import com.lightningkite.mirror.info.MirrorClassFieldMirror
 
-data class ConditionFieldMirror<T: Any, V: Any?>(
-    val TMirror: MirrorType<T>,
+data class ConditionFieldMirror<NullableT: Any?, NotNullT: NullableT, V: Any?>(
+    val NullableTMirror: MirrorType<NullableT>,
+    val NotNullTMirror: MirrorType<NotNullT>,
     val VMirror: MirrorType<V>
-) : MirrorClass<Condition.Field<T,V>>() {
+) : MirrorClass<Condition.Field<NullableT,NotNullT,V>>() {
     
     override val mirrorClassCompanion: MirrorClassCompanion? get() = Companion
     companion object : MirrorClassCompanion {
-        val TMirrorMinimal get() = AnyMirror
+        val NullableTMirrorMinimal get() = AnyMirror.nullable
+        val NotNullTMirrorMinimal get() = AnyMirror.nullable
         val VMirrorMinimal get() = AnyMirror.nullable
         
-        override val minimal = ConditionFieldMirror(TypeArgumentMirrorType("T", Variance.INVARIANT, TMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
+        override val minimal = ConditionFieldMirror(TypeArgumentMirrorType("NullableT", Variance.INVARIANT, NullableTMirrorMinimal), TypeArgumentMirrorType("NotNullT", Variance.INVARIANT, NotNullTMirrorMinimal), TypeArgumentMirrorType("V", Variance.INVARIANT, VMirrorMinimal))
         @Suppress("UNCHECKED_CAST")
-        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionFieldMirror(typeArguments[0] as MirrorType<Any>, typeArguments[1] as MirrorType<Any?>)
+        override fun make(typeArguments: List<MirrorType<*>>): MirrorClass<*> = ConditionFieldMirror(typeArguments[0] as MirrorType<Any?>, typeArguments[1] as MirrorType<Any?>, typeArguments[2] as MirrorType<Any?>)
         
         @Suppress("UNCHECKED_CAST")
         fun make(
-            TMirror: MirrorType<*>? = null,
+            NullableTMirror: MirrorType<*>? = null,
+            NotNullTMirror: MirrorType<*>? = null,
             VMirror: MirrorType<*>? = null
-        ) = ConditionFieldMirror<Any, Any?>(
-            TMirror = (TMirror ?: TMirrorMinimal) as MirrorType<Any>,
+        ) = ConditionFieldMirror<Any?, Any?, Any?>(
+            NullableTMirror = (NullableTMirror ?: NullableTMirrorMinimal) as MirrorType<Any?>,
+            NotNullTMirror = (NotNullTMirror ?: NotNullTMirrorMinimal) as MirrorType<Any?>,
             VMirror = (VMirror ?: VMirrorMinimal) as MirrorType<Any?>
         )
     }
     
-    override val typeParameters: Array<MirrorType<*>> get() = arrayOf(TMirror, VMirror)
+    override val typeParameters: Array<MirrorType<*>> get() = arrayOf(NullableTMirror, NotNullTMirror, VMirror)
+    override val empty: Condition.Field<NullableT,NotNullT,V> get() = Condition.Field(
+        field = MirrorClassFieldMirror(NotNullTMirror, VMirror).empty,
+        condition = ConditionMirror(VMirror).empty
+    )
     @Suppress("UNCHECKED_CAST")
-    override val kClass: KClass<Condition.Field<T,V>> get() = Condition.Field::class as KClass<Condition.Field<T,V>>
+    override val kClass: KClass<Condition.Field<NullableT,NotNullT,V>> get() = Condition.Field::class as KClass<Condition.Field<NullableT,NotNullT,V>>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
     override val packageName: String get() = "com.lightningkite.mirror.archive.model"
     override val localName: String get() = "Condition.Field"
-    override val implements: Array<MirrorClass<*>> get() = arrayOf(ConditionMirror(TMirror))
+    override val implements: Array<MirrorClass<*>> get() = arrayOf(ConditionMirror(NullableTMirror))
     override val owningClass: KClass<*>? get() = Condition::class
     
-    val fieldField: Field<Condition.Field<T,V>,MirrorClass.Field<T, V>> = Field(
+    val fieldField: Field<Condition.Field<NullableT,NotNullT,V>,MirrorClass.Field<NotNullT, V>> = Field(
         owner = this,
         index = 0,
         name = "field",
-        type = MirrorClassFieldMirror(TMirror, VMirror),
+        type = MirrorClassFieldMirror(NotNullTMirror, VMirror),
         optional = false,
         get = { it.field },
         annotations = listOf<Annotation>()
     )
     
-    val fieldCondition: Field<Condition.Field<T,V>,Condition<V>> = Field(
+    val fieldCondition: Field<Condition.Field<NullableT,NotNullT,V>,Condition<V>> = Field(
         owner = this,
         index = 1,
         name = "condition",
@@ -63,18 +71,18 @@ data class ConditionFieldMirror<T: Any, V: Any?>(
         annotations = listOf<Annotation>()
     )
     
-    override val fields: Array<Field<Condition.Field<T,V>, *>> = arrayOf(fieldField, fieldCondition)
+    override val fields: Array<Field<Condition.Field<NullableT,NotNullT,V>, *>> = arrayOf(fieldField, fieldCondition)
     
-    override fun deserialize(decoder: Decoder): Condition.Field<T,V> {
+    override fun deserialize(decoder: Decoder): Condition.Field<NullableT,NotNullT,V> {
         var fieldSet = false
-        var fieldField: MirrorClass.Field<T, V>? = null
+        var fieldField: MirrorClass.Field<NotNullT, V>? = null
         var conditionSet = false
         var fieldCondition: Condition<V>? = null
-        val decoderStructure = decoder.beginStructure(this, TMirror, VMirror)
+        val decoderStructure = decoder.beginStructure(this, NullableTMirror, NotNullTMirror, VMirror)
         loop@ while (true) {
             when (decoderStructure.decodeElementIndex(this)) {
                 CompositeDecoder.READ_ALL -> {
-                    fieldField = decoderStructure.decodeSerializableElement(this, 0, MirrorClassFieldMirror(TMirror, VMirror))
+                    fieldField = decoderStructure.decodeSerializableElement(this, 0, MirrorClassFieldMirror(NotNullTMirror, VMirror))
                     fieldSet = true
                     fieldCondition = decoderStructure.decodeSerializableElement(this, 1, ConditionMirror(VMirror))
                     conditionSet = true
@@ -82,7 +90,7 @@ data class ConditionFieldMirror<T: Any, V: Any?>(
                 }
                 CompositeDecoder.READ_DONE -> break@loop
                 0 -> {
-                    fieldField = decoderStructure.decodeSerializableElement(this, 0, MirrorClassFieldMirror(TMirror, VMirror))
+                    fieldField = decoderStructure.decodeSerializableElement(this, 0, MirrorClassFieldMirror(NotNullTMirror, VMirror))
                     fieldSet = true
                 }
                 1 -> {
@@ -99,15 +107,15 @@ data class ConditionFieldMirror<T: Any, V: Any?>(
         if(!conditionSet) {
             throw MissingFieldException("condition")
         }
-        return Condition.Field<T,V>(
-            field = fieldField as MirrorClass.Field<T, V>,
+        return Condition.Field<NullableT,NotNullT,V>(
+            field = fieldField as MirrorClass.Field<NotNullT, V>,
             condition = fieldCondition as Condition<V>
         )
     }
     
-    override fun serialize(encoder: Encoder, obj: Condition.Field<T,V>) {
-        val encoderStructure = encoder.beginStructure(this, TMirror, VMirror)
-        encoderStructure.encodeSerializableElement(this, 0, MirrorClassFieldMirror(TMirror, VMirror), obj.field)
+    override fun serialize(encoder: Encoder, obj: Condition.Field<NullableT,NotNullT,V>) {
+        val encoderStructure = encoder.beginStructure(this, NullableTMirror, NotNullTMirror, VMirror)
+        encoderStructure.encodeSerializableElement(this, 0, MirrorClassFieldMirror(NotNullTMirror, VMirror), obj.field)
         encoderStructure.encodeSerializableElement(this, 1, ConditionMirror(VMirror), obj.condition)
         encoderStructure.endStructure(this)
     }

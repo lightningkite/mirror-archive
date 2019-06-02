@@ -56,7 +56,7 @@ interface Operation<T> {
     data class Multiple<T>(val operations: List<Operation<T>>) : Operation<T> {
         @Suppress("UNCHECKED_CAST")
         override fun invoke(item: T): T {
-            return if (operations.isNotEmpty() && operations.all { it is Condition.Field<*, *> }) {
+            return if (operations.isNotEmpty() && operations.all { it is Condition.Field<*, *, *> }) {
                 //Optimization to avoid allocations
                 val type = operations.first().let { it as Operation.Field<*, *> }.field.owner as MirrorClass<Any>
                 val map = Breaker.snap(type, item as Any)

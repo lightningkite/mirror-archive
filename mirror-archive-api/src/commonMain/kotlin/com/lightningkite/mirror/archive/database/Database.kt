@@ -13,11 +13,12 @@ interface Database<T : Any> {
     }
 
     interface Provider {
-        fun <T : Any> get(
-                mirrorClass: MirrorClass<T>,
-                default: T,
-                name: String = mirrorClass.localName
-        ): Database<T>
+        operator fun <T : Any> get(
+                mirrorClass: MirrorClass<T>
+        ): Database<T> = getOrNull(mirrorClass) ?: throw IllegalArgumentException("No database for type ${mirrorClass.localName} accessible")
+        fun <T : Any> getOrNull(
+                mirrorClass: MirrorClass<T>
+        ): Database<T>?
 
         interface FromConfiguration {
             val name: String

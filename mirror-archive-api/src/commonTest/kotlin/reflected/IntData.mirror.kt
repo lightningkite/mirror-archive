@@ -2,6 +2,7 @@
 //AUTOMATICALLY GENERATED AND WILL BE OVERRIDDEN IF THIS MESSAGE IS PRESENT
 package com.lightningkite.mirror.test
 
+import com.lightningkite.mirror.archive.model.PrimaryKey
 import kotlinx.serialization.Serializable
 import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
@@ -10,6 +11,9 @@ import mirror.kotlin.*
 import kotlinx.serialization.SerializableMirror
 
 object IntDataMirror : MirrorClass<IntData>() {
+    override val empty: IntData get() = IntData(
+        intV = IntMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<IntData> get() = IntData::class as KClass<IntData>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

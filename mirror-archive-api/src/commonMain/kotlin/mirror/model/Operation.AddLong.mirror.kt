@@ -10,6 +10,9 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object OperationAddLongMirror : MirrorClass<Operation.AddLong>() {
+    override val empty: Operation.AddLong get() = Operation.AddLong(
+        amount = LongMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Operation.AddLong> get() = Operation.AddLong::class as KClass<Operation.AddLong>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

@@ -10,6 +10,9 @@ import kotlinx.serialization.*
 import mirror.kotlin.*
 
 object ConditionStartsWithMirror : MirrorClass<Condition.StartsWith>() {
+    override val empty: Condition.StartsWith get() = Condition.StartsWith(
+        query = StringMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<Condition.StartsWith> get() = Condition.StartsWith::class as KClass<Condition.StartsWith>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)

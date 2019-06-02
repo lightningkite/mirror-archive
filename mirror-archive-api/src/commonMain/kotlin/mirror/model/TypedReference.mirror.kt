@@ -10,6 +10,10 @@ import mirror.kotlin.*
 import com.lightningkite.mirror.info.MirrorClassMirror
 
 object TypedReferenceMirror : MirrorClass<TypedReference>() {
+    override val empty: TypedReference get() = TypedReference(
+        type = (MirrorClassMirror.make(null) as MirrorType<MirrorClass<*>>).empty,
+        key = UuidMirror.empty
+    )
     @Suppress("UNCHECKED_CAST")
     override val kClass: KClass<TypedReference> get() = TypedReference::class as KClass<TypedReference>
     override val modifiers: Array<Modifier> get() = arrayOf(Modifier.Data)
