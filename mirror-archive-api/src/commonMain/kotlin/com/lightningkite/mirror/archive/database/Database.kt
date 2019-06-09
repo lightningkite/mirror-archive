@@ -54,5 +54,9 @@ interface Database<T : Any> {
     suspend fun delete(
             condition: Condition<T>
     ): Int
+
+    suspend fun count(
+            condition: Condition<T>
+    ): Int
 }
 

@@ -39,6 +39,11 @@ class RequestDatabase<T : Any>(val handler: Request.Handler, val request: Databa
             val condition: Condition<T>
     ) : Request<Int>
 
+    data class Count<T : Any>(
+            val databaseRequest: Database.Request<T>,
+            val condition: Condition<T>
+    ) : Request<Int>
+
     override suspend fun get(condition: Condition<T>, sort: List<Sort<T, *>>, count: Int, after: T?): List<T> {
         return handler.invoke(Get(
                 databaseRequest = request,
@@ -76,6 +81,13 @@ class RequestDatabase<T : Any>(val handler: Request.Handler, val request: Databa
 
     override suspend fun delete(condition: Condition<T>): Int {
         return handler.invoke(Delete(
+                databaseRequest = request,
+                condition = condition
+        ))
+    }
+
+    override suspend fun count(condition: Condition<T>): Int {
+        return handler.invoke(Count(
                 databaseRequest = request,
                 condition = condition
         ))

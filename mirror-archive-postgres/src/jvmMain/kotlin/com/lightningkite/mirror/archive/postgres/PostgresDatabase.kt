@@ -299,11 +299,11 @@ class PostgresDatabase<T : Any>(
         val sqlType = when (type.kind) {
             PrimitiveKind.BOOLEAN -> "boolean"
             PrimitiveKind.BYTE,
-            PrimitiveKind.SHORT -> "int2"
-            PrimitiveKind.INT -> "int4"
-            PrimitiveKind.LONG -> "int8"
-            PrimitiveKind.FLOAT -> "float4"
-            PrimitiveKind.DOUBLE -> "float8"
+            PrimitiveKind.SHORT -> "smallint"
+            PrimitiveKind.INT -> "integer"
+            PrimitiveKind.LONG -> "bigint"
+            PrimitiveKind.FLOAT -> "real"
+            PrimitiveKind.DOUBLE -> "double precision"
             PrimitiveKind.CHAR -> "character(1)"
             PrimitiveKind.STRING -> "text"
             UnionKind.ENUM_KIND -> "text"
@@ -319,9 +319,11 @@ class PostgresDatabase<T : Any>(
     suspend fun setup() {
         if(setupState.compareAndSet(0, 1)){
             //actual setup
+            println("Setting up $tableName...")
 
-            val existingColumns = client.suspendQuery(PostgresMetadata.columns(tableName))
+            val existingColumns = client.suspendQuery(PostgresMetadata.columns(schemaName, tableName))
             if (existingColumns.rowCount() == 0) {
+                println("No columns found for $tableName.")
                 //Create if it doesn't exist
                 client.suspendQuery("CREATE SCHEMA IF NOT EXISTS $schemaName")
                 client.suspendQuery {
@@ -353,18 +355,27 @@ class PostgresDatabase<T : Any>(
                 val parsedExistingColumns = existingColumns.map {
                     it.getString(PostgresMetadata.Columns.column_name).toLowerCase() to it.getString(PostgresMetadata.Columns.data_type).toLowerCase()
                 }.toSet()
+                println("Existing columns found for $tableName - ${parsedExistingColumns.joinToString { it.toString() }}")
+                println("Transitioning to columns ${schema.columns.map { it.nameAndType() }}")
                 val parsedCodeColumns = schema.columns.map { it.nameAndType() }.toSet()
                 val newColumns = parsedCodeColumns.minus(parsedExistingColumns)
                 val oldColumns = parsedExistingColumns.minus(parsedCodeColumns)
 
                 for (column in newColumns) {
-                    client.suspendQuery("ALTER TABLE $schemaName.$tableName ADD COLUMN ${column.first} ${column.second}")
+                    if(column.first.endsWith("null")){
+                        println("Attempting to add null-marking column $column")
+                        client.suspendQuery("ALTER TABLE $schemaName.$tableName ADD COLUMN ${column.first} ${column.second} DEFAULT false")
+                    } else {
+                        println("Attempting to add column $column")
+                        client.suspendQuery("ALTER TABLE $schemaName.$tableName ADD COLUMN ${column.first} ${column.second}")
+                    }
                 }
 
                 //TODO: Custom migrations?
 
                 for (column in oldColumns) {
-                    client.suspendQuery("ALTER TABLE $schemaName.$tableName DROP COLUMN ${column.first} ${column.second}")
+                    println("Attempting to remove column $column")
+                    client.suspendQuery("ALTER TABLE $schemaName.$tableName DROP COLUMN ${column.first}")
                 }
 
                 //TODO: Migrate PK?
@@ -374,6 +385,7 @@ class PostgresDatabase<T : Any>(
             //TODO: Indicies
 
             setupState.value = 2
+            println("Updates to schema for $tableName complete")
         } else if(setupState.value == 1) {
             while(setupState.value == 1){
                 delay(1)
@@ -507,5 +519,16 @@ class PostgresDatabase<T : Any>(
         appendConditionFull(condition.simplify())
         append(";")
     }.rowCount()
+
+    override suspend fun count(condition: Condition<T>): Int = if (condition.simplify() == Condition.Never) 0 else client.suspendQuery {
+        setup()
+        append("SELECT COUNT(*) FROM ")
+        append(schemaName)
+        append('.')
+        append(tableName)
+        append(" WHERE ")
+        appendConditionFull(condition.simplify())
+        append(";")
+    }.first().getInteger(0)
 
 }

@@ -14,6 +14,7 @@ com.lightningkite.mirror.archive.model.HasId
 com.lightningkite.mirror.archive.model.LockState
 com.lightningkite.mirror.archive.model.Lockable
 com.lightningkite.lokalize.time.TimeStamp
+com.lightningkite.lokalize.time.DaysOfWeek
 com.lightningkite.lokalize.location.Geohash
 com.lightningkite.mirror.archive.model.PrimaryKey
 com.lightningkite.mirror.archive.model.Indexed

@@ -81,6 +81,14 @@ class BinaryFlatArrayTest {
     }
 
     @Test
+    fun reflectivePartial() {
+        println("TEST - reflectivePartial")
+        val result = listOf(null, null, null, null, null)
+        val decoder = BinaryFlatArrayDecoder(BinaryFlatArrayFormat.context, BinaryFlatArrayFormat.binaryFormat, result){false}
+        val back = decoder.decodeSerializableValue(PostMirror)
+    }
+
+    @Test
     fun reflectiveWithSkip() {
         println("TEST - reflective")
         val value = Zoo.zero()

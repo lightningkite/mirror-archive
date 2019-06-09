@@ -101,4 +101,8 @@ class RamDatabase<T : Any>(
         }
         return modifications
     }
+
+    override suspend fun count(condition: Condition<T>): Int {
+        return backingData.count { condition.invoke(it) }
+    }
 }

@@ -3,10 +3,7 @@ package com.lightningkite.mirror.serialization.json
 import com.lightningkite.kommon.bytes.toStringHex
 import com.lightningkite.lokalize.time.TimeStamp
 import com.lightningkite.lokalize.time.TimeStampMirror
-import com.lightningkite.mirror.archive.flatarray.BinaryFlatArrayDecoder
-import com.lightningkite.mirror.archive.flatarray.StringFlatArrayFormat
-import com.lightningkite.mirror.archive.flatarray.IndexPath
-import com.lightningkite.mirror.archive.flatarray.StringFlatArrayDecoder
+import com.lightningkite.mirror.archive.flatarray.*
 import com.lightningkite.mirror.info.*
 import com.lightningkite.mirror.registerTest
 import com.lightningkite.mirror.test.*
@@ -79,6 +76,14 @@ class StringFlatArrayTest {
         test(Post(0, 42, "hello"), PostMirror)
         test(Zoo.instance(), ZooMirror)
         test(Zoo.zero(), ZooMirror)
+    }
+
+    @Test
+    fun reflectivePartial() {
+        println("TEST - reflectivePartial")
+        val result = listOf(null, null, null, null, null)
+        val decoder = StringFlatArrayDecoder(StringFlatArrayFormat.context, StringFlatArrayFormat.stringFormat, result){false}
+        val back = decoder.decodeSerializableValue(PostMirror)
     }
 
     @Test

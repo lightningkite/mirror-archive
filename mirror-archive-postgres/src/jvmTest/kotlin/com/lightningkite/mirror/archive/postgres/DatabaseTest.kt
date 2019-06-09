@@ -143,6 +143,36 @@ class DatabaseTest {
     }
 
     @Test
+    fun countPlain() {
+        runBlocking {
+            val toInsert = testData
+            database.insert(toInsert)
+
+            val retrieved = database.count(Condition.Always)
+            assertEquals(toInsert.size, retrieved)
+        }
+    }
+
+    @Test
+    fun countConditions() {
+        runBlocking {
+            val toInsert = testData
+            database.insert(toInsert)
+
+            for (condition in testConditions) {
+                try {
+                    println("getConditions: Testing ${condition}")
+                    val expected = toInsert.count { condition(it) }
+                    val retrieved = database.count(condition = condition)
+                    assertEquals(expected, retrieved)
+                } catch (t: Throwable) {
+                    throw Exception("Failed while testing ${condition}", t)
+                }
+            }
+        }
+    }
+
+    @Test
     fun getConditions() {
         runBlocking {
             val toInsert = testData

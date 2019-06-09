@@ -37,7 +37,7 @@ inline class Subgraph(val map: MutableMap<KClass<*>, MutableMap<Any?, HasId<*>>>
         }
     }
 
-    fun clear(){
+    fun clear() {
         map.clear()
     }
 
@@ -47,6 +47,7 @@ inline class Subgraph(val map: MutableMap<KClass<*>, MutableMap<Any?, HasId<*>>>
 
 suspend inline fun <reified MODEL : HasUuid> Reference<MODEL>.resolve(provider: Database.Provider, subgraph: Subgraph? = null): MODEL? = resolve(MirrorRegistry[MODEL::class]!!, provider, subgraph)
 suspend fun <MODEL : HasUuid> Reference<MODEL>.resolve(type: MirrorClass<MODEL>, provider: Database.Provider, subgraph: Subgraph? = null): MODEL? {
+    subgraph?.get(type.kClass, this.key)?.let { return it }
     val db = provider.get(type)
     @Suppress("UNCHECKED_CAST") val resolved = db.get(type.fields.find { it.name == "id" } as MirrorClass.Field<MODEL, Uuid>, key)
     if (resolved != null) {

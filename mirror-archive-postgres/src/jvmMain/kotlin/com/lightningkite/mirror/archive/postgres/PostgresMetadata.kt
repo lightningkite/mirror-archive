@@ -15,5 +15,5 @@ object PostgresMetadata {
         val datetime_precision = "datetime_precision"  // 	cardinal_number 	//If data_type identifies a date, time, timestamp, or interval type, this column contains the (declared or implicit) fractional seconds precision of the type for this column, that is, the number of decimal digits maintained following the decimal point in the seconds value. For all other data types, this column is null.
     }
 
-    fun columns(table: String) = "SELECT * FROM information_schema.columns WHERE table_name = '$table'"
+    fun columns(schema: String, table: String) = "SELECT * FROM information_schema.columns WHERE table_schema ilike '$schema' AND table_name ilike '$table'"
 }

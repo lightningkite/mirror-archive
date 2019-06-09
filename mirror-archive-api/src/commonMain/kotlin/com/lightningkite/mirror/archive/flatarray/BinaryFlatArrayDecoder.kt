@@ -117,22 +117,45 @@ class BinaryFlatArrayDecoder(
         }
     }
 
-    val beginStructureIndexStack = IntArray(1024)
-    var beginStructureIndexStackIndex = -1
+    val indexStack = IntArray(1024)
+    val indexSizeStack = IntArray(1024)
+    var indexStackIndex = -1
+    fun push(size: Int) {
+        indexStackIndex++
+        indexStack[indexStackIndex] = 0
+        indexSizeStack[indexStackIndex] = size
+    }
+    fun pop() = indexStackIndex--
+    fun path() = indexStack.take(indexStackIndex+1).joinToString { it.toString() }
+
     override fun beginStructure(desc: SerialDescriptor, vararg typeParams: KSerializer<*>): CompositeDecoder {
         return when (desc.kind) {
             StructureKind.CLASS -> {
-                beginStructureIndexStackIndex++
-                beginStructureIndexStack[beginStructureIndexStackIndex] = currentIndex
+                push(desc.elementsCount)
                 this
             }
             else -> throw IllegalArgumentException()
         }
     }
 
-    override fun decodeElementIndex(desc: SerialDescriptor): Int = CompositeDecoder.READ_ALL//currentIndex - beginStructureIndexStack[beginStructureIndexStackIndex]
+    override fun decodeElementIndex(desc: SerialDescriptor): Int {
+        while(true){
+            if(indexStack[indexStackIndex] < indexSizeStack[indexStackIndex] && input[currentIndex] == null){
+                skipSerializableValue(desc.getElementDescriptor(indexStack[indexStackIndex]))
+                indexStack[indexStackIndex]++
+            } else {
+                break
+            }
+        }
+        val currentValue = indexStack[indexStackIndex]
+        if(currentValue >= indexSizeStack[indexStackIndex]){
+            return CompositeDecoder.READ_DONE
+        }
+        indexStack[indexStackIndex]++
+        return currentValue
+    }
     override fun endStructure(desc: SerialDescriptor) {
-        beginStructureIndexStackIndex--
+        pop()
     }
 
     override fun <T : Any?> decodeSerializableElement(desc: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T>): T = decodeSerializableValue(deserializer)

@@ -42,6 +42,10 @@ class SecureByFieldDatabase<T : Any>(
     override suspend fun delete(condition: Condition<T>): Int = with(rules) {
         return underlying.delete((condition and limitUpdateLazy()).secure())
     }
+
+    override suspend fun count(condition: Condition<T>): Int = with(rules){
+        return underlying.count(condition and limitReadLazy())
+    }
 }
 
 /**

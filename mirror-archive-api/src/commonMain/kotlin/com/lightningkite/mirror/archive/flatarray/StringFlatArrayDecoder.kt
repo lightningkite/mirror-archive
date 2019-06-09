@@ -1,6 +1,5 @@
 package com.lightningkite.mirror.archive.flatarray
 
-import kotlinx.io.ByteArrayInputStream
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.EnumDescriptor
 import kotlinx.serialization.modules.SerialModule
@@ -10,7 +9,7 @@ class StringFlatArrayDecoder(
         val stringFormat: StringFormat,
         val input: List<Any?>,
         var currentIndex: Int = 0,
-        val terminateAt: (SerialDescriptor)->Boolean
+        val terminateAt: (SerialDescriptor) -> Boolean
 ) : Decoder, CompositeDecoder {
     override val updateMode: UpdateMode get() = UpdateMode.UPDATE
 
@@ -26,6 +25,7 @@ class StringFlatArrayDecoder(
     override fun decodeShort(): Short = input[currentIndex++] as Short
     override fun decodeString(): String = input[currentIndex++] as String
     override fun decodeUnit() {}
+
     override fun decodeNull(): Nothing? {
         currentIndex++
         return null
@@ -49,7 +49,7 @@ class StringFlatArrayDecoder(
     override fun decodeUnitElement(desc: SerialDescriptor, index: Int) {}
 
     fun skipSerializableValue(desc: SerialDescriptor) {
-        if(terminateAt(desc)) currentIndex++
+        if (terminateAt(desc)) currentIndex++
         else when (desc.kind) {
             PrimitiveKind.UNIT -> {
             }
@@ -81,7 +81,7 @@ class StringFlatArrayDecoder(
 
     override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return if(terminateAt(deserializer.descriptor)) input[currentIndex++] as T
+        return if (terminateAt(deserializer.descriptor)) input[currentIndex++] as T
         else when (deserializer.descriptor.kind) {
             PrimitiveKind.UNIT,
             PrimitiveKind.INT,
@@ -117,22 +117,45 @@ class StringFlatArrayDecoder(
         }
     }
 
-    val beginStructureIndexStack = IntArray(1024)
-    var beginStructureIndexStackIndex = -1
+    val indexStack = IntArray(1024)
+    val indexSizeStack = IntArray(1024)
+    var indexStackIndex = -1
+    fun push(size: Int) {
+        indexStackIndex++
+        indexStack[indexStackIndex] = 0
+        indexSizeStack[indexStackIndex] = size
+    }
+    fun pop() = indexStackIndex--
+    fun path() = indexStack.take(indexStackIndex+1).joinToString { it.toString() }
+
     override fun beginStructure(desc: SerialDescriptor, vararg typeParams: KSerializer<*>): CompositeDecoder {
         return when (desc.kind) {
             StructureKind.CLASS -> {
-                beginStructureIndexStackIndex++
-                beginStructureIndexStack[beginStructureIndexStackIndex] = currentIndex
+                push(desc.elementsCount)
                 this
             }
             else -> throw IllegalArgumentException()
         }
     }
 
-    override fun decodeElementIndex(desc: SerialDescriptor): Int = CompositeDecoder.READ_ALL//currentIndex - beginStructureIndexStack[beginStructureIndexStackIndex]
+    override fun decodeElementIndex(desc: SerialDescriptor): Int {
+        while(true){
+            if(indexStack[indexStackIndex] < indexSizeStack[indexStackIndex] && input[currentIndex] == null){
+                skipSerializableValue(desc.getElementDescriptor(indexStack[indexStackIndex]))
+                indexStack[indexStackIndex]++
+            } else {
+                break
+            }
+        }
+        val currentValue = indexStack[indexStackIndex]
+        if(currentValue >= indexSizeStack[indexStackIndex]){
+            return CompositeDecoder.READ_DONE
+        }
+        indexStack[indexStackIndex]++
+        return currentValue
+    }
     override fun endStructure(desc: SerialDescriptor) {
-        beginStructureIndexStackIndex--
+        pop()
     }
 
     override fun <T : Any?> decodeSerializableElement(desc: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T>): T = decodeSerializableValue(deserializer)

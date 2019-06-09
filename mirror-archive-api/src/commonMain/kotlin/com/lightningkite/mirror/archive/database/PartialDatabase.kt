@@ -42,6 +42,10 @@ class PartialDatabase<T : Any>(
         return underlying.delete(condition and partialCondition)
     }
 
+    override suspend fun count(condition: Condition<T>): Int {
+        return underlying.count(condition and partialCondition)
+    }
+
 }
 
 fun <T : Any> Database<T>.limit(

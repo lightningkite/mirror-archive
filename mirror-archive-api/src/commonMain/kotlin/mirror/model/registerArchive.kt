@@ -6,8 +6,9 @@ import com.lightningkite.mirror.info.*
 import kotlin.reflect.KClass
 
 fun registerArchive() = MirrorRegistry.register(
-    com.lightningkite.mirror.archive.database.RequestDatabaseDeleteMirror.minimal,
+    com.lightningkite.mirror.archive.database.RequestDatabaseCountMirror.minimal,
     com.lightningkite.mirror.archive.database.DatabaseRequestMirror.minimal,
+    com.lightningkite.mirror.archive.database.RequestDatabaseDeleteMirror.minimal,
     com.lightningkite.mirror.archive.database.RequestDatabaseLimitedUpdateMirror.minimal,
     com.lightningkite.mirror.archive.database.RequestDatabaseUpdateMirror.minimal,
     com.lightningkite.mirror.archive.database.RequestDatabaseInsertMirror.minimal,
@@ -40,6 +41,7 @@ fun registerArchive() = MirrorRegistry.register(
     com.lightningkite.mirror.archive.model.ConditionAlwaysMirror,
     com.lightningkite.mirror.archive.model.ConditionNeverMirror,
     com.lightningkite.lokalize.location.GeohashMirror,
+    com.lightningkite.lokalize.time.DaysOfWeekMirror,
     com.lightningkite.lokalize.time.TimeStampMirror,
     com.lightningkite.mirror.archive.model.LockableMirror.minimal,
     com.lightningkite.mirror.archive.model.LockStateMirror,

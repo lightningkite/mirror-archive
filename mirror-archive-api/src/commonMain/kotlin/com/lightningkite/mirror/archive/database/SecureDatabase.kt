@@ -35,6 +35,10 @@ class SecureDatabase<T : Any>(
     override suspend fun delete(condition: Condition<T>): Int {
         return underlying.delete(condition and limitUpdate)
     }
+
+    override suspend fun count(condition: Condition<T>): Int {
+        return underlying.count(condition and limitRead)
+    }
 }
 
 /**

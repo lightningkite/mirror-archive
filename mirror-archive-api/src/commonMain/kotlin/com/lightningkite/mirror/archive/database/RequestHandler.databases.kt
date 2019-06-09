@@ -21,4 +21,7 @@ fun LocalRequestHandler.databases(databaseHandler: Database.Handler) {
     invocation(RequestDatabase.LimitedUpdate::class as KClass<RequestDatabase.LimitedUpdate<Any>>) {
         databaseHandler.invoke(this.databaseRequest).limitedUpdate(condition, operation, sort, limit)
     }
+    invocation(RequestDatabase.Count::class as KClass<RequestDatabase.Count<Any>>) {
+        databaseHandler.invoke(this.databaseRequest).count(condition)
+    }
 }

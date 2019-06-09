@@ -36,5 +36,10 @@ class DatabaseWithMetrics<T: Any>(val underlying: Database<T>, val name: String,
     override suspend fun delete(condition: Condition<T>): Int = deleteTimer.timeInline {
         underlying.delete(condition)
     }
+
+    val countTimer = metrics.timer(name + ".count")
+    override suspend fun count(condition: Condition<T>): Int = countTimer.timeInline {
+        underlying.count(condition)
+    }
 }
 fun <T: Any> Database<T>.withMetrics(name: String, metrics: MetricRegistry = Metrics) = DatabaseWithMetrics(this, name, metrics)
