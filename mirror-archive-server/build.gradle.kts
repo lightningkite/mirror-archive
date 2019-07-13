@@ -66,7 +66,6 @@ kotlin {
                     api("io.ktor:ktor-metrics:${versions.getProperty("ktor")}")
                     api("com.google.firebase:firebase-admin:6.8.1")
 
-
                 }
             }
             test {

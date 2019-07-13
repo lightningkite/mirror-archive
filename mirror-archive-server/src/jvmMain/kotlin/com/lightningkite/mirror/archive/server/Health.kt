@@ -34,29 +34,32 @@ object Health {
 
     val checks = HashMap<String, Check>()
 
-    var sendMethod: (Check)->Unit = {
-        if(it.status.urgency <= URGENCY_TODAY){
-            logger.error("${it.name}: ${it.status.message}")
-        } else if(it.status.urgency <= URGENCY_THIS_WEEK){
-            logger.warn("${it.name}: ${it.status.message}")
+    var sendMethod: (Check) -> Unit = {
+        if (it.status.urgency <= URGENCY_TODAY) {
+            logger.error("Health Check Emergency: ${it.name}: ${it.status.message}")
+        } else if (it.status.urgency <= URGENCY_THIS_WEEK) {
+            logger.warn("Health Check Urgent Warning: ${it.name}: ${it.status.message}")
         } else {
-            logger.info("${it.name}: ${it.status.message}")
+            logger.info("Health Check Warning: ${it.name}: ${it.status.message}")
         }
+    }
+    var reportMethod: (Check) -> Unit = {
+        logger.info("Health Check ${it.name}: ${it.status.message}")
     }
 
     fun healthCheck(
             name: String,
             frequency: Duration = Duration.hours(1),
             maxStagger: Duration = Duration.minutes(5),
-            action: suspend ()->Status
+            action: suspend () -> Status
     ) {
         val check = Check(name = name)
         GlobalScope.launch(Dispatchers.Default) {
-            while(true){
-                delay((0L .. maxStagger.milliseconds).random())
+            while (true) {
+                delay((0L..maxStagger.milliseconds).random())
                 val result = action()
                 check.status = result
-                if(check.shouldSend()) {
+                if (check.shouldSend()) {
                     sendMethod(check)
                     check.lastMessageSend = TimeStamp.now()
                 }
